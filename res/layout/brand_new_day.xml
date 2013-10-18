@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent">
+
+	<ToggleButton android:id="@+id/toggleButton3"
+		android:layout_width="80dp" android:layout_height="80dp"
+		android:layout_alignParentTop="true" android:layout_toRightOf="@+id/toggleButton2"
+		android:text="@string/alarm_3_toggleButton" android:textOff="@string/alarm_3_toggleButton"
+		android:textOn="@string/alarm_3_toggleButton" android:textSize="@dimen/activity_horizontal_margin" />
+
+	<ToggleButton android:id="@+id/toggleButton1"
+		android:layout_width="80dp" android:layout_height="80dp"
+		android:layout_alignParentLeft="true" android:layout_alignParentStart="false"
+		android:layout_alignParentTop="true" android:minWidth="64dp"
+		android:text="@string/alarm_1_toggleButton" 
+		android:textOff="@string/alarm_1_toggleButton"
+		android:textOn="@string/alarm_1_toggleButton" 
+		android:textSize="@dimen/activity_horizontal_margin" />
+
+	<ToggleButton android:id="@+id/toggleButton2"
+		android:layout_width="80dp" android:layout_height="80dp"
+		android:layout_alignParentTop="true" android:layout_toRightOf="@+id/toggleButton1"
+		android:text="@string/alarm_2_toggleButton" android:textOff="@string/alarm_2_toggleButton"
+		android:textOn="@string/alarm_2_toggleButton" android:textSize="@dimen/activity_horizontal_margin" />
+
+	<DigitalClock android:id="@+id/digitalClock1" 
+	    android:layout_width="wrap_content"
+		android:layout_height="70dp" 
+		android:layout_alignLeft="@+id/alarm2_settings_button"
+		android:layout_alignParentBottom="true" android:text="digitalClock"
+		android:textSize="50sp" />
+
+	<Button android:id="@+id/alarm1_settings_button"
+		android:layout_width="50dp" android:layout_height="50dp"
+		android:layout_alignParentLeft="true" android:layout_below="@+id/toggleButton1"
+		android:layout_marginLeft="14dp" android:text="@string/alarm_1_settings_button"
+		android:textSize="12sp" />
+
+	<Button android:id="@+id/alarm2_settings_button"
+		android:layout_width="50dp" android:layout_height="50dp"
+		android:layout_alignLeft="@+id/toggleButton2" android:layout_below="@+id/toggleButton2"
+		android:layout_marginLeft="14dp" android:text="@string/alarm_2_settings_button"
+		android:textSize="12sp" />
+
+	<Button android:id="@+id/alarm3_settings_button"
+		android:layout_width="50dp" android:layout_height="50dp"
+		android:layout_alignLeft="@+id/toggleButton3" android:layout_below="@+id/toggleButton3"
+		android:layout_marginLeft="14dp" android:text="@string/alarm_3_settings_button"
+		android:textSize="12sp" />
+
+	<Button android:id="@+id/playlistButton"
+		android:layout_width="80dp" android:layout_height="80dp"
+		android:layout_above="@+id/alarm3_settings_button"
+		android:layout_alignParentRight="true" android:src="@drawable/ic_playlist" />
+
+</RelativeLayout>
