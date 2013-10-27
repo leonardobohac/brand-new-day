@@ -10,20 +10,18 @@
 
     <Button
         android:id="@+id/wake_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="128dp"
+        android:layout_width="150dp"
+        android:layout_height="310dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
         android:text="@string/wake_up_button" />
 
     <Button
         android:id="@+id/snooze_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/wake_button"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
+        android:layout_width="130dp"
+        android:layout_height="170dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
         android:text="@string/sleep_more_button" />
 
 </RelativeLayout>

@@ -29,17 +29,21 @@ public class AlarmService extends Service {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 
-		int index = intent.getExtras().getInt("index");
+		/*int index = intent.getExtras().getInt("index");
 		int hour = intent.getExtras().getInt("hour");
 		int minute = intent.getExtras().getInt("minute");
-		int snoozeTime = intent.getExtras().getInt("snoozeTime");
+		int snoozeTime = intent.getExtras().getInt("snooze");*/
+
 		
-		Intent i = new Intent(getApplicationContext(), WakingTime.class);
-		i.putExtra("index", index);
+		/*i.putExtra("index", index);
 		i.putExtra("hour", hour);
 		i.putExtra("minute", minute);
-		i.putExtra("snoozeTime", snoozeTime);
-		
+		i.putExtra("snoozeTime", snoozeTime);*/
+		int index = intent.getExtras().getInt("index");
+		int snooze = intent.getExtras().getInt("snooze");
+		Intent i = new Intent(getApplicationContext(), WakingTime.class);
+		i.putExtra("index", index);
+		i.putExtra("snooze", snooze);
 		i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		
 		startActivity(i);

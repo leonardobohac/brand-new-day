@@ -48,9 +48,23 @@
 		android:layout_marginLeft="14dp" android:text="@string/alarm_3_settings_button"
 		android:textSize="12sp" />
 
-	<Button android:id="@+id/playlistButton"
-		android:layout_width="80dp" android:layout_height="80dp"
-		android:layout_above="@+id/alarm3_settings_button"
-		android:layout_alignParentRight="true" android:src="@drawable/ic_playlist" />
+	<ToggleButton
+	    android:id="@+id/quickNapToggleButton"
+	    android:layout_width="80dp"
+	    android:layout_height="80dp"
+	    android:layout_alignParentRight="true"
+	    android:src="@drawable/ic_playlist"
+	    android:text="@string/quick_nap_toggleButton"
+	    android:textOff="@string/quick_nap_toggleButton"
+	    android:textOn="@string/quick_nap_toggleButton" />
+
+	<Button
+	    android:id="@+id/playlist_button"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_above="@+id/digitalClock1"
+	    android:layout_centerHorizontal="true"
+	    android:layout_marginBottom="92dp"
+	    android:text="@string/playlist_button" />
 
 </RelativeLayout>

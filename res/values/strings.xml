@@ -13,6 +13,7 @@
     <string name="alarm_1_settings_button">Settings 1</string>
     <string name="alarm_2_settings_button">Settings 2</string>
     <string name="alarm_3_settings_button">Settings 3</string>
+    <string name="quick_nap_toggleButton">Quick Nap</string>
     <string name="playlist_button">PlayList</string>
     <string name="add_song_to_playlist">Add New Song</string>
     <string name="wake_up_button">Wake Up</string>
@@ -21,7 +22,8 @@
     <string name="snooze_seekBar">Snooze</string>
     <string name="crescent_volume_mode_checkBox">Crescent Volume Mode</string>
     <string name="back_to_main_button">Back</string>
-    <string name="title_activity_waking_time">WakingTimeActivity</string>
+    <string name="title_activity_waking_time">Waking Time</string>
+    <string name="title_activity_my_playlist">Song Selection</string>
     <string name="snoozing_time">3 minutes</string>
     <string name="snooze_disabled_checkBox">No Snooze</string>
 

@@ -2,16 +2,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <SeekBar
-        android:id="@+id/snooze_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginBottom="60dp"
-        android:max="12" />
-
     <TimePicker
         android:id="@+id/time_picker"
         android:layout_width="wrap_content"
@@ -55,6 +45,17 @@
         android:layout_marginRight="27dp"
         android:layout_marginTop="20dp"
         android:text="@string/snoozing_time" />
+
+    <SeekBar
+        android:id="@+id/snooze_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/snooze_disabled_checkBox"
+        android:layout_alignParentEnd="true"
+        android:layout_alignRight="@+id/snooze_time_textView"
+        android:layout_below="@+id/snooze_time_textView"
+        android:layout_marginTop="41dp"
+        android:max="12" />
     
 </RelativeLayout>    
     

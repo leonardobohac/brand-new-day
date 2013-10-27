@@ -1,8 +1,8 @@
 package com.example.brandnewday;
 
 public class Alarm {
-	public int index, hour, minute, snooze;
-	public boolean isActive;
+	int index, hour, minute, snooze;
+	boolean isActive;
 	
 	Alarm(int index, boolean isActive, int hour, int minute, int snooze) {
 		this.index = index;
@@ -22,7 +22,7 @@ public class Alarm {
 	void setIndex(int index) {
 		this.index = index;
 	}
-	void setIsAcive(boolean isActive) {
+	void setIsActive(boolean isActive) {
 		this.isActive = isActive;
 	}
 	void setHour(int hour) {
