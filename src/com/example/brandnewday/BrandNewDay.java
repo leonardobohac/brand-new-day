@@ -4,6 +4,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -17,8 +18,8 @@ import android.widget.ToggleButton;
 public class BrandNewDay extends Activity {
 	MyApplication myApplication;
 	
-	int[] alarmHours, alarmMinutes, alarmSnoozes;
-	boolean[] alarmActivated;
+	static int[] alarmHours, alarmMinutes, alarmSnoozes;
+	static boolean[] alarmActivated;
 	ArrayList<String> myStringPlaylist;
 	
 	/*private int Alarm1DefaultHour = 7;
@@ -85,14 +86,14 @@ public class BrandNewDay extends Activity {
 		System.out.println("Main Activity Creating");
 		setContentView(R.layout.brand_new_day);
 		myApplication = getMyApplication();
+	
 		
 		//myStringPlaylist = myApplication.getMyStringPlaylist();
 		alarmHours = myApplication.getAlarmHours();
 		alarmMinutes = myApplication.getAlarmMinutes();
 		alarmSnoozes = myApplication.getAlarmSnoozes();
 		alarmActivated = myApplication.getAlarmActivated();
-		
-		System.out.println("Here: " + (Integer.toString(alarmHours[0])));
+
 		
 		alarm1ToggleButton = (ToggleButton)findViewById(R.id.toggleButton1);
 		alarm2ToggleButton = (ToggleButton)findViewById(R.id.toggleButton2);
@@ -123,13 +124,12 @@ public class BrandNewDay extends Activity {
 	    
 	}
 	    
-	  
 	
 	@Override
 	protected void onResume() {
 		super.onResume();
-		System.out.println(alarmHours.toString());
 		System.out.println("Main Activity Resuming");
+
 		alarm1ToggleButton.setChecked(alarmActivated[ALARM_1_INDEX]);
 		setButtonText(ALARM_1_INDEX);
 		alarm2ToggleButton.setChecked(alarmActivated[ALARM_2_INDEX]);
@@ -144,31 +144,16 @@ public class BrandNewDay extends Activity {
 	protected void onPause() {
 		super.onPause();
 		System.out.println("Main Activity Pausing");
-		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-		SharedPreferences.Editor editor = preferences.edit();
-		
-		editor.putBoolean("alarm1Activated", alarmActivated[ALARM_1_INDEX]);
-		editor.putBoolean("alarm2Activated", alarmActivated[ALARM_2_INDEX]);
-		editor.putBoolean("alarm3Activated", alarmActivated[ALARM_3_INDEX]);
-		editor.putBoolean("alarmNapActivated", alarmActivated[ALARM_NAP_INDEX]);
-
-		editor.commit();
 	}
-	
-	
+		
 	@Override
 	protected void onStop() {
 		super.onStop();
 		System.out.println("Main Activity Stopping");
-		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-		SharedPreferences.Editor editor = preferences.edit();
+		setHoursPreferences();
+		setMinutesPreferences();
+		setActivatedPreferences();
 		
-		editor.putBoolean("alarm1Activated", alarmActivated[ALARM_1_INDEX]);
-		editor.putBoolean("alarm2Activated", alarmActivated[ALARM_2_INDEX]);
-		editor.putBoolean("alarm3Activated", alarmActivated[ALARM_3_INDEX]);
-		editor.putBoolean("alarmNapActivated", alarmActivated[ALARM_NAP_INDEX]);
-
-		editor.commit();
 	}
 		
 	
@@ -197,14 +182,6 @@ public class BrandNewDay extends Activity {
 	
 	View.OnClickListener settings1Listener = new View.OnClickListener() {
 	    public void onClick(View v) {
-	    	/*if(alarm1ToggleButton.isChecked())
-	    	{
-	    		alarmActivated[ALARM_1_INDEX] = ALARM_ACTIVE;
-	    	}
-	    	else {
-	    		alarmActivated[ALARM_1_INDEX] = ALARM_NOT_ACTIVE;
-	    	}*/
-	    	
 	    	Intent intent = new Intent(getApplicationContext(), AlarmSettings.class);
 	    	intent.putExtra("index", ALARM_1_INDEX);
             //startActivityForResult(intent, SET_ALARM_REQUEST);
@@ -213,15 +190,7 @@ public class BrandNewDay extends Activity {
 	};
 	
 	View.OnClickListener settings2Listener = new View.OnClickListener() {
-	    public void onClick(View v) {
-	    	/*if(alarm2ToggleButton.isChecked())
-	    	{
-	    		alarmActivated[ALARM_2_INDEX] = ALARM_ACTIVE;
-	    	}
-	    	else {
-	    		alarmActivated[ALARM_2_INDEX] = ALARM_NOT_ACTIVE;
-	    	}*/
-	    	
+	    public void onClick(View v) {	    	
 	    	Intent intent = new Intent(getApplicationContext(), AlarmSettings.class);
 	    	intent.putExtra("index", ALARM_2_INDEX);
             //startActivityForResult(intent, SET_ALARM_REQUEST);
@@ -231,14 +200,6 @@ public class BrandNewDay extends Activity {
 	
 	View.OnClickListener settings3Listener = new View.OnClickListener() {
 	    public void onClick(View v) {
-	    	/*if(alarm3ToggleButton.isChecked())
-	    	{
-	    		alarmActivated[ALARM_3_INDEX] = ALARM_ACTIVE;
-	    	}
-	    	else {
-	    		alarmActivated[ALARM_3_INDEX] = ALARM_NOT_ACTIVE;
-	    	}*/
-	    	
 	    	Intent intent = new Intent(getApplicationContext(), AlarmSettings.class);
 	    	intent.putExtra("index", ALARM_3_INDEX);
             //startActivityForResult(intent, SET_ALARM_REQUEST);
@@ -401,11 +362,13 @@ public class BrandNewDay extends Activity {
 	protected MyApplication getMyApplication() {
 		return (MyApplication)getApplication();
 	}
+	
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 	    super.onConfigurationChanged(newConfig);
 	}
 	
+//////////// Preferences Getters /////////////////	
 	public void getHoursPreferences() {
 		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
 		alarmHours[ALARM_1_INDEX] = preferences.getInt("alarm1Hour", 7);
@@ -415,12 +378,20 @@ public class BrandNewDay extends Activity {
 	
 	public void getMinutesPreferences() {
 		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-		alarmMinutes[ALARM_1_INDEX] = preferences.getInt("alarm1Minutes", 30);
-		alarmMinutes[ALARM_2_INDEX] = preferences.getInt("alarm2Minutes", 30);
-		alarmMinutes[ALARM_3_INDEX] = preferences.getInt("alarm3Minutes", 30);
+		alarmMinutes[ALARM_1_INDEX] = preferences.getInt("alarm1Minute", 30);
+		alarmMinutes[ALARM_2_INDEX] = preferences.getInt("alarm2Minute", 30);
+		alarmMinutes[ALARM_3_INDEX] = preferences.getInt("alarm3Minute", 30);
 	}
 	
-	public void setHourPreferences() {
+	public void getActivatedPreferences() {
+		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+		alarmActivated[ALARM_1_INDEX] = preferences.getBoolean("alarm1Activated", false);
+		alarmActivated[ALARM_2_INDEX] = preferences.getBoolean("alarm2Activated", false);
+		alarmActivated[ALARM_3_INDEX] = preferences.getBoolean("alarm3Activated", false);
+	}
+	
+//////////// Preferences Setters /////////////////		
+	public void setHoursPreferences() {
 		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
 		SharedPreferences.Editor editor = preferences.edit();
 		
@@ -435,20 +406,9 @@ public class BrandNewDay extends Activity {
 		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
 		SharedPreferences.Editor editor = preferences.edit();
 		
-		editor.putInt("alarm1Minutes", alarmMinutes[ALARM_1_INDEX]);
+		editor.putInt("alarm1Minute", alarmMinutes[ALARM_1_INDEX]);
 		editor.putInt("alarm2Minute", alarmMinutes[ALARM_2_INDEX]);
 		editor.putInt("alarm3Minute", alarmMinutes[ALARM_3_INDEX]);
-	
-		editor.commit();
-	}
-	
-	public void setSnoozesPreferences() {
-		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-		SharedPreferences.Editor editor = preferences.edit();
-		
-		editor.putInt("alarm1Snooze", alarmSnoozes[ALARM_1_INDEX]);
-		editor.putInt("alarm2Snooze", alarmSnoozes[ALARM_2_INDEX]);
-		editor.putInt("alarm3Snooze", alarmSnoozes[ALARM_3_INDEX]);
 	
 		editor.commit();
 	}
@@ -458,6 +418,7 @@ public class BrandNewDay extends Activity {
 		SharedPreferences.Editor editor = preferences.edit();
 		
 		editor.putBoolean("alarm1Activated", alarmActivated[ALARM_1_INDEX]);
+		System.out.println(alarmActivated[0]);
 		editor.putBoolean("alarm2Activated", alarmActivated[ALARM_2_INDEX]);
 		editor.putBoolean("alarm3Activated", alarmActivated[ALARM_3_INDEX]);
 	

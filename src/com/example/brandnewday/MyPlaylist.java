@@ -86,7 +86,7 @@ public class MyPlaylist extends Activity {
 			  System.out.println("Selected Audio Path: " + selectedAudioPath);
 			  
 			  audioUris.add(selectedAudioUri);
-			  audioPaths.add(selectedAudioPath);
+			  //audioPaths.add(selectedAudioPath);
 			  /*if(selectedAudioPath!=null)
 				  System.out.println("selectedAudioPath is the right one for you!");
 			  else
@@ -116,7 +116,7 @@ public class MyPlaylist extends Activity {
 	@Override
 	protected void onStop() {
 		super.onStop();
-		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+		/*SharedPreferences preferences = getPreferences(MODE_PRIVATE);
 		SharedPreferences.Editor editor = preferences.edit();
 		System.out.println("Playlist Activity Stopping");
 		if(audioUris != null)
@@ -126,7 +126,7 @@ public class MyPlaylist extends Activity {
 			editor.putString("stringAudioPaths", audioPaths.toString());
 				
 		editor.commit();
-
+*/
 	}
 	
 	/*@Override

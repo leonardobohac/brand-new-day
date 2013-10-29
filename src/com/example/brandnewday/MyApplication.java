@@ -8,15 +8,17 @@ import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Application;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.audiofx.BassBoost.Settings;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 
 
 public class MyApplication extends Application{
-	String preferencesName = "myPreferences";
-
+	private Context context;
+    private SharedPreferences preferences;
 	int alarm1Hour, alarm2Hour, alarm3Hour;
 	int alarm1Minute, alarm2Minute, alarm3Minute;
 	int alarm1Snooze, alarm2Snooze, alarm3Snooze;
@@ -32,10 +34,25 @@ public class MyApplication extends Application{
 	static final int ALARM_3_INDEX = 2;
 	static final int ALARM_NAP_INDEX = 3;
 	
-	private int[] alarmHours = new int[3];
-	private int[] alarmMinutes = new int[3];
-	private int[] alarmSnoozes = new int[3];
-	private boolean[] alarmActivated = new boolean[4];	
+	private int[] alarmHours = {7, 8, 9};
+	private int[] alarmMinutes = {15, 30 ,45};
+	private int[] alarmSnoozes = {0, 0, 0};
+	private boolean[] alarmActivated = {false, false, false, false};
+	
+	public MyApplication(Context context) {
+        this.context = context;
+        preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        getHoursPreferences();
+        getMinutesPreferences();
+        getSnoozesPreferences();
+        getActivatedPreferences();
+    }
+	
+	public MyApplication() {
+		super();
+	}
+	
+	
 
 	
 	public int[] getAlarmHours() {
@@ -55,8 +72,12 @@ public class MyApplication extends Application{
 	}
 
 	public ArrayList<Uri> getAudioUris() {
-		return stringToUriArray(stringAudioUris);
+		return audioUris;
 	}
+	
+	/*public ArrayList<Uri> getAudioUris() {
+		return stringToUriArray(stringAudioUris);
+	}*/
 	
 
 
@@ -149,4 +170,32 @@ public class MyApplication extends Application{
 
 		alarmManager.set(AlarmManager.RTC_WAKEUP, rightNow.getTimeInMillis(), pendingIntent);
 	}
+	
+
+	public void getHoursPreferences() {
+		preferences = context.getSharedPreferences("pref",MODE_PRIVATE);
+		alarmHours[ALARM_1_INDEX] = preferences.getInt("alarm1Hour", 7);
+		alarmHours[ALARM_2_INDEX] = preferences.getInt("alarm2Hour", 8);
+		alarmHours[ALARM_3_INDEX] = preferences.getInt("alarm3Hour", 9);
+	}
+	
+	public void getMinutesPreferences() {
+		alarmMinutes[ALARM_1_INDEX] = preferences.getInt("alarm1Minute", 30);
+		alarmMinutes[ALARM_2_INDEX] = preferences.getInt("alarm2Minute", 30);
+		alarmMinutes[ALARM_3_INDEX] = preferences.getInt("alarm3Minute", 30);
+	}
+	
+	public void getSnoozesPreferences() {
+		alarmSnoozes[ALARM_1_INDEX] = preferences.getInt("alarm1Snooze", 0);
+		alarmSnoozes[ALARM_2_INDEX] = preferences.getInt("alarm2Snooze", 0);
+		alarmSnoozes[ALARM_3_INDEX] = preferences.getInt("alarm3Snooze", 0);
+	}
+	
+	public void getActivatedPreferences() {
+		alarmActivated[ALARM_1_INDEX] = preferences.getBoolean("alarm1Activated", false);
+		alarmActivated[ALARM_2_INDEX] = preferences.getBoolean("alarm2Activated", false);
+		alarmActivated[ALARM_3_INDEX] = preferences.getBoolean("alarm3Activated", false);
+	}
+	
+	
 }
