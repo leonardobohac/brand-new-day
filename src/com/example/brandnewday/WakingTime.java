@@ -1,76 +1,87 @@
 package com.example.brandnewday;
 
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Random;
+import java.util.Set;
 
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
+import android.preference.PreferenceManager;
 import android.app.Activity;
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.util.Log;
+import android.content.SharedPreferences;
 import android.view.Menu;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.view.ViewDebug.FlagToString;
-import android.view.WindowManager.LayoutParams;
 import android.widget.Button;
-import android.widget.Toast;
 
-public class WakingTime extends Activity {//implements MediaPlayer.OnCompletionListener{
+public class WakingTime extends Activity implements MediaPlayer.OnCompletionListener{
 	MyApplication myApplication;
+	SharedPreferences preferences;
+	private Set<String> audioUrisInStringSet;
 	
+	private ArrayList<Uri> randomizedAudioUris;
 	int index;
 	int snooze;
 	int[] alarmSnoozes;
 	int [] alarmHours;
 	int [] alarmMinutes;
 	int currentTrack = 0;
+	
+	static final int ALARM_1_INDEX = 0;
+	static final int ALARM_2_INDEX = 1;
+	static final int ALARM_3_INDEX = 2;
+	static final int ALARM_NAP_INDEX = 3;
 	private ArrayList<Uri> audioUris;
-	private ArrayList<Uri> randomizedAudioUris;
-	private ArrayList<String> audioPaths;
 	private MediaPlayer mediaPlayer = null;
 	PendingIntent pendingIntent;
 	Intent intent;
-	Toast toast;
-	private static PowerManager.WakeLock wakeLock;
-	
-	
-	
-
-	
-
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		/*getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);          
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);*/
-		//unlockScreen();
-		//getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED); 
+		PowerManager mgr = (PowerManager)getApplicationContext().getSystemService(Context.POWER_SERVICE);
+		WakeLock wakeLock = mgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MyWakeLock");
+		wakeLock.acquire();
 		setContentView(R.layout.waking_time);
-		
-		
+		preferences = getPreferences(MODE_PRIVATE);
+	
 		myApplication = getMyApplication();
-		audioUris = myApplication.getAudioUris();
-		randomizedAudioUris = new ArrayList<Uri>(audioUris.size());
 		Intent intent = getIntent();
 		index = intent.getExtras().getInt("index");
+		
 		alarmHours = myApplication.getAlarmHours();
 		alarmMinutes = myApplication.getAlarmMinutes();
 		alarmSnoozes = myApplication.getAlarmSnoozes();
+		audioUrisInStringSet = myApplication.getAudioUrisInStringSet();
 		
-		
-		
-		
+		if(preferences.getStringSet("AudioUrisInStringSet", null) != null) {
+			System.out.println("not null set");
+			getAudioUrisInStringPreferences();
+			
+			for (Iterator<String> iterator = audioUrisInStringSet.iterator(); iterator.hasNext(); ) {
+		        String uriString = iterator.next();
+		        System.out.println(uriString);
+		        audioUris.add(Uri.parse(uriString));
+		    }
+			
+			
+			  
+			
+			randomizedAudioUris = new ArrayList<Uri>(audioUris.size());
+			randomizedAudioUris = randomizeUriArrayList(audioUris);
+			System.out.println(randomizedAudioUris.toString());
+			if(this.randomizedAudioUris.size() != 0){
+				 mediaPlayer = MediaPlayer.create(getApplicationContext(), this.randomizedAudioUris.get(currentTrack));
+			     mediaPlayer.setOnCompletionListener(this);
+			     mediaPlayer.start();
+			}
+		}
+	
 		Button wakeButton = (Button)findViewById(R.id.wake_button);
 		Button snoozeButton = (Button)findViewById(R.id.snooze_button);
 		
@@ -83,45 +94,10 @@ public class WakingTime extends Activity {//implements MediaPlayer.OnCompletionL
 		else
 			snoozeButton.setVisibility(View.VISIBLE);
 	
-		String hourString = Integer.toString(alarmHours[index]);
-		String minuteString = Integer.toString(alarmMinutes[index]);
-		String alarmInfo = "Index: " + Integer.toString(index) + "  " + "Set for: " + hourString + ":" + minuteString;
-		
-		
-		toast = Toast.makeText(getApplicationContext(), alarmInfo, Toast.LENGTH_LONG);
-		toast.show();
 		
 	}
-	/*public static void releaseWakeLock() {
-	    if (wakeLock != null)
-	        wakeLock.release();
-	    wakeLock = null;
-	}*/
-	/*private void unlockScreen() {
-        Window window = this.getWindow();
-        window.addFlags(LayoutParams.FLAG_DISMISS_KEYGUARD);
-        window.addFlags(LayoutParams.FLAG_SHOW_WHEN_LOCKED);
-        window.addFlags(LayoutParams.FLAG_TURN_SCREEN_ON);
-    }*/
-		
-		/*Window window = this.getWindow();
-        window.addFlags(LayoutParams.FLAG_DISMISS_KEYGUARD);
-        window.addFlags(LayoutParams.FLAG_SHOW_WHEN_LOCKED);
-        window.addFlags(LayoutParams.FLAG_TURN_SCREEN_ON);*/
-
-		/*randomizedAudioUris = randomizeUriArrayList(audioUris);
-		System.out.println(randomizedAudioUris.toString());
-		if(this.randomizedAudioUris.size() != 0){
-			 mediaPlayer = MediaPlayer.create(getApplicationContext(), this.randomizedAudioUris.get(currentTrack));
-		     mediaPlayer.setOnCompletionListener(this);
-		     mediaPlayer.start();
-		}
-		else
-			System.out.println("No songs in playlist");*/
 	
-	
-				
-	/*public void onCompletion(MediaPlayer arg0) {
+	public void onCompletion(MediaPlayer arg0) {
 	      arg0.release();
 	      if(this.randomizedAudioUris == null)
 	    	  System.out.println("NULL playlist");
@@ -133,37 +109,49 @@ public class WakingTime extends Activity {//implements MediaPlayer.OnCompletionL
 		        arg0.start();
 		      }
 	      }
-	    }*/
-			   
-			 
-
-		/*randomIndexList = generateRandomIndexList();
-		for(int index=0; index < randomIndexList.size(); index += 1) {
-			playSong(myPlaylist.get(randomIndexList.get(index)), mp);
-		}*/
+	}
+	public ArrayList<Uri> randomizeUriArrayList(ArrayList<Uri> uriArrayList) {
+		// Shuffles and array of URIs 
+		ArrayList<Uri> randomizedArray = new ArrayList<Uri>(uriArrayList.size());
+		ArrayList<Integer> randomIndexArray = generateRandomIndexList(uriArrayList.size());
 		
-		//System.out.println(myStringPlaylist);
+		for(int i=0; i < randomIndexArray.size(); i += 1)
+			randomizedArray.add(uriArrayList.get(randomIndexArray.get(i)));
 		
+		return randomizedArray;
+	}
 	
-
+	public ArrayList<Integer> generateRandomIndexList(int size) {
+		// List of distinct random integers between 0 and size. Ex: [2,5,1,4,3], with size = 5 ///
+		Random generator = new Random();
+		ArrayList<Integer> indexList = new ArrayList<Integer>();
+		ArrayList<Integer> randomIndexList = new ArrayList<Integer>();
+		
+		for(int i=0; i < size; i += 1) {
+			indexList.add(i);
+		}
+		for(int j=0; j < size; j += 1) {
+			int randomIndex = generator.nextInt(indexList.size());
+			randomIndexList.add(indexList.get(randomIndex));
+			indexList.remove(indexList.get(randomIndex));
+		}
+		
+		return randomIndexList;
+	}
+	
+	
+	public void getAudioUrisInStringPreferences() {
+		SharedPreferences preferences = getSharedPreferences("AudioUrisInStringPreferences",MODE_PRIVATE);
+		audioUrisInStringSet = preferences.getStringSet("AudioUrisInStringSet", null);
+	}
+		
 	/*@Override
 	protected void onPause() {
 		super.onPause();
 		mediaPlayer.release();
 		finish();
 	}*/
-	/*public static void acquireWakeLock(Context ctx) {
-        if (wakeLock != null)
-            wakeLock.release();
-
-        PowerManager pm = (PowerManager) ctx
-                .getSystemService(Context.POWER_SERVICE);
-        wakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK
-                | PowerManager.ACQUIRE_CAUSES_WAKEUP
-                | PowerManager.ON_AFTER_RELEASE,
-                "aqs_wake_lock");
-        wakeLock.acquire();
-    }*/
+	
 	@Override
 	protected void onStop() {
 		super.onStop();
@@ -184,10 +172,7 @@ public class WakingTime extends Activity {//implements MediaPlayer.OnCompletionL
 			Intent i = new Intent(WakingTime.this, AlarmService.class);
 			stopService(i);
 			myApplication.activateAlarm(index, alarmHours, alarmMinutes, alarmSnoozes);
-			toast.cancel();
-			
 	        finish();
-	        
         }			
 	};
 	
@@ -196,12 +181,11 @@ public class WakingTime extends Activity {//implements MediaPlayer.OnCompletionL
 			Intent i = new Intent(WakingTime.this, AlarmService.class);
 			stopService(i);
 			myApplication.activateSnooze(index, alarmSnoozes);
-			toast.cancel();
 			finish();
 		}
 	};
 	
-	public ArrayList<Uri> randomizeUriArrayList(ArrayList<Uri> uriArrayList) {
+	/*public ArrayList<Uri> randomizeUriArrayList(ArrayList<Uri> uriArrayList) {
 		// Shuffles and array of URIs 
 		ArrayList<Uri> randomizedArray = new ArrayList<Uri>(uriArrayList.size());
 		ArrayList<Integer> randomIndexArray = generateRandomIndexList(uriArrayList.size());
@@ -228,7 +212,7 @@ public class WakingTime extends Activity {//implements MediaPlayer.OnCompletionL
 		}
 		
 		return randomIndexList;
-		}
+		}*/
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -240,6 +224,16 @@ public class WakingTime extends Activity {//implements MediaPlayer.OnCompletionL
 	protected MyApplication getMyApplication() {
 		return (MyApplication)getApplication();
 	}
+	
+	public void getSnoozesPreferences() {
+		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+		alarmSnoozes[ALARM_1_INDEX] = preferences.getInt("alarm1Snooze", 0);
+		alarmSnoozes[ALARM_2_INDEX] = preferences.getInt("alarm2Snooze", 0);
+		alarmSnoozes[ALARM_3_INDEX] = preferences.getInt("alarm3Snooze", 0);
+	}
+	
+	
+	
 }
 	
 	/*public void playSong(Uri uri, MediaPlayer mp){

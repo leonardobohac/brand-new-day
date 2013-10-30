@@ -1,6 +1,10 @@
 package com.example.brandnewday;
 
 import java.util.ArrayList;
+import java.util.EmptyStackException;
+import java.util.HashSet;
+import java.util.Set;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,7 +19,10 @@ import android.widget.ListView;
 public class MyPlaylist extends Activity {
 	MyApplication myApplication;
 	ArrayList<Uri> audioUris;
+	ArrayList<String> audioUrisInString;
 	ArrayList<String> audioPaths;
+	protected Set<String> audioUrisInStringSet;
+
 
 	Button newSongButton;
 	Button okButton;
@@ -31,8 +38,13 @@ public class MyPlaylist extends Activity {
 		setContentView(R.layout.my_playlist);
 		/*SharedPreferences preferences = getPreferences(MODE_PRIVATE);*/
 		myApplication = getMyApplication();
-		audioUris = myApplication.getAudioUris();
-		//audioPaths = myApplication.getAudioPaths();
+
+		
+		audioUrisInStringSet = myApplication.getAudioUrisInStringSet();
+		
+	
+		
+
 		
 		newSongButton = (Button)findViewById(R.id.add_new_song_button);
 		okButton = (Button)findViewById(R.id.playlistOkButton);
@@ -85,7 +97,10 @@ public class MyPlaylist extends Activity {
 			  String selectedAudioPath = getPathFromUri(selectedAudioUri);
 			  System.out.println("Selected Audio Path: " + selectedAudioPath);
 			  
-			  audioUris.add(selectedAudioUri);
+			  //audioUris.add(selectedAudioUri);
+			  audioUrisInStringSet.add(selectedAudioUri.toString()); // just for the Shared Preferences
+			  
+			  
 			  //audioPaths.add(selectedAudioPath);
 			  /*if(selectedAudioPath!=null)
 				  System.out.println("selectedAudioPath is the right one for you!");
@@ -116,53 +131,14 @@ public class MyPlaylist extends Activity {
 	@Override
 	protected void onStop() {
 		super.onStop();
-		/*SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-		SharedPreferences.Editor editor = preferences.edit();
-		System.out.println("Playlist Activity Stopping");
-		if(audioUris != null)
-			editor.putString("stringAudioUris", audioUris.toString());
-		
-		if(audioPaths != null)
-			editor.putString("stringAudioPaths", audioPaths.toString());
-				
-		editor.commit();
-*/
+		System.out.println(audioUrisInStringSet);
 	}
 	
-	/*@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		System.out.println("Playlist Activity Destroying");
-		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-		SharedPreferences.Editor editor = preferences.edit();
-
-		if(myStringPlaylist != null)
-			editor.putString("myStringPlaylist", myStringPlaylist.toString());
-		
-		
-		editor.commit();
-		}
-	*/
-	/*@Override
+	@Override
 	protected void onPause() {
 		super.onPause();
-		System.out.println("Playlist Activity Pausing");
-		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-		SharedPreferences.Editor editor = preferences.edit();
-
-		if(myStringPlaylist != null)
-			editor.putString("myStringPlaylist", myStringPlaylist.toString());
-		
-		
-		editor.commit();
-		}
-		
-	
-	@Override
-	protected void onResume() {
-		super.onResume();
-		System.out.println("Playlist Activity Resuming");
-	}*/
+		setAudioUrisInStringPreferences();
+	}
 	
 	
 	public String getPathFromUri(Uri contentUri) {
@@ -174,6 +150,19 @@ public class MyPlaylist extends Activity {
         cursor.moveToFirst();
         return cursor.getString(column_index);
     }
+	
+	public void getAudioUrisInStringPreferences() {
+		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+		audioUrisInStringSet = preferences.getStringSet("AudioUrisInStringSet", null);
+	}
+	
+	public void setAudioUrisInStringPreferences() {
+		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.putStringSet("AudioUrisInStringSet", audioUrisInStringSet);
+		editor.commit();
+	}
+	
 	
 	/*public static Uri getAudioContentUri(Context context, File audioFile) {
         String filePath = audioFile.getAbsolutePath();
@@ -252,6 +241,8 @@ public class MyPlaylist extends Activity {
 	        }while (cursor.moveToNext());
 	    }
 	}*/
+	
+	
 			
 }	
 			

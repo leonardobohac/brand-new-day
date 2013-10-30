@@ -1,7 +1,9 @@
 package com.example.brandnewday;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Random;
+import java.util.Set;
 
 import android.app.Service;
 import android.media.MediaPlayer;
@@ -9,23 +11,25 @@ import android.net.Uri;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 
 
 
 public class AlarmService extends Service implements MediaPlayer.OnCompletionListener {
-	
+	Context context = getBaseContext();
 	MyApplication myApplication;
 	
-	
+	private Set<String> audioUrisInStringSet;
 	private ArrayList<Uri> audioUris;
 	private ArrayList<Uri> randomizedAudioUris;
-	private ArrayList<String> audioPaths;
+	//private ArrayList<String> audioPaths;
 	private MediaPlayer mediaPlayer = null;
 	int currentTrack = 0;
 	//private static PowerManager.WakeLock wakeLock;
@@ -33,11 +37,11 @@ public class AlarmService extends Service implements MediaPlayer.OnCompletionLis
 	@Override
 	public void onCreate() {
 	    super.onCreate();
-	    
 	}
-	    
 	
-
+	
+	
+	  
 	@Override
 	public IBinder onBind(Intent intent) {
 	//TODO for communication return IBinder implementation
@@ -53,21 +57,31 @@ public class AlarmService extends Service implements MediaPlayer.OnCompletionLis
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		PowerManager mgr = (PowerManager)getApplicationContext().getSystemService(Context.POWER_SERVICE);
+		/*PowerManager mgr = (PowerManager)getApplicationContext().getSystemService(Context.POWER_SERVICE);
 		WakeLock wakeLock = mgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MyWakeLock");
-		wakeLock.acquire();
-		myApplication = getMyApplication();
-		audioUris = myApplication.getAudioUris();
-		randomizedAudioUris = new ArrayList<Uri>(audioUris.size());
-		randomizedAudioUris = randomizeUriArrayList(audioUris);
-		System.out.println(randomizedAudioUris.toString());
-		if(this.randomizedAudioUris.size() != 0){
-			 mediaPlayer = MediaPlayer.create(getApplicationContext(), this.randomizedAudioUris.get(currentTrack));
-		     mediaPlayer.setOnCompletionListener(this);
-		     mediaPlayer.start();
+		wakeLock.acquire();*/
+		//myApplication = getMyApplication();
+		//audioUris = myApplication.getAudioUris();
+		
+		
+		/*if(audioPreferences.getStringSet("AudioUrisInStringSet", null) != null) {
+			for (Iterator<String> iterator = audioUrisInStringSet.iterator(); iterator.hasNext(); ) {
+		        String uriString = iterator.next();
+		        audioUris.add(Uri.parse(uriString));
+		    }
+			  
+			
+			randomizedAudioUris = new ArrayList<Uri>(audioUris.size());
+			randomizedAudioUris = randomizeUriArrayList(audioUris);
+			System.out.println(randomizedAudioUris.toString());
+			if(this.randomizedAudioUris.size() != 0){
+				 mediaPlayer = MediaPlayer.create(getApplicationContext(), this.randomizedAudioUris.get(currentTrack));
+			     mediaPlayer.setOnCompletionListener(this);
+			     mediaPlayer.start();
+			}
 		}
 		else
-			System.out.println("No songs in playlist");
+			System.out.println("No songs in playlist");*/
 		/*i.putExtra("index", index);
 		i.putExtra("hour", hour);
 		i.putExtra("minute", minute);
@@ -83,18 +97,7 @@ public class AlarmService extends Service implements MediaPlayer.OnCompletionLis
 		return START_STICKY;
 	}
 	
-	/*public static void acquireWakeLock(Context ctx) {
-        if (wakeLock != null)
-            wakeLock.release();
-
-        PowerManager pm = (PowerManager) ctx
-                .getSystemService(Context.POWER_SERVICE);
-        wakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK
-                | PowerManager.ACQUIRE_CAUSES_WAKEUP
-                | PowerManager.ON_AFTER_RELEASE,
-                "aqs_wake_lock");
-        wakeLock.acquire();
-    }*/
+	
 	@Override
 	public boolean onUnbind(Intent intent) {
 		Toast.makeText(this, "MyAlarmService.onUnbind()", Toast.LENGTH_LONG).show();	
@@ -113,7 +116,7 @@ public class AlarmService extends Service implements MediaPlayer.OnCompletionLis
 		        arg0.start();
 		      }
 	      }
-	    }
+	}
 	public ArrayList<Uri> randomizeUriArrayList(ArrayList<Uri> uriArrayList) {
 		// Shuffles and array of URIs 
 		ArrayList<Uri> randomizedArray = new ArrayList<Uri>(uriArrayList.size());
@@ -126,7 +129,7 @@ public class AlarmService extends Service implements MediaPlayer.OnCompletionLis
 	}
 	
 	public ArrayList<Integer> generateRandomIndexList(int size) {
-		// List of distinct random integers between 0 and size. Ex: [2,5,1,4,3] ///
+		// List of distinct random integers between 0 and size. Ex: [2,5,1,4,3], with size = 5 ///
 		Random generator = new Random();
 		ArrayList<Integer> indexList = new ArrayList<Integer>();
 		ArrayList<Integer> randomIndexList = new ArrayList<Integer>();
@@ -141,9 +144,14 @@ public class AlarmService extends Service implements MediaPlayer.OnCompletionLis
 		}
 		
 		return randomIndexList;
-		}
+	}
 	protected MyApplication getMyApplication() {
 		return (MyApplication)getApplication();
+	}
+	
+	public void getAudioUrisInStringPreferences() {
+		SharedPreferences preferences = getSharedPreferences("AudioUrisInStringPreferences",MODE_PRIVATE);
+		audioUrisInStringSet = preferences.getStringSet("AudioUrisInStringSet", null);
 	}
 }
 

@@ -19,6 +19,7 @@ import android.widget.TimePicker;
 
 public class AlarmSettings extends Activity {
 	MyApplication myApplication;
+	BrandNewDay mainActivity;
 
 	int[] alarmHours, alarmMinutes, alarmSnoozes;
 	boolean[] alarmActivated;
@@ -32,11 +33,10 @@ public class AlarmSettings extends Activity {
 	CheckBox snoozeDisabledCheckBox;
 	Context context = this;
 
-	private int index;
-	private boolean isActive;
-	private int new_hour;
-	private int new_minute;
-	private int new_snooze;	
+	protected int index;
+	protected int new_hour;
+	protected int new_minute;
+	protected int new_snooze;	
 	static final int ALARM_1_INDEX = 0;
 	static final int ALARM_2_INDEX = 1;
 	static final int ALARM_3_INDEX = 2;
@@ -50,12 +50,14 @@ public class AlarmSettings extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.alarm_settings);
 		myApplication = getMyApplication();
-
-		//myStringPlaylist = myApplication.getMyStringPlaylist();
+		
 		alarmHours = myApplication.getAlarmHours();
 		alarmMinutes = myApplication.getAlarmMinutes();
 		alarmSnoozes = myApplication.getAlarmSnoozes();
 		alarmActivated = myApplication.getAlarmActivated();
+		getHoursPreferences();
+		getMinutesPreferences();
+		getSnoozesPreferences();
 		
 		timePicker = (TimePicker) findViewById(R.id.time_picker);
 		seekBar = (SeekBar) findViewById(R.id.snooze_bar);
@@ -94,6 +96,9 @@ public class AlarmSettings extends Activity {
 	protected void onStop() {
 		super.onStop();
 		System.out.println("Settings Stopping");
+		setHoursPreferences();
+		setMinutesPreferences();
+		setSnoozesPreferences();
 	}
 		
 	View.OnClickListener setAlarmListener = new View.OnClickListener() {
@@ -112,7 +117,6 @@ public class AlarmSettings extends Activity {
 			alarmActivated[index] = true;
 			
 			myApplication.activateAlarm(index, alarmHours, alarmMinutes,alarmSnoozes);	
-			//setResult(RESULT_OK, getIntent());
 			finish();
 		}
 	};
@@ -172,87 +176,67 @@ public class AlarmSettings extends Activity {
 	}
 	
 	protected MyApplication getMyApplication() {
-		return (MyApplication) getApplication();
+		return (MyApplication)getApplication();
 	}
-	
-	
-}
-
-/*
-////////////Preferences Getters /////////////////
 	public void getHoursPreferences() {
 		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
 		alarmHours[ALARM_1_INDEX] = preferences.getInt("alarm1Hour", 7);
 		alarmHours[ALARM_2_INDEX] = preferences.getInt("alarm2Hour", 8);
 		alarmHours[ALARM_3_INDEX] = preferences.getInt("alarm3Hour", 9);
 	}
-	
 	public void getMinutesPreferences() {
 		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
 		alarmMinutes[ALARM_1_INDEX] = preferences.getInt("alarm1Minute", 30);
-		alarmMinutes[ALARM_2_INDEX] = preferences.getInt("alarm2Minute", 30);
-		alarmMinutes[ALARM_3_INDEX] = preferences.getInt("alarm3Minute", 30);
+		alarmMinutes[ALARM_2_INDEX] = preferences.getInt("alarm2Minute", 15);
+		alarmMinutes[ALARM_3_INDEX] = preferences.getInt("alarm3Minute", 45);
 	}
-
 	public void getSnoozesPreferences() {
 		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
 		alarmSnoozes[ALARM_1_INDEX] = preferences.getInt("alarm1Snooze", 0);
 		alarmSnoozes[ALARM_2_INDEX] = preferences.getInt("alarm2Snooze", 0);
 		alarmSnoozes[ALARM_3_INDEX] = preferences.getInt("alarm3Snooze", 0);
 	}
-	
 	public void getActivatedPreferences() {
 		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
 		alarmActivated[ALARM_1_INDEX] = preferences.getBoolean("alarm1Activated", false);
-		System.out.println(alarmActivated[0]);
 		alarmActivated[ALARM_2_INDEX] = preferences.getBoolean("alarm2Activated", false);
 		alarmActivated[ALARM_3_INDEX] = preferences.getBoolean("alarm3Activated", false);
 	}
-	
-////////////Preferences Setters /////////////////
 	public void setHoursPreferences() {
 		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
 		SharedPreferences.Editor editor = preferences.edit();
-		
 		editor.putInt("alarm1Hour", alarmHours[ALARM_1_INDEX]);
 		editor.putInt("alarm2Hour", alarmHours[ALARM_2_INDEX]);
 		editor.putInt("alarm3Hour", alarmHours[ALARM_3_INDEX]);
-	
 		editor.commit();
 	}
-	
 	public void setMinutesPreferences() {
 		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
 		SharedPreferences.Editor editor = preferences.edit();
-		
 		editor.putInt("alarm1Minute", alarmMinutes[ALARM_1_INDEX]);
 		editor.putInt("alarm2Minute", alarmMinutes[ALARM_2_INDEX]);
 		editor.putInt("alarm3Minute", alarmMinutes[ALARM_3_INDEX]);
-	
 		editor.commit();
 	}
-	
 	public void setSnoozesPreferences() {
 		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
 		SharedPreferences.Editor editor = preferences.edit();
-		
 		editor.putInt("alarm1Snooze", alarmSnoozes[ALARM_1_INDEX]);
 		editor.putInt("alarm2Snooze", alarmSnoozes[ALARM_2_INDEX]);
 		editor.putInt("alarm3Snooze", alarmSnoozes[ALARM_3_INDEX]);
-	
 		editor.commit();
 	}
-	
 	public void setActivatedPreferences() {
 		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-		SharedPreferences.Editor editor = preferences.edit();
-		
+		SharedPreferences.Editor editor = preferences.edit();	
 		editor.putBoolean("alarm1Activated", alarmActivated[ALARM_1_INDEX]);
 		editor.putBoolean("alarm2Activated", alarmActivated[ALARM_2_INDEX]);
 		editor.putBoolean("alarm3Activated", alarmActivated[ALARM_3_INDEX]);
-	
 		editor.commit();
-	}*/
+	}
+	
+	
+}
 
 	
 	

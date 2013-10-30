@@ -3,12 +3,21 @@ package com.example.brandnewday;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
@@ -18,10 +27,17 @@ import android.widget.ToggleButton;
 public class BrandNewDay extends Activity {
 	MyApplication myApplication;
 	
-	static int[] alarmHours, alarmMinutes, alarmSnoozes;
-	static boolean[] alarmActivated;
-	ArrayList<String> myStringPlaylist;
+	private int[] alarmHours;
+	private int[] alarmMinutes;
+	private int[] alarmSnoozes;
+	private boolean[] alarmActivated;
+	//private ArrayList<Uri> audioUris;
+	//private Set<String> audioUrisInStringSet = new HashSet<String>();
+	//private ArrayList<String> audioPaths;
+	PendingIntent pendingIntent;
+	SharedPreferences preferences;
 	
+	private Set<String> audioUrisInStringSet;
 	/*private int Alarm1DefaultHour = 7;
 	private int Alarm1DefaultMinute = 30;
 	private int Alarm1DefaultSnooze = 0;
@@ -37,25 +53,7 @@ public class BrandNewDay extends Activity {
 	
 	static final int SET_ALARM_REQUEST = 1;
 	static NumberFormat formatter = new DecimalFormat("00");
-	
-	
-	
-	
-	/*static final String STATE_ALARM1_HOUR = "alarm1_hour";
-	static final String STATE_ALARM2_HOUR = "alarm2_hourl";
-	static final String STATE_ALARM3_HOUR = "alarm3_hour";
-	static final String STATE_ALARM1_MINUTE = "alarm1_minute";
-	static final String STATE_ALARM2_MINUTE = "alarm2_minute";
-	static final String STATE_ALARM3_MINUTE = "alarm3_minute";
-	static final String STATE_ALARM1_SNOOZE = "alarm1_snooze";
-	static final String STATE_ALARM2_SNOOZE = "alarm2_snooze";
-	static final String STATE_ALARM3_SNOOZE = "alarm3_snooze";
-	static final int ALARM_1_INDEX = 0;
-	static final int ALARM_2_INDEX = 1;
-	static final int ALARM_3_INDEX = 2;
-	static final int ALARM_QUICKNAP_INDEX = 3;
-	static final boolean ALARM_ALREADY_ACTIVE = true;
-	static final boolean ALARM_NOT_ACTIVE = false;*/
+
 	static final int ALARM_1_INDEX = 0;
 	static final int ALARM_2_INDEX = 1;
 	static final int ALARM_3_INDEX = 2;
@@ -86,15 +84,19 @@ public class BrandNewDay extends Activity {
 		System.out.println("Main Activity Creating");
 		setContentView(R.layout.brand_new_day);
 		myApplication = getMyApplication();
-	
 		
-		//myStringPlaylist = myApplication.getMyStringPlaylist();
 		alarmHours = myApplication.getAlarmHours();
 		alarmMinutes = myApplication.getAlarmMinutes();
 		alarmSnoozes = myApplication.getAlarmSnoozes();
 		alarmActivated = myApplication.getAlarmActivated();
-
+		audioUrisInStringSet = myApplication.getAudioUrisInStringSet();
+		getHoursPreferences();
+		getMinutesPreferences();
+		getSnoozesPreferences();
+		getActivatedPreferences();
+		//getAudioUrisInStringPreferences();
 		
+				
 		alarm1ToggleButton = (ToggleButton)findViewById(R.id.toggleButton1);
 		alarm2ToggleButton = (ToggleButton)findViewById(R.id.toggleButton2);
 		alarm3ToggleButton = (ToggleButton)findViewById(R.id.toggleButton3);
@@ -123,13 +125,12 @@ public class BrandNewDay extends Activity {
 	    //alarmNapToggleButton.setOnClickListener(alarmNapToggleButtonListener);
 	    
 	}
-	    
 	
 	@Override
 	protected void onResume() {
 		super.onResume();
 		System.out.println("Main Activity Resuming");
-
+		System.out.println("on main set: " + audioUrisInStringSet);
 		alarm1ToggleButton.setChecked(alarmActivated[ALARM_1_INDEX]);
 		setButtonText(ALARM_1_INDEX);
 		alarm2ToggleButton.setChecked(alarmActivated[ALARM_2_INDEX]);
@@ -144,42 +145,17 @@ public class BrandNewDay extends Activity {
 	protected void onPause() {
 		super.onPause();
 		System.out.println("Main Activity Pausing");
+		setActivatedPreferences();
 	}
 		
 	@Override
 	protected void onStop() {
 		super.onStop();
 		System.out.println("Main Activity Stopping");
-		setHoursPreferences();
-		setMinutesPreferences();
 		setActivatedPreferences();
 		
 	}
-		
-	
-	/*@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		System.out.println("Main Activity Destroying");
-		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-		SharedPreferences.Editor editor = preferences.edit();
-		
-		editor.putBoolean("alarm1Activated", alarmActivated[ALARM_1_INDEX]);
-		editor.putBoolean("alarm2Activated", alarmActivated[ALARM_2_INDEX]);
-		editor.putBoolean("alarm3Activated", alarmActivated[ALARM_3_INDEX]);
-		editor.putBoolean("alarmNapActivated", alarmActivated[ALARM_NAP_INDEX]);
 
-		editor.commit();
-	}*/
-	
-	/*View.OnClickListener playMusicListener = new View.OnClickListener() {
-	    public void onClick(View v) {
-	    	Intent i = new Intent(getApplicationContext(), WakingTime.class);
-            startActivity(i);
-	    }
-	};*/
-	
-	
 	View.OnClickListener settings1Listener = new View.OnClickListener() {
 	    public void onClick(View v) {
 	    	Intent intent = new Intent(getApplicationContext(), AlarmSettings.class);
@@ -293,36 +269,7 @@ public class BrandNewDay extends Activity {
             }
 	  	};
         
-	/*@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-		if (resultCode==RESULT_OK) {
-			if(requestCode == SET_ALARM_REQUEST) {
-				if(data != null ){
-					int index = data.getExtras().getInt("index");
-		            setButtonText(index);
-				}
-			}
-		}
-	}*/
 					
-	
-	/*@Override
-	public void onSaveInstanceState(Bundle savedInstanceState) {
-	    // Save the user's current game state
-	    savedInstanceState.putInt(STATE_ALARM1_HOUR, alarm1.hour);
-	    savedInstanceState.putInt(STATE_ALARM2_HOUR, alarm2.hour);
-	    savedInstanceState.putInt(STATE_ALARM3_HOUR, alarm3.hour);
-	    savedInstanceState.putInt(STATE_ALARM1_MINUTE, alarm1.minute);
-	    savedInstanceState.putInt(STATE_ALARM2_MINUTE, alarm2.minute);
-	    savedInstanceState.putInt(STATE_ALARM3_MINUTE, alarm3.minute);
-	    savedInstanceState.putInt(STATE_ALARM1_SNOOZE, alarm1.snooze);
-	    savedInstanceState.putInt(STATE_ALARM2_SNOOZE, alarm2.snooze);
-	    savedInstanceState.putInt(STATE_ALARM3_SNOOZE, alarm3.snooze);
-	    
-	    // Always call the superclass so it can save the view hierarchy state
-	    super.onSaveInstanceState(savedInstanceState);
-	}*/
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -363,10 +310,13 @@ public class BrandNewDay extends Activity {
 		return (MyApplication)getApplication();
 	}
 	
+	
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 	    super.onConfigurationChanged(newConfig);
 	}
+	
+	
 	
 //////////// Preferences Getters /////////////////	
 	public void getHoursPreferences() {
@@ -375,14 +325,18 @@ public class BrandNewDay extends Activity {
 		alarmHours[ALARM_2_INDEX] = preferences.getInt("alarm2Hour", 8);
 		alarmHours[ALARM_3_INDEX] = preferences.getInt("alarm3Hour", 9);
 	}
-	
 	public void getMinutesPreferences() {
 		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
 		alarmMinutes[ALARM_1_INDEX] = preferences.getInt("alarm1Minute", 30);
-		alarmMinutes[ALARM_2_INDEX] = preferences.getInt("alarm2Minute", 30);
-		alarmMinutes[ALARM_3_INDEX] = preferences.getInt("alarm3Minute", 30);
+		alarmMinutes[ALARM_2_INDEX] = preferences.getInt("alarm2Minute", 15);
+		alarmMinutes[ALARM_3_INDEX] = preferences.getInt("alarm3Minute", 45);
 	}
-	
+	public void getSnoozesPreferences() {
+		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+		alarmSnoozes[ALARM_1_INDEX] = preferences.getInt("alarm1Snooze", 0);
+		alarmSnoozes[ALARM_2_INDEX] = preferences.getInt("alarm2Snooze", 0);
+		alarmSnoozes[ALARM_3_INDEX] = preferences.getInt("alarm3Snooze", 0);
+	}
 	public void getActivatedPreferences() {
 		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
 		alarmActivated[ALARM_1_INDEX] = preferences.getBoolean("alarm1Activated", false);
@@ -390,38 +344,42 @@ public class BrandNewDay extends Activity {
 		alarmActivated[ALARM_3_INDEX] = preferences.getBoolean("alarm3Activated", false);
 	}
 	
+	public void getAudioUrisInStringPreferences() {
+		SharedPreferences preferences = getSharedPreferences("ActivatedPreferences",MODE_PRIVATE);
+		audioUrisInStringSet = preferences.getStringSet("AudioUrisInStringSet", null);
+	}
+	
 //////////// Preferences Setters /////////////////		
 	public void setHoursPreferences() {
 		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
 		SharedPreferences.Editor editor = preferences.edit();
-		
 		editor.putInt("alarm1Hour", alarmHours[ALARM_1_INDEX]);
 		editor.putInt("alarm2Hour", alarmHours[ALARM_2_INDEX]);
 		editor.putInt("alarm3Hour", alarmHours[ALARM_3_INDEX]);
-	
 		editor.commit();
 	}
-	
 	public void setMinutesPreferences() {
 		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
 		SharedPreferences.Editor editor = preferences.edit();
-		
 		editor.putInt("alarm1Minute", alarmMinutes[ALARM_1_INDEX]);
 		editor.putInt("alarm2Minute", alarmMinutes[ALARM_2_INDEX]);
 		editor.putInt("alarm3Minute", alarmMinutes[ALARM_3_INDEX]);
-	
 		editor.commit();
 	}
-	
-	public void setActivatedPreferences() {
+	public void setSnoozesPreferences() {
 		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
 		SharedPreferences.Editor editor = preferences.edit();
-		
+		editor.putInt("alarm1Snooze", alarmSnoozes[ALARM_1_INDEX]);
+		editor.putInt("alarm2Snooze", alarmSnoozes[ALARM_2_INDEX]);
+		editor.putInt("alarm3Snooze", alarmSnoozes[ALARM_3_INDEX]);
+		editor.commit();
+	}
+	public void setActivatedPreferences() {
+		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+		SharedPreferences.Editor editor = preferences.edit();	
 		editor.putBoolean("alarm1Activated", alarmActivated[ALARM_1_INDEX]);
-		System.out.println(alarmActivated[0]);
 		editor.putBoolean("alarm2Activated", alarmActivated[ALARM_2_INDEX]);
 		editor.putBoolean("alarm3Activated", alarmActivated[ALARM_3_INDEX]);
-	
 		editor.commit();
 	}
 }

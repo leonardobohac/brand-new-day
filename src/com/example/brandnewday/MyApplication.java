@@ -2,7 +2,9 @@ package com.example.brandnewday;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -17,43 +19,20 @@ import android.preference.PreferenceManager;
 
 
 public class MyApplication extends Application{
-	private Context context;
-    private SharedPreferences preferences;
-	int alarm1Hour, alarm2Hour, alarm3Hour;
-	int alarm1Minute, alarm2Minute, alarm3Minute;
-	int alarm1Snooze, alarm2Snooze, alarm3Snooze;
-	boolean alarm1Activated, alarm2Activated, alarm3Activated;
-	private ArrayList<Uri> audioUris = new ArrayList<Uri>();
-	String stringAudioUris;
-	private ArrayList<String> audioPaths= new ArrayList<String>();
-	String stringAudioPaths;
-	private PendingIntent pendingIntent;
+	private int[] alarmHours = new int[3];
+	private int[] alarmMinutes = new int[3];
+	private int[] alarmSnoozes = new int[3];
+	private boolean[] alarmActivated = new boolean[4];
+	//private ArrayList<Uri> audioUris = new ArrayList<Uri>();
+	private Set<String> audioUrisInStringSet = new HashSet<String>();
+	private ArrayList<String> audioPaths = new ArrayList<String>();
+	PendingIntent pendingIntent;
 
 	static final int ALARM_1_INDEX = 0;
 	static final int ALARM_2_INDEX = 1;
 	static final int ALARM_3_INDEX = 2;
 	static final int ALARM_NAP_INDEX = 3;
 	
-	private int[] alarmHours = {7, 8, 9};
-	private int[] alarmMinutes = {15, 30 ,45};
-	private int[] alarmSnoozes = {0, 0, 0};
-	private boolean[] alarmActivated = {false, false, false, false};
-	
-	public MyApplication(Context context) {
-        this.context = context;
-        preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        getHoursPreferences();
-        getMinutesPreferences();
-        getSnoozesPreferences();
-        getActivatedPreferences();
-    }
-	
-	public MyApplication() {
-		super();
-	}
-	
-	
-
 	
 	public int[] getAlarmHours() {
 		return alarmHours;
@@ -71,13 +50,11 @@ public class MyApplication extends Application{
 		return alarmActivated;
 	}
 
-	public ArrayList<Uri> getAudioUris() {
-		return audioUris;
+	public Set<String> getAudioUrisInStringSet() {
+		return audioUrisInStringSet;
 	}
 	
-	/*public ArrayList<Uri> getAudioUris() {
-		return stringToUriArray(stringAudioUris);
-	}*/
+	
 	
 
 
@@ -172,30 +149,6 @@ public class MyApplication extends Application{
 	}
 	
 
-	public void getHoursPreferences() {
-		preferences = context.getSharedPreferences("pref",MODE_PRIVATE);
-		alarmHours[ALARM_1_INDEX] = preferences.getInt("alarm1Hour", 7);
-		alarmHours[ALARM_2_INDEX] = preferences.getInt("alarm2Hour", 8);
-		alarmHours[ALARM_3_INDEX] = preferences.getInt("alarm3Hour", 9);
-	}
-	
-	public void getMinutesPreferences() {
-		alarmMinutes[ALARM_1_INDEX] = preferences.getInt("alarm1Minute", 30);
-		alarmMinutes[ALARM_2_INDEX] = preferences.getInt("alarm2Minute", 30);
-		alarmMinutes[ALARM_3_INDEX] = preferences.getInt("alarm3Minute", 30);
-	}
-	
-	public void getSnoozesPreferences() {
-		alarmSnoozes[ALARM_1_INDEX] = preferences.getInt("alarm1Snooze", 0);
-		alarmSnoozes[ALARM_2_INDEX] = preferences.getInt("alarm2Snooze", 0);
-		alarmSnoozes[ALARM_3_INDEX] = preferences.getInt("alarm3Snooze", 0);
-	}
-	
-	public void getActivatedPreferences() {
-		alarmActivated[ALARM_1_INDEX] = preferences.getBoolean("alarm1Activated", false);
-		alarmActivated[ALARM_2_INDEX] = preferences.getBoolean("alarm2Activated", false);
-		alarmActivated[ALARM_3_INDEX] = preferences.getBoolean("alarm3Activated", false);
-	}
 	
 	
 }
