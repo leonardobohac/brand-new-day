@@ -11,8 +11,10 @@ import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.app.Activity;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -39,6 +41,9 @@ public class WakingTime extends Activity {//implements MediaPlayer.OnCompletionL
 	PendingIntent pendingIntent;
 	Intent intent;
 	Toast toast;
+	private static PowerManager.WakeLock wakeLock;
+	
+	
 	
 
 	
@@ -47,9 +52,13 @@ public class WakingTime extends Activity {//implements MediaPlayer.OnCompletionL
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+		/*getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);          
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);*/
+		//unlockScreen();
 		//getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED); 
 		setContentView(R.layout.waking_time);
+		
+		
 		myApplication = getMyApplication();
 		audioUris = myApplication.getAudioUris();
 		randomizedAudioUris = new ArrayList<Uri>(audioUris.size());
@@ -60,10 +69,7 @@ public class WakingTime extends Activity {//implements MediaPlayer.OnCompletionL
 		alarmSnoozes = myApplication.getAlarmSnoozes();
 		
 		
-		/*Activity myActivity = (Activity)getBaseContext();
-		Window window = myActivity.getWindow();
-		window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);*/
-
+		
 		
 		Button wakeButton = (Button)findViewById(R.id.wake_button);
 		Button snoozeButton = (Button)findViewById(R.id.snooze_button);
@@ -85,11 +91,24 @@ public class WakingTime extends Activity {//implements MediaPlayer.OnCompletionL
 		toast = Toast.makeText(getApplicationContext(), alarmInfo, Toast.LENGTH_LONG);
 		toast.show();
 		
-		Window window = this.getWindow();
+	}
+	/*public static void releaseWakeLock() {
+	    if (wakeLock != null)
+	        wakeLock.release();
+	    wakeLock = null;
+	}*/
+	/*private void unlockScreen() {
+        Window window = this.getWindow();
         window.addFlags(LayoutParams.FLAG_DISMISS_KEYGUARD);
         window.addFlags(LayoutParams.FLAG_SHOW_WHEN_LOCKED);
         window.addFlags(LayoutParams.FLAG_TURN_SCREEN_ON);
-        
+    }*/
+		
+		/*Window window = this.getWindow();
+        window.addFlags(LayoutParams.FLAG_DISMISS_KEYGUARD);
+        window.addFlags(LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+        window.addFlags(LayoutParams.FLAG_TURN_SCREEN_ON);*/
+
 		/*randomizedAudioUris = randomizeUriArrayList(audioUris);
 		System.out.println(randomizedAudioUris.toString());
 		if(this.randomizedAudioUris.size() != 0){
@@ -99,7 +118,7 @@ public class WakingTime extends Activity {//implements MediaPlayer.OnCompletionL
 		}
 		else
 			System.out.println("No songs in playlist");*/
-	}
+	
 	
 				
 	/*public void onCompletion(MediaPlayer arg0) {
@@ -133,17 +152,32 @@ public class WakingTime extends Activity {//implements MediaPlayer.OnCompletionL
 		mediaPlayer.release();
 		finish();
 	}*/
-	
+	/*public static void acquireWakeLock(Context ctx) {
+        if (wakeLock != null)
+            wakeLock.release();
+
+        PowerManager pm = (PowerManager) ctx
+                .getSystemService(Context.POWER_SERVICE);
+        wakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK
+                | PowerManager.ACQUIRE_CAUSES_WAKEUP
+                | PowerManager.ON_AFTER_RELEASE,
+                "aqs_wake_lock");
+        wakeLock.acquire();
+    }*/
 	@Override
 	protected void onStop() {
 		super.onStop();
+		//releaseWakeLock();
 		
 		//mediaPlayer.reset();
 		if(mediaPlayer != null)
 			mediaPlayer.release();
 	}
 	
-
+	protected void onResume() {
+		super.onResume();
+		//unlockScreen();
+	}
 			
 	View.OnClickListener wakeButtonOnClickListener = new View.OnClickListener() {
 		public void onClick(View v) {

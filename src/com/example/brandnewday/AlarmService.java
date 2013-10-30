@@ -9,23 +9,34 @@ import android.net.Uri;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
+import android.util.Log;
 import android.widget.Toast;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 
 
 
 public class AlarmService extends Service implements MediaPlayer.OnCompletionListener {
+	
 	MyApplication myApplication;
+	
+	
 	private ArrayList<Uri> audioUris;
 	private ArrayList<Uri> randomizedAudioUris;
 	private ArrayList<String> audioPaths;
 	private MediaPlayer mediaPlayer = null;
 	int currentTrack = 0;
+	//private static PowerManager.WakeLock wakeLock;
+
 	@Override
 	public void onCreate() {
 	    super.onCreate();
+	    
 	}
+	    
+	
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -36,20 +47,15 @@ public class AlarmService extends Service implements MediaPlayer.OnCompletionLis
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		mediaPlayer.release();
-		Toast.makeText(this, "MyAlarmService.onDestroy()", Toast.LENGTH_LONG).show();
+		if(mediaPlayer != null)
+			mediaPlayer.release();
 	}
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		/*PowerManager mgr = (PowerManager)getApplicationContext().getSystemService(Context.POWER_SERVICE);
+		PowerManager mgr = (PowerManager)getApplicationContext().getSystemService(Context.POWER_SERVICE);
 		WakeLock wakeLock = mgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MyWakeLock");
-		wakeLock.acquire();*/
-		/*int index = intent.getExtras().getInt("index");
-		int hour = intent.getExtras().getInt("hour");
-		int minute = intent.getExtras().getInt("minute");
-		int snoozeTime = intent.getExtras().getInt("snooze");*/
-
+		wakeLock.acquire();
 		myApplication = getMyApplication();
 		audioUris = myApplication.getAudioUris();
 		randomizedAudioUris = new ArrayList<Uri>(audioUris.size());
@@ -74,9 +80,21 @@ public class AlarmService extends Service implements MediaPlayer.OnCompletionLis
 		i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		
 		startActivity(i);
-		return START_NOT_STICKY;
+		return START_STICKY;
 	}
-		
+	
+	/*public static void acquireWakeLock(Context ctx) {
+        if (wakeLock != null)
+            wakeLock.release();
+
+        PowerManager pm = (PowerManager) ctx
+                .getSystemService(Context.POWER_SERVICE);
+        wakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK
+                | PowerManager.ACQUIRE_CAUSES_WAKEUP
+                | PowerManager.ON_AFTER_RELEASE,
+                "aqs_wake_lock");
+        wakeLock.acquire();
+    }*/
 	@Override
 	public boolean onUnbind(Intent intent) {
 		Toast.makeText(this, "MyAlarmService.onUnbind()", Toast.LENGTH_LONG).show();	

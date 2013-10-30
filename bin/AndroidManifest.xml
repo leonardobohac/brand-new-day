@@ -12,6 +12,7 @@
 	<uses-permission android:name="android.permission.WRITE_SETTINGS"/>
 	<uses-permission android:name="android.permission.WAKE_LOCK" />
 	
+	
     <application
         android:allowBackup="true"
         android:debuggable="true"
@@ -23,15 +24,8 @@
   			android:name="AlarmService">
 		</service> 
  		
- 		<receiver android:name=".AlarmReceiver"/>
+ 		
  	
- 	<receiver android:name="receiverScreen">
-        <intent-filter> 
-            <action android:name="android.intent.action.SCREEN_ON" />
-            <action android:name="android.intent.action.SCREEN_OFF" />
-			<action android:name="android.Intent.ACTION_USER_PRESENT" />
-        </intent-filter> 
-    </receiver>
  
         <activity    
             android:name="com.example.brandnewday.BrandNewDay"
@@ -65,6 +59,13 @@
         
         <service android:name=".MyAlarmService" />
         
+        <receiver  android:name=".AlarmReceiver"/>
+		<receiver android:name="IntentReceiver" >
+			<intent-filter>
+     			<action android:name="android.intent.action.SCREEN_ON" ></action>
+    			 <action android:name="android.intent.action.SCREEN_OFF" ></action>
+			</intent-filter>
+		</receiver>
     
     </application>
 

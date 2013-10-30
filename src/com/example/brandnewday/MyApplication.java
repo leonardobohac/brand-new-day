@@ -143,13 +143,13 @@ public class MyApplication extends Application{
 	
 	public void deactivateAlarm(int index){
 		//Toast.makeText(getApplicationContext(), "alarme desativado", 2).show();
-		Intent i = new Intent(getApplicationContext(), AlarmService.class);
+		Intent i = new Intent(getApplicationContext(), AlarmReceiver.class);
 		i.putExtra("hour", alarmHours[index]);
 		i.putExtra("minute", alarmMinutes[index]);
 		i.putExtra("snoozeTime", alarmSnoozes[index]);
 		
 		//this will cancel the old alarm
-		PendingIntent pendingIntent = PendingIntent.getService(getApplicationContext(), index, i, 0); 
+		PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), index, i, 0); 
 		AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
     	alarmManager.cancel(pendingIntent);
 	}
