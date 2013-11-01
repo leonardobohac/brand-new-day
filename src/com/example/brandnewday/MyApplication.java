@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.pig.impl.util.ObjectSerializer;
+
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Application;
@@ -23,9 +25,9 @@ public class MyApplication extends Application{
 	private int[] alarmMinutes = new int[3];
 	private int[] alarmSnoozes = new int[3];
 	private boolean[] alarmActivated = new boolean[4];
-	//private ArrayList<Uri> audioUris = new ArrayList<Uri>();
-	private Set<String> audioUrisInStringSet = new HashSet<String>();
 	private ArrayList<String> audioPaths = new ArrayList<String>();
+	private ArrayList<Uri> audioUris = new ArrayList<Uri>();
+	private String audioArrayInString = new String();
 	PendingIntent pendingIntent;
 
 	static final int ALARM_1_INDEX = 0;
@@ -50,13 +52,38 @@ public class MyApplication extends Application{
 		return alarmActivated;
 	}
 
-	public Set<String> getAudioUrisInStringSet() {
-		return audioUrisInStringSet;
+	
+	public String getAudioArrayInString() {
+		return audioArrayInString;
 	}
 	
+	public ArrayList<Uri> getAudioUris() {
+		return audioUris;
+	}
 	
-	
+	public ArrayList<Uri> deserialize(String string) throws Exception {
+		@SuppressWarnings("unchecked")
+		ArrayList<String> stringArray = (ArrayList<String>) ObjectSerializer.deserialize(string);
+		ArrayList<Uri> uriArray = new ArrayList<Uri>();
+		for(int i=0; i < stringArray.size(); i+=1) {
+			uriArray.add(Uri.parse(stringArray.get(i)));
+		}
+		return uriArray;
+	}
+		
+	public String serialize(ArrayList<Uri> uriArray) throws Exception {
+		ArrayList<String> stringArray = new ArrayList<String>();
+		for(int i=0; i < uriArray.size(); i+=1) {
+			stringArray.add((uriArray.get(i)).toString());
+		}
+		String string = ObjectSerializer.serialize(stringArray);
+		return string;
+		
+	}
+		
 
+	
+	
 
 	public ArrayList<Uri> stringToUriArray(String uriInStringArray) {   
 		uriInStringArray.replace("[", "");

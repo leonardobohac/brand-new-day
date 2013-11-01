@@ -20,8 +20,9 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 
-public class WakingTime extends Activity implements MediaPlayer.OnCompletionListener{
+public class WakingTime extends Activity{
 	MyApplication myApplication;
+	
 	SharedPreferences preferences;
 	private Set<String> audioUrisInStringSet;
 	
@@ -37,50 +38,43 @@ public class WakingTime extends Activity implements MediaPlayer.OnCompletionList
 	static final int ALARM_2_INDEX = 1;
 	static final int ALARM_3_INDEX = 2;
 	static final int ALARM_NAP_INDEX = 3;
-	private ArrayList<Uri> audioUris;
-	private MediaPlayer mediaPlayer = null;
+	private ArrayList<Uri> audioUris = new ArrayList<Uri>();
+	private MediaPlayer mediaPlayer;
 	PendingIntent pendingIntent;
-	Intent intent;
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		PowerManager mgr = (PowerManager)getApplicationContext().getSystemService(Context.POWER_SERVICE);
+		/*PowerManager mgr = (PowerManager)getApplicationContext().getSystemService(Context.POWER_SERVICE);
 		WakeLock wakeLock = mgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MyWakeLock");
-		wakeLock.acquire();
+		wakeLock.acquire();*/
 		setContentView(R.layout.waking_time);
-		preferences = getPreferences(MODE_PRIVATE);
-	
-		myApplication = getMyApplication();
 		Intent intent = getIntent();
 		index = intent.getExtras().getInt("index");
-		
+		myApplication = getMyApplication();
+	
 		alarmHours = myApplication.getAlarmHours();
 		alarmMinutes = myApplication.getAlarmMinutes();
 		alarmSnoozes = myApplication.getAlarmSnoozes();
-		audioUrisInStringSet = myApplication.getAudioUrisInStringSet();
-		
-		if(preferences.getStringSet("AudioUrisInStringSet", null) != null) {
-			System.out.println("not null set");
-			getAudioUrisInStringPreferences();
 			
-			for (Iterator<String> iterator = audioUrisInStringSet.iterator(); iterator.hasNext(); ) {
-		        String uriString = iterator.next();
-		        System.out.println(uriString);
-		        audioUris.add(Uri.parse(uriString));
-		    }
-			
-			
-			  
-			
-			randomizedAudioUris = new ArrayList<Uri>(audioUris.size());
+		/*for (Iterator<String> iterator = audioUrisInStringSet.iterator(); iterator.hasNext(); ) {
+	        String uriString = iterator.next();
+	        System.out.println(uriString);
+	        audioUris.add(Uri.parse(uriString));
+		}*/
+	
+	
+
+			/*randomizedAudioUris = new ArrayList<Uri>(audioUris.size());
 			randomizedAudioUris = randomizeUriArrayList(audioUris);
 			System.out.println(randomizedAudioUris.toString());
 			if(this.randomizedAudioUris.size() != 0){
 				 mediaPlayer = MediaPlayer.create(getApplicationContext(), this.randomizedAudioUris.get(currentTrack));
 			     mediaPlayer.setOnCompletionListener(this);
 			     mediaPlayer.start();
-			}
-		}
+			*/
+		
 	
 		Button wakeButton = (Button)findViewById(R.id.wake_button);
 		Button snoozeButton = (Button)findViewById(R.id.snooze_button);
@@ -93,11 +87,15 @@ public class WakingTime extends Activity implements MediaPlayer.OnCompletionList
 			snoozeButton.setVisibility(View.GONE);
 		else
 			snoozeButton.setVisibility(View.VISIBLE);
+	}
+
+	
+
 	
 		
-	}
 	
-	public void onCompletion(MediaPlayer arg0) {
+	
+	/*public void onCompletion(MediaPlayer arg0) {
 	      arg0.release();
 	      if(this.randomizedAudioUris == null)
 	    	  System.out.println("NULL playlist");
@@ -109,8 +107,8 @@ public class WakingTime extends Activity implements MediaPlayer.OnCompletionList
 		        arg0.start();
 		      }
 	      }
-	}
-	public ArrayList<Uri> randomizeUriArrayList(ArrayList<Uri> uriArrayList) {
+	}*/
+	/*public ArrayList<Uri> randomizeUriArrayList(ArrayList<Uri> uriArrayList) {
 		// Shuffles and array of URIs 
 		ArrayList<Uri> randomizedArray = new ArrayList<Uri>(uriArrayList.size());
 		ArrayList<Integer> randomIndexArray = generateRandomIndexList(uriArrayList.size());
@@ -137,7 +135,7 @@ public class WakingTime extends Activity implements MediaPlayer.OnCompletionList
 		}
 		
 		return randomIndexList;
-	}
+	}*/
 	
 	
 	public void getAudioUrisInStringPreferences() {
@@ -155,7 +153,7 @@ public class WakingTime extends Activity implements MediaPlayer.OnCompletionList
 	@Override
 	protected void onStop() {
 		super.onStop();
-		//releaseWakeLock();
+		
 		
 		//mediaPlayer.reset();
 		if(mediaPlayer != null)

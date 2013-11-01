@@ -1,10 +1,14 @@
 package com.example.brandnewday;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
 
+import org.apache.pig.impl.util.ObjectSerializer;
+
+import android.app.Activity;
 import android.app.Service;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -12,31 +16,28 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.widget.Toast;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 
 
 
 public class AlarmService extends Service implements MediaPlayer.OnCompletionListener {
-	Context context = getBaseContext();
 	MyApplication myApplication;
-	
-	private Set<String> audioUrisInStringSet;
-	private ArrayList<Uri> audioUris;
-	private ArrayList<Uri> randomizedAudioUris;
-	//private ArrayList<String> audioPaths;
-	private MediaPlayer mediaPlayer = null;
+	MediaPlayer mediaPlayer = null;
+	Set<String> emptySet = new HashSet<String>();
+	ArrayList<Uri> randomizedAudioUris;
+	ArrayList<Uri> audioUris;
+	ArrayList<String> currentStrings;
 	int currentTrack = 0;
-	//private static PowerManager.WakeLock wakeLock;
-
+	String audioArrayInString;
+	
 	@Override
 	public void onCreate() {
-	    super.onCreate();
+		super.onCreate();
+		
+	    	  
 	}
 	
 	
@@ -55,48 +56,46 @@ public class AlarmService extends Service implements MediaPlayer.OnCompletionLis
 			mediaPlayer.release();
 	}
 
+	
+	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		/*PowerManager mgr = (PowerManager)getApplicationContext().getSystemService(Context.POWER_SERVICE);
+		PowerManager mgr = (PowerManager)getApplicationContext().getSystemService(Context.POWER_SERVICE);
 		WakeLock wakeLock = mgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MyWakeLock");
-		wakeLock.acquire();*/
-		//myApplication = getMyApplication();
-		//audioUris = myApplication.getAudioUris();
+		wakeLock.acquire();
 		
-		
-		/*if(audioPreferences.getStringSet("AudioUrisInStringSet", null) != null) {
-			for (Iterator<String> iterator = audioUrisInStringSet.iterator(); iterator.hasNext(); ) {
-		        String uriString = iterator.next();
-		        audioUris.add(Uri.parse(uriString));
-		    }
-			  
-			
-			randomizedAudioUris = new ArrayList<Uri>(audioUris.size());
-			randomizedAudioUris = randomizeUriArrayList(audioUris);
-			System.out.println(randomizedAudioUris.toString());
-			if(this.randomizedAudioUris.size() != 0){
-				 mediaPlayer = MediaPlayer.create(getApplicationContext(), this.randomizedAudioUris.get(currentTrack));
-			     mediaPlayer.setOnCompletionListener(this);
-			     mediaPlayer.start();
+		myApplication = getMyApplication();
+		this.audioUris = myApplication.getAudioUris();
+		if(this.audioUris.size() == 0) {
+			SharedPreferences defaultPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+			String audioStringFromPreferences = defaultPreferences.getString("audioStringFromPreferences", "");
+			try {
+				this.audioUris = myApplication.deserialize(audioStringFromPreferences);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
-		else
-			System.out.println("No songs in playlist");*/
-		/*i.putExtra("index", index);
-		i.putExtra("hour", hour);
-		i.putExtra("minute", minute);
-		i.putExtra("snoozeTime", snoozeTime);*/
+		 
+		randomizedAudioUris = new ArrayList<Uri>(this.audioUris.size());
+		randomizedAudioUris = randomizeUriArrayList(this.audioUris);
+		if(this.randomizedAudioUris.size() != 0){
+			 mediaPlayer = MediaPlayer.create(getApplicationContext(), randomizedAudioUris.get(currentTrack));
+		     mediaPlayer.setOnCompletionListener(this);
+		     mediaPlayer.start();
+		}
+		
+		
 		int index = intent.getExtras().getInt("index");
 		int snooze = intent.getExtras().getInt("snooze");
 		Intent i = new Intent(getApplicationContext(), WakingTime.class);
 		i.putExtra("index", index);
 		i.putExtra("snooze", snooze);
 		i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		
 		startActivity(i);
 		return START_STICKY;
 	}
-	
+
 	
 	@Override
 	public boolean onUnbind(Intent intent) {
@@ -104,6 +103,11 @@ public class AlarmService extends Service implements MediaPlayer.OnCompletionLis
 		return super.onUnbind(intent);
 	
 	}
+	
+	protected MyApplication getMyApplication() {
+		return (MyApplication)getApplication();
+	}
+	
 	public void onCompletion(MediaPlayer arg0) {
 	      arg0.release();
 	      if(this.randomizedAudioUris == null)
@@ -145,14 +149,11 @@ public class AlarmService extends Service implements MediaPlayer.OnCompletionLis
 		
 		return randomIndexList;
 	}
-	protected MyApplication getMyApplication() {
-		return (MyApplication)getApplication();
-	}
 	
-	public void getAudioUrisInStringPreferences() {
-		SharedPreferences preferences = getSharedPreferences("AudioUrisInStringPreferences",MODE_PRIVATE);
-		audioUrisInStringSet = preferences.getStringSet("AudioUrisInStringSet", null);
-	}
+	/*public void getAudioUrisInStringPreferences() {
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+		this.audioUrisInStringSet = preferences.getStringSet("AudioUrisInStringSet", emptySet);
+	}*/
 }
 
 

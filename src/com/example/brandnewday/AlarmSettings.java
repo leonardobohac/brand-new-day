@@ -21,8 +21,8 @@ public class AlarmSettings extends Activity {
 	MyApplication myApplication;
 	BrandNewDay mainActivity;
 
-	int[] alarmHours, alarmMinutes, alarmSnoozes;
-	boolean[] alarmActivated;
+	public int[] alarmHours, alarmMinutes, alarmSnoozes;
+	public boolean[] alarmActivated;
 	ArrayList<String> myStringPlaylist;
 
 	TimePicker timePicker;
@@ -55,9 +55,9 @@ public class AlarmSettings extends Activity {
 		alarmMinutes = myApplication.getAlarmMinutes();
 		alarmSnoozes = myApplication.getAlarmSnoozes();
 		alarmActivated = myApplication.getAlarmActivated();
-		getHoursPreferences();
+		/*getHoursPreferences();
 		getMinutesPreferences();
-		getSnoozesPreferences();
+		getSnoozesPreferences();*/
 		
 		timePicker = (TimePicker) findViewById(R.id.time_picker);
 		seekBar = (SeekBar) findViewById(R.id.snooze_bar);
@@ -95,10 +95,10 @@ public class AlarmSettings extends Activity {
 	@Override
 	protected void onStop() {
 		super.onStop();
-		System.out.println("Settings Stopping");
-		setHoursPreferences();
+		//System.out.println("Settings Stopping");
+		/*setHoursPreferences();
 		setMinutesPreferences();
-		setSnoozesPreferences();
+		setSnoozesPreferences();*/
 	}
 		
 	View.OnClickListener setAlarmListener = new View.OnClickListener() {
@@ -116,7 +116,7 @@ public class AlarmSettings extends Activity {
 			alarmSnoozes[index] = new_snooze;
 			alarmActivated[index] = true;
 			
-			myApplication.activateAlarm(index, alarmHours, alarmMinutes,alarmSnoozes);	
+			myApplication.activateAlarm(index, alarmHours, alarmMinutes, alarmSnoozes);	
 			finish();
 		}
 	};

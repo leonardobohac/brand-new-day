@@ -5,12 +5,16 @@ import java.util.EmptyStackException;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.pig.impl.util.ObjectSerializer;
+
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
@@ -18,37 +22,25 @@ import android.widget.ListView;
 
 public class MyPlaylist extends Activity {
 	MyApplication myApplication;
-	ArrayList<Uri> audioUris;
-	ArrayList<String> audioUrisInString;
+	public ArrayList<Uri> audioUris;
 	ArrayList<String> audioPaths;
-	protected Set<String> audioUrisInStringSet;
 
-
+	
 	Button newSongButton;
 	Button okButton;
-	Uri defaultUri;
-	Uri newDefaultUri;
 	private static final int PICKFILE_RESULT_CODE = 1;
 	ListView myUriPlaylistListView;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		System.out.println("Playlist Activity Creating");
 		setContentView(R.layout.my_playlist);
-		/*SharedPreferences preferences = getPreferences(MODE_PRIVATE);*/
 		myApplication = getMyApplication();
-
-		
-		audioUrisInStringSet = myApplication.getAudioUrisInStringSet();
-		
-	
-		
-
+		audioUris = myApplication.getAudioUris();
 		
 		newSongButton = (Button)findViewById(R.id.add_new_song_button);
 		okButton = (Button)findViewById(R.id.playlistOkButton);
-		//ListView myUriPlaylist = (ListView)findViewById(R.id.my_playlist);
+
 		okButton.setOnClickListener(okButtonOnClickListener);
 		newSongButton.setOnClickListener(newSongButtonOnClickListener);
 		
@@ -57,8 +49,6 @@ public class MyPlaylist extends Activity {
 	protected MyApplication getMyApplication() {
 		return (MyApplication)getApplication();
 	}
-				
-
 
 	View.OnClickListener okButtonOnClickListener = new View.OnClickListener() {
 		
@@ -71,13 +61,6 @@ public class MyPlaylist extends Activity {
 	View.OnClickListener newSongButtonOnClickListener = new View.OnClickListener() {
 		@Override
 		public void onClick(View v) {
-			/*newDefaultUri = MediaStore.Audio.Media.INTERNAL_CONTENT_URI;
-			RingtoneManager.setActualDefaultRingtoneUri(getApplicationContext(), RingtoneManager.TYPE_ALL, newDefaultUri);
-			defaultUri = RingtoneManager.getActualDefaultRingtoneUri(getApplicationContext(), RingtoneManager.TYPE_ALL);
-			Log.d("URI: ", defaultUri.toString());
-			Intent i = new Intent(Intent.ACTION_GET_CONTENT);
-			//i.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_ALL);
-		    startActivity(i);*/
 			Intent i = new Intent(Intent.ACTION_GET_CONTENT);
 		    i.setType("audio/*");
 		    Intent c = Intent.createChooser(i, "Choose Nice Songs");
@@ -93,51 +76,42 @@ public class MyPlaylist extends Activity {
 			  Uri selectedAudioUri = data.getData();
 			  System.out.println("URI: " + selectedAudioUri);
 			  String filemanagerString = selectedAudioUri.getPath();
-			  System.out.println("FilemanagerString: " + filemanagerString);
+			  //System.out.println("FilemanagerString: " + filemanagerString);
 			  String selectedAudioPath = getPathFromUri(selectedAudioUri);
-			  System.out.println("Selected Audio Path: " + selectedAudioPath);
+
+			  audioUris.add(selectedAudioUri);
+
 			  
-			  //audioUris.add(selectedAudioUri);
-			  audioUrisInStringSet.add(selectedAudioUri.toString()); // just for the Shared Preferences
-			  
-			  
-			  //audioPaths.add(selectedAudioPath);
-			  /*if(selectedAudioPath!=null)
-				  System.out.println("selectedAudioPath is the right one for you!");
-			  else
-				  System.out.println("filemanagerstring is the right one for you!");*/
-				   
-			  
-		  //String songRelativePath = (data.getData().getPath());
-			  //Uri songUri = Uri.parse("content://media" + songRelativePath);
-			  //String songUriString = ("contenṭ://media" + songRelativePath);
-			  
-			  /*if(myStringPlaylist.contains(songUriString))
-				  Toast.makeText(getApplicationContext(),"Song already in list!",1).show();
-			  else
-				  myStringPlaylist.add(songUriString);*/
-			  
-			  //Log.d("URI: ", songUri.toString());
-			  //String path = getPathFromUri(songUri);
-			  //System.out.println(path);
-			  //System.out.println("Playlist after result: " + myStringPlaylist);
+
 		  }
 		  break;
 	  }
-	}
+	  }
+
+
 	
 	
 
 	@Override
+	protected void onResume() {
+		super.onResume();
+
+		}
+	
+	@Override
 	protected void onStop() {
 		super.onStop();
-		System.out.println(audioUrisInStringSet);
 	}
 	
 	@Override
 	protected void onPause() {
 		super.onPause();
-		setAudioUrisInStringPreferences();
+		
+	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
 	}
 	
 	
@@ -150,20 +124,32 @@ public class MyPlaylist extends Activity {
         cursor.moveToFirst();
         return cursor.getString(column_index);
     }
-	
-	public void getAudioUrisInStringPreferences() {
-		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-		audioUrisInStringSet = preferences.getStringSet("AudioUrisInStringSet", null);
-	}
-	
-	public void setAudioUrisInStringPreferences() {
-		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-		SharedPreferences.Editor editor = preferences.edit();
-		editor.putStringSet("AudioUrisInStringSet", audioUrisInStringSet);
-		editor.commit();
-	}
+
 	
 	
+	
+	  
+	  
+	  //audioPaths.add(selectedAudioPath);
+	  /*if(selectedAudioPath!=null)
+		  System.out.println("selectedAudioPath is the right one for you!");
+	  else
+		  System.out.println("filemanagerstring is the right one for you!");*/
+		   
+	  
+//String songRelativePath = (data.getData().getPath());
+	  //Uri songUri = Uri.parse("content://media" + songRelativePath);
+	  //String songUriString = ("contenṭ://media" + songRelativePath);
+	  
+	  /*if(myStringPlaylist.contains(songUriString))
+		  Toast.makeText(getApplicationContext(),"Song already in list!",1).show();
+	  else
+		  myStringPlaylist.add(songUriString);*/
+	  
+	  //Log.d("URI: ", songUri.toString());
+	  //String path = getPathFromUri(songUri);
+	  //System.out.println(path);
+	  //System.out.println("Playlist after result: " + myStringPlaylist);
 	/*public static Uri getAudioContentUri(Context context, File audioFile) {
         String filePath = audioFile.getAbsolutePath();
         Cursor cursor = context.getContentResolver().query(

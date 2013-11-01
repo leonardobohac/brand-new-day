@@ -7,7 +7,7 @@ import android.os.PowerManager;
  
 public class AlarmReceiver extends BroadcastReceiver
 {
-	private static PowerManager.WakeLock wakeLock;
+	
 
     @Override
     public void onReceive(Context context, Intent intent)
