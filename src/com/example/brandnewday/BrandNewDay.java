@@ -1,26 +1,13 @@
 package com.example.brandnewday;
 
-import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.apache.pig.impl.util.ObjectSerializer;
-
 import android.app.Activity;
-import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -152,6 +139,13 @@ public class BrandNewDay extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
+		myApplication = getMyApplication();
+		
+		alarmHours = myApplication.getAlarmHours();
+		alarmMinutes = myApplication.getAlarmMinutes();
+		alarmSnoozes = myApplication.getAlarmSnoozes();
+		alarmActivated = myApplication.getAlarmActivated();
+
 		alarm1ToggleButton.setChecked(alarmActivated[ALARM_1_INDEX]);
 		setButtonText(ALARM_1_INDEX);
 		alarm2ToggleButton.setChecked(alarmActivated[ALARM_2_INDEX]);
@@ -170,6 +164,10 @@ public class BrandNewDay extends Activity {
 	@Override
 	protected void onStop() {
 		super.onStop();
+		alarmHours = myApplication.getAlarmHours();
+		alarmMinutes = myApplication.getAlarmMinutes();
+		alarmSnoozes = myApplication.getAlarmSnoozes();
+		alarmActivated = myApplication.getAlarmActivated();
 
 		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
 		SharedPreferences.Editor editor = preferences.edit();
@@ -208,6 +206,10 @@ public class BrandNewDay extends Activity {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		alarmHours = myApplication.getAlarmHours();
+		alarmMinutes = myApplication.getAlarmMinutes();
+		alarmSnoozes = myApplication.getAlarmSnoozes();
+		alarmActivated = myApplication.getAlarmActivated();
 
 		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
 		SharedPreferences.Editor editor = preferences.edit();

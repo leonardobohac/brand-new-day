@@ -2,22 +2,14 @@ package com.example.brandnewday;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
 import org.apache.pig.impl.util.ObjectSerializer;
 
-import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Application;
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.media.audiofx.BassBoost.Settings;
 import android.net.Uri;
-import android.preference.PreferenceManager;
 
 
 public class MyApplication extends Application{
@@ -25,7 +17,7 @@ public class MyApplication extends Application{
 	private int[] alarmMinutes = new int[3];
 	private int[] alarmSnoozes = new int[3];
 	private boolean[] alarmActivated = new boolean[4];
-	private ArrayList<String> audioPaths = new ArrayList<String>();
+	//private ArrayList<String> audioPaths = new ArrayList<String>();
 	private ArrayList<Uri> audioUris = new ArrayList<Uri>();
 	private String audioArrayInString = new String();
 	PendingIntent pendingIntent;
@@ -106,16 +98,6 @@ public class MyApplication extends Application{
 	
 	
 	public void activateAlarm(int index, int[] alarmHours, int[] alarmMinutes, int[] alarmSnoozes) {
-			
-			/*Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
-			intent.putExtra("hour", alarmHours[index]);
-			intent.putExtra("minute", alarmMinutes[index]);
-			intent.putExtra("snoozeTime", alarmSnoozes[index]);*/
-			
-			
-			//this will cancel the old alarm request and set the new one
-			//PendingIntent pendingIntent = PendingIntent.getService(getApplicationContext(), index, intent, 0); 
-			
 			AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
 			Calendar alarm_time = Calendar.getInstance();
 			Calendar rightNow = Calendar.getInstance();
@@ -139,7 +121,9 @@ public class MyApplication extends Application{
 				
 			Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
 			intent.putExtra("index", index);
-		    pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), index, intent,0);
+			intent.putExtra("snooze", alarmSnoozes[index]);
+
+		    pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), index, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 		    alarmManager.set(AlarmManager.RTC_WAKEUP, alarm_time.getTimeInMillis(), pendingIntent);
 			
 		    
@@ -158,19 +142,19 @@ public class MyApplication extends Application{
     	alarmManager.cancel(pendingIntent);
 	}
 	
-	public void activateSnooze(int index, int[] alarmSnoozes) {
+	public void activateSnooze(int index, int snooze) {
 		
 		Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
-		intent.putExtra("snooze", alarmSnoozes[index]);
+		intent.putExtra("snooze", snooze);
 		
 		//this will cancel the old alarm request and set the new one
-		pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), index, intent, 0); 
+		pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), index, intent, PendingIntent.FLAG_UPDATE_CURRENT); 
 		
 		AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
 		Calendar rightNow = Calendar.getInstance();
 		
 		rightNow.setTimeInMillis(System.currentTimeMillis());
-		rightNow.add(Calendar.MINUTE, alarmSnoozes[index]);
+		rightNow.add(Calendar.MINUTE, snooze);
 
 		alarmManager.set(AlarmManager.RTC_WAKEUP, rightNow.getTimeInMillis(), pendingIntent);
 	}

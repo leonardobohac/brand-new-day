@@ -6,5 +6,6 @@
     <issue id="HardcodedText">
         <ignore path="res/layout/activity_brand_new_day.xml" />
     </issue>
+    <issue id="NewApi" severity="ignore" />
     <issue id="Wakelock" severity="ignore" />
 </lint>

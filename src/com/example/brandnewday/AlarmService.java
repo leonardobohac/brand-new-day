@@ -2,13 +2,9 @@ package com.example.brandnewday;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
 
-import org.apache.pig.impl.util.ObjectSerializer;
-
-import android.app.Activity;
 import android.app.Service;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -32,16 +28,18 @@ public class AlarmService extends Service implements MediaPlayer.OnCompletionLis
 	ArrayList<String> currentStrings;
 	int currentTrack = 0;
 	String audioArrayInString;
+	int index;
+	int snooze; 
+	WakeLock wakeLock;
+	
 	
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		PowerManager mgr = (PowerManager)getApplicationContext().getSystemService(Context.POWER_SERVICE);
+		wakeLock = mgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MyWakeLock");
 		
-	    	  
 	}
-	
-	
-	
 	  
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -52,42 +50,47 @@ public class AlarmService extends Service implements MediaPlayer.OnCompletionLis
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
+		
 		if(mediaPlayer != null)
 			mediaPlayer.release();
+		wakeLock.release();
 	}
 
 	
 	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		PowerManager mgr = (PowerManager)getApplicationContext().getSystemService(Context.POWER_SERVICE);
-		WakeLock wakeLock = mgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MyWakeLock");
+		super.onStartCommand(intent, flags, startId);
+		index = intent.getExtras().getInt("index");
+		snooze = intent.getExtras().getInt("snooze");
+		myApplication = getMyApplication();
+
+		wakeLock.setReferenceCounted(false); //any release() can set wakeLock off
 		wakeLock.acquire();
 		
-		myApplication = getMyApplication();
-		this.audioUris = myApplication.getAudioUris();
-		if(this.audioUris.size() == 0) {
+		audioUris = myApplication.getAudioUris();
+		if(audioUris.size() == 0) {
 			SharedPreferences defaultPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 			String audioStringFromPreferences = defaultPreferences.getString("audioStringFromPreferences", "");
 			try {
-				this.audioUris = myApplication.deserialize(audioStringFromPreferences);
+				audioUris = myApplication.deserialize(audioStringFromPreferences);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 		 
-		randomizedAudioUris = new ArrayList<Uri>(this.audioUris.size());
-		randomizedAudioUris = randomizeUriArrayList(this.audioUris);
-		if(this.randomizedAudioUris.size() != 0){
+		randomizedAudioUris = new ArrayList<Uri>(audioUris.size());
+		randomizedAudioUris = randomizeUriArrayList(audioUris);
+		if(randomizedAudioUris.size() != 0){
 			 mediaPlayer = MediaPlayer.create(getApplicationContext(), randomizedAudioUris.get(currentTrack));
 		     mediaPlayer.setOnCompletionListener(this);
 		     mediaPlayer.start();
 		}
+
 		
 		
-		int index = intent.getExtras().getInt("index");
-		int snooze = intent.getExtras().getInt("snooze");
+		
 		Intent i = new Intent(getApplicationContext(), WakingTime.class);
 		i.putExtra("index", index);
 		i.putExtra("snooze", snooze);
@@ -110,10 +113,10 @@ public class AlarmService extends Service implements MediaPlayer.OnCompletionLis
 	
 	public void onCompletion(MediaPlayer arg0) {
 	      arg0.release();
-	      if(this.randomizedAudioUris == null)
+	      if(randomizedAudioUris == null)
 	    	  System.out.println("NULL playlist");
 	      else {
-		      if (currentTrack < this.randomizedAudioUris.size()) {
+		      if (currentTrack < randomizedAudioUris.size()) {
 		        currentTrack++;
 		        arg0 = MediaPlayer.create(getApplicationContext(), randomizedAudioUris.get(currentTrack));
 		        arg0.setOnCompletionListener(this);

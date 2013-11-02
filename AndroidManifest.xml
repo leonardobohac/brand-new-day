@@ -3,16 +3,16 @@
     package="com.example.brandnewday"
     android:versionCode="1"
     android:versionName="1.0" >
-
-    <uses-sdk
-        android:minSdkVersion="11"
-        android:targetSdkVersion="18" />
 	
-    
-	<uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
 	<uses-permission android:name="android.permission.WAKE_LOCK" />
-	
-	
+	<uses-permission android:name="android.permission.DEVICE_POWER"/>
+        
+		
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="18" />
+
     <application
         android:allowBackup="true"
         android:debuggable="true"
@@ -52,20 +52,11 @@
             android:label="@string/title_activity_my_playlist"
             android:configChanges="orientation|screenSize" >
         </activity>
-        <activity
-            android:name="com.example.brandnewday.Playlist"
-            android:configChanges="orientation|screenSize" >
-        </activity>
-        
-        <service android:name=".MyAlarmService" />
+      
+        <service android:name=".AlarmService" />
         
         <receiver  android:name=".AlarmReceiver"/>
-		<receiver android:name="IntentReceiver" >
-			<intent-filter>
-     			<action android:name="android.intent.action.SCREEN_ON" ></action>
-    			 <action android:name="android.intent.action.SCREEN_OFF" ></action>
-			</intent-filter>
-		</receiver>
+
     
     </application>
 

@@ -1,20 +1,11 @@
 package com.example.brandnewday;
 
 import java.util.ArrayList;
-import java.util.EmptyStackException;
-import java.util.HashSet;
-import java.util.Set;
-
-import org.apache.pig.impl.util.ObjectSerializer;
-
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
@@ -75,9 +66,9 @@ public class MyPlaylist extends Activity {
 		  if(resultCode==RESULT_OK) {
 			  Uri selectedAudioUri = data.getData();
 			  System.out.println("URI: " + selectedAudioUri);
-			  String filemanagerString = selectedAudioUri.getPath();
+			  //String filemanagerString = selectedAudioUri.getPath();
 			  //System.out.println("FilemanagerString: " + filemanagerString);
-			  String selectedAudioPath = getPathFromUri(selectedAudioUri);
+			  //String selectedAudioPath = getPathFromUri(selectedAudioUri);
 
 			  audioUris.add(selectedAudioUri);
 
