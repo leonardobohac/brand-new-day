@@ -6,35 +6,93 @@
         android:id="@+id/time_picker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true" />
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+   
+    <CheckBox
+        android:id="@+id/snooze_disabled_checkBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/time_picker"
+        android:layout_marginTop="14dp"
+        android:text="@string/snooze_disabled_checkBox"
+        android:textColorHint="@color/black"
+        android:textSize="20sp" />
 
     <Button
         android:id="@+id/set_alarm_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/time_picker"
-        android:layout_marginRight="54dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"
         android:text="@string/set_alarm_button" />
 
     <Button
         android:id="@+id/back_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
         android:text="@string/back_to_main_button" />
 
-    <CheckBox
-        android:id="@+id/snooze_disabled_checkBox"
+    <LinearLayout
+        android:id="@+id/linearLayout1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/set_alarm_button"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="47dp" >
+
+        <RadioButton
+            android:id="@+id/volumeCrescentRadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/volume_crescent_radioButton"
+            android:textSize="16sp" />
+
+        <RadioButton
+            android:id="@+id/volumeHighRadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/volume_high_radioButton"
+            android:textSize="16sp" />
+
+        <RadioButton
+            android:id="@+id/volumeMediumRadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/volume_medium_radioButton"
+            android:textSize="16sp" />
+
+        <RadioButton
+            android:id="@+id/volumeLowRadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/volume_low_radioButton"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/volumeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/linearLayout1"
+        android:layout_alignLeft="@+id/linearLayout1"
+        android:text="@string/volume_textView"
+        android:textSize="20sp" />
+
+    <SeekBar
+        android:id="@+id/snooze_bar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/set_alarm_button"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="30dp"
-        android:text="@string/snooze_disabled_checkBox" />
+        android:layout_below="@+id/snooze_time_textView"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:max="12" />
 
     <TextView
         android:id="@+id/snooze_time_textView"
@@ -42,21 +100,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/snooze_disabled_checkBox"
-        android:layout_marginRight="27dp"
-        android:layout_marginTop="20dp"
-        android:text="@string/snoozing_time" />
+        android:text="@string/snoozing_time"
+        android:textSize="18sp" />
 
-    <SeekBar
-        android:id="@+id/snooze_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/snooze_disabled_checkBox"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignRight="@+id/snooze_time_textView"
-        android:layout_below="@+id/snooze_time_textView"
-        android:layout_marginTop="41dp"
-        android:max="12" />
-    
-</RelativeLayout>    
-    
+</RelativeLayout>

@@ -1,9 +1,14 @@
 package com.example.brandnewday;
 
+import java.util.ArrayList;
+import java.util.Random;
+
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
+import android.preference.PreferenceManager;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -20,10 +25,12 @@ public class WakingTime extends Activity{
 	SharedPreferences preferences;
 	int index;
 	int snooze;
-	int[] alarmSnoozes;
-	int [] alarmHours;
-	int [] alarmMinutes;
+	public int[] alarmSnoozes;
+	public int [] alarmHours;
+	public int [] alarmMinutes;
 	int currentTrack = 0;
+	ArrayList<Uri> randomizedAudioUris;
+	ArrayList<Uri> audioUris;
 	
 	static final int ALARM_1_INDEX = 0;
 	static final int ALARM_2_INDEX = 1;
@@ -37,33 +44,33 @@ public class WakingTime extends Activity{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.waking_time);
+		myApplication = getMyApplication();
+		alarmHours = new int[3]; //myApplication.getAlarmHours();
+		alarmMinutes = new int[3]; //myApplication.getAlarmMinutes();
+		alarmSnoozes = new int[3]; //myApplication.getAlarmSnoozes();
+		
 		Intent intent = getIntent();
 		index = intent.getExtras().getInt("index");
-		snooze = intent.getExtras().getInt("snooze");
 
 		
-		myApplication = getMyApplication();
-		alarmHours = myApplication.getAlarmHours();
-		alarmMinutes = myApplication.getAlarmMinutes();
-		alarmSnoozes = myApplication.getAlarmSnoozes();
-		
-		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-		alarmHours[ALARM_1_INDEX] = preferences.getInt("alarm1Hour", 7);
-		alarmHours[ALARM_2_INDEX] = preferences.getInt("alarm2Hour", 8);
-		alarmHours[ALARM_3_INDEX] = preferences.getInt("alarm3Hour", 9);
-		alarmMinutes[ALARM_1_INDEX] = preferences.getInt("alarm1Minute", 30);
-		alarmMinutes[ALARM_2_INDEX] = preferences.getInt("alarm2Minute", 15);
-		alarmMinutes[ALARM_3_INDEX] = preferences.getInt("alarm3Minute", 45);
-		alarmSnoozes[ALARM_1_INDEX] = preferences.getInt("alarm1Snooze", 0);
-		alarmSnoozes[ALARM_2_INDEX] = preferences.getInt("alarm2Snooze", 0);
-		alarmSnoozes[ALARM_3_INDEX] = preferences.getInt("alarm3Snooze", 0);
-	
+		SharedPreferences defaultPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+		alarmHours[ALARM_1_INDEX] = defaultPreferences.getInt("alarm1Hour", 7);
+		alarmHours[ALARM_2_INDEX] = defaultPreferences.getInt("alarm2Hour", 8);
+		alarmHours[ALARM_3_INDEX] = defaultPreferences.getInt("alarm3Hour", 9);
+		alarmMinutes[ALARM_1_INDEX] = defaultPreferences.getInt("alarm1Minute", 30);
+		alarmMinutes[ALARM_2_INDEX] = defaultPreferences.getInt("alarm2Minute", 15);
+		alarmMinutes[ALARM_3_INDEX] = defaultPreferences.getInt("alarm3Minute", 45);
+		alarmSnoozes[ALARM_1_INDEX] = defaultPreferences.getInt("alarm1Snooze", 0);
+		alarmSnoozes[ALARM_2_INDEX] = defaultPreferences.getInt("alarm2Snooze", 0);
+		alarmSnoozes[ALARM_3_INDEX] = defaultPreferences.getInt("alarm3Snooze", 0);
+
 		Button wakeButton = (Button)findViewById(R.id.wake_button);
 		Button snoozeButton = (Button)findViewById(R.id.snooze_button);
 		
 		wakeButton.setOnClickListener(wakeButtonOnClickListener);
 		snoozeButton.setOnClickListener(snoozeButtonOnClickListener);
 		
+		int snooze = alarmSnoozes[index];
 		if(snooze == 0)
 			snoozeButton.setVisibility(View.GONE);
 		else
@@ -72,22 +79,36 @@ public class WakingTime extends Activity{
 
 	@Override
 	protected void onStop() {
-		super.onStop();	
-		if(mediaPlayer != null)
-			mediaPlayer.release();
-		PowerManager mgr = (PowerManager)getApplicationContext().getSystemService(Context.POWER_SERVICE);
-		WakeLock wakeLock = mgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MyWakeLock");
-		wakeLock.setReferenceCounted(false); //any release() can set wakeLock off
-		wakeLock.release();
-		Log.d("wakelock", "wake lock released");
+		super.onStop();
+		/*SharedPreferences defaultPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+		SharedPreferences.Editor editor = defaultPreferences.edit();
+		editor.putInt("alarm1Hour", alarmHours[ALARM_1_INDEX]);
+		editor.putInt("alarm2Hour", alarmHours[ALARM_2_INDEX]);
+		editor.putInt("alarm3Hour", alarmHours[ALARM_3_INDEX]);
+		editor.putInt("alarm1Minute", alarmMinutes[ALARM_1_INDEX]);
+		editor.putInt("alarm2Minute", alarmMinutes[ALARM_2_INDEX]);
+		editor.putInt("alarm3Minute", alarmMinutes[ALARM_3_INDEX]);
+		editor.putInt("alarm1Snooze", alarmSnoozes[ALARM_1_INDEX]);
+		editor.putInt("alarm2Snooze", alarmSnoozes[ALARM_2_INDEX]);
+		editor.putInt("alarm3Snooze", alarmSnoozes[ALARM_3_INDEX]);
+		editor.commit();*/
+		
+		
+		
 	}
 
 	View.OnClickListener wakeButtonOnClickListener = new View.OnClickListener() {
 		public void onClick(View v) {
+			if(mediaPlayer != null)
+				mediaPlayer.release();
+			PowerManager mgr = (PowerManager)getApplicationContext().getSystemService(Context.POWER_SERVICE);
+			WakeLock wakeLock = mgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MyWakeLock");
+			wakeLock.setReferenceCounted(false); //any release() can set wakeLock off
+			wakeLock.release();
 			Intent i = new Intent(WakingTime.this, AlarmService.class);
 			stopService(i);
-			myApplication.activateAlarm(index, alarmHours, alarmMinutes, alarmSnoozes);
 			
+			myApplication.activateAlarm(index, alarmHours, alarmMinutes, alarmSnoozes);
 			Intent intent = new Intent(getApplicationContext(), BrandNewDay.class);
 			startActivity(intent);
 	        finish();
@@ -115,6 +136,8 @@ public class WakingTime extends Activity{
 	protected MyApplication getMyApplication() {
 		return (MyApplication)getApplication();
 	}
+	
+	
 }
 
 

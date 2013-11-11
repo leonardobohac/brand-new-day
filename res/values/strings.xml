@@ -26,5 +26,10 @@
     <string name="title_activity_my_playlist">Song Selection</string>
     <string name="snoozing_time">3 minutes</string>
     <string name="snooze_disabled_checkBox">No Snooze</string>
+    <string name="volume_textView">Volume</string>
+    <string name="volume_crescent_radioButton">Crescent</string>
+    <string name="volume_low_radioButton">Low</string>
+    <string name="volume_medium_radioButton">Medium</string>
+    <string name="volume_high_radioButton">High</string>
 
 </resources>

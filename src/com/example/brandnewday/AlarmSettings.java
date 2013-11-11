@@ -7,9 +7,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.RadioButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -18,8 +21,9 @@ public class AlarmSettings extends Activity {
 	MyApplication myApplication;
 	BrandNewDay mainActivity;
 
-	public int[] alarmHours, alarmMinutes, alarmSnoozes;
+	public int[] alarmHours, alarmMinutes, alarmSnoozes, volumes; 
 	public boolean[] alarmActivated;
+	
 	ArrayList<String> myStringPlaylist;
 
 	TimePicker timePicker;
@@ -28,6 +32,11 @@ public class AlarmSettings extends Activity {
 	Button setAlarmButton;
 	Button backButton;
 	CheckBox snoozeDisabledCheckBox;
+	RadioButton volumeCrescentRadioButton;
+	RadioButton volumeLowRadioButton;
+	RadioButton volumeMediumRadioButton;
+	RadioButton volumeHighRadioButton;
+	
 	Context context = this;
 
 	protected int index;
@@ -41,34 +50,71 @@ public class AlarmSettings extends Activity {
 	static final boolean ALARM_ALREADY_ACTIVE = true;
 	static final boolean ALARM_NOT_ACTIVE = false;
 	
+	int volumeCrescent = 0;
+	int volumeLow = 1;
+	int volumeMedium = 2;
+	int volumeHigh = 3;
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.alarm_settings);
 		myApplication = getMyApplication();
+		alarmHours = new int[3]; //myApplication.getAlarmHours();
+		alarmMinutes = new int[3]; //myApplication.getAlarmMinutes();
+		alarmSnoozes = new int[3]; //myApplication.getAlarmSnoozes();
+		alarmActivated = new boolean[4]; //myApplication.getAlarmActivated();
+		volumes = new int[4];
 		
-		alarmHours = myApplication.getAlarmHours();
-		alarmMinutes = myApplication.getAlarmMinutes();
-		alarmSnoozes = myApplication.getAlarmSnoozes();
-		alarmActivated = myApplication.getAlarmActivated();
+
+		
+		SharedPreferences defaultPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+		alarmHours[ALARM_1_INDEX] = defaultPreferences.getInt("alarm1Hour", 7);
+		alarmHours[ALARM_2_INDEX] = defaultPreferences.getInt("alarm2Hour", 8);
+		alarmHours[ALARM_3_INDEX] = defaultPreferences.getInt("alarm3Hour", 9);
+		alarmMinutes[ALARM_1_INDEX] = defaultPreferences.getInt("alarm1Minute", 30);
+		alarmMinutes[ALARM_2_INDEX] = defaultPreferences.getInt("alarm2Minute", 15);
+		alarmMinutes[ALARM_3_INDEX] = defaultPreferences.getInt("alarm3Minute", 45);
+		alarmSnoozes[ALARM_1_INDEX] = defaultPreferences.getInt("alarm1Snooze", 0);
+		alarmSnoozes[ALARM_2_INDEX] = defaultPreferences.getInt("alarm2Snooze", 0);
+		alarmSnoozes[ALARM_3_INDEX] = defaultPreferences.getInt("alarm3Snooze", 0);
+		alarmActivated[ALARM_1_INDEX] = defaultPreferences.getBoolean("alarm1Activated", false);
+		alarmActivated[ALARM_2_INDEX] = defaultPreferences.getBoolean("alarm2Activated", false);
+		alarmActivated[ALARM_3_INDEX] = defaultPreferences.getBoolean("alarm3Activated", false);
+		volumes[ALARM_1_INDEX] = defaultPreferences.getInt("alarm1Volume", volumeCrescent);
+		volumes[ALARM_2_INDEX] = defaultPreferences.getInt("alarm2Volume", volumeCrescent);
+		volumes[ALARM_3_INDEX] = defaultPreferences.getInt("alarm3Volume", volumeCrescent);
+		volumes[ALARM_NAP_INDEX] = defaultPreferences.getInt("alarmNapVolume", volumeCrescent);
+		
 
 		timePicker = (TimePicker) findViewById(R.id.time_picker);
 		seekBar = (SeekBar) findViewById(R.id.snooze_bar);
 		snoozeTimeTextView = (TextView) findViewById(R.id.snooze_time_textView);
-		setAlarmButton = (Button) findViewById(R.id.set_alarm_button);
-		backButton = (Button) findViewById(R.id.back_button);
 		snoozeDisabledCheckBox = (CheckBox) findViewById(R.id.snooze_disabled_checkBox);
-
+		setAlarmButton = (Button) findViewById(R.id.set_alarm_button);
+		
+		volumeCrescentRadioButton = (RadioButton) findViewById(R.id.volumeCrescentRadioButton);
+		volumeLowRadioButton = (RadioButton) findViewById(R.id.volumeLowRadioButton);
+		volumeMediumRadioButton = (RadioButton) findViewById(R.id.volumeMediumRadioButton);
+		volumeHighRadioButton = (RadioButton) findViewById(R.id.volumeHighRadioButton);
+		backButton = (Button) findViewById(R.id.back_button);
+		
 		setAlarmButton.setOnClickListener(setAlarmListener);
 		backButton.setOnClickListener(backListener);
 		snoozeDisabledCheckBox.setOnClickListener(snoozeDisabledCheckBoxListener);
 		seekBar.setOnSeekBarChangeListener(OnSeekBarChangeListener);
+		volumeCrescentRadioButton.setOnClickListener(volumeCrescentRadioButtonListener);
+		volumeLowRadioButton.setOnClickListener(volumeLowRadioButtonListener);
+		volumeMediumRadioButton.setOnClickListener(volumeMediumRadioButtonListener);
+		volumeHighRadioButton.setOnClickListener(volumeHighRadioButtonListener);
 
 		Intent intent = getIntent();
 		index = intent.getExtras().getInt("index");
 
 		timePicker.setCurrentHour(alarmHours[index]);
+		Log.d("alarm1HourCREATE", Integer.toString(alarmHours[0]));
+		
 		timePicker.setCurrentMinute(alarmMinutes[index]);
 		adjustSeekBar(seekBar, index);
 		adjustSnoozeDisabledCheckBox(snoozeDisabledCheckBox, index);
@@ -89,7 +135,6 @@ public class AlarmSettings extends Activity {
 	@Override
 	protected void onStop() {
 		super.onStop();
-		
 	}
 		
 	View.OnClickListener setAlarmListener = new View.OnClickListener() {
@@ -107,13 +152,26 @@ public class AlarmSettings extends Activity {
 			alarmSnoozes[index] = new_snooze;
 			alarmActivated[index] = true;
 			
-			SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-			SharedPreferences.Editor editor = preferences.edit();
-			editor.putInt(String.format("alarm%dHour",index+1), alarmHours[index]);
-			editor.putInt(String.format("alarm%dMinute",index+1), alarmMinutes[index]);
-			editor.putInt(String.format("alarm%dSnooze",index+1), alarmSnoozes[index]);
-			editor.putBoolean(String.format("alarm%dActivated",index+1), alarmActivated[index]);
-		
+			SharedPreferences defaultPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+			SharedPreferences.Editor editor = defaultPreferences.edit();
+
+			editor.putInt("alarm1Hour", alarmHours[ALARM_1_INDEX]);
+			editor.putInt("alarm2Hour", alarmHours[ALARM_2_INDEX]);
+			editor.putInt("alarm3Hour", alarmHours[ALARM_3_INDEX]);
+			editor.putInt("alarm1Minute", alarmMinutes[ALARM_1_INDEX]);
+			editor.putInt("alarm2Minute", alarmMinutes[ALARM_2_INDEX]);
+			editor.putInt("alarm3Minute", alarmMinutes[ALARM_3_INDEX]);
+			editor.putInt("alarm1Snooze", alarmSnoozes[ALARM_1_INDEX]);
+			editor.putInt("alarm2Snooze", alarmSnoozes[ALARM_2_INDEX]);
+			editor.putInt("alarm3Snooze", alarmSnoozes[ALARM_3_INDEX]);
+			editor.putBoolean("alarm1Activated", alarmActivated[ALARM_1_INDEX]);
+			editor.putBoolean("alarm2Activated", alarmActivated[ALARM_2_INDEX]);
+			editor.putBoolean("alarm3Activated", alarmActivated[ALARM_3_INDEX]);
+			editor.putInt("alarm1Volume", volumes[ALARM_1_INDEX]);
+			editor.putInt("alarm2Volume", volumes[ALARM_2_INDEX]);
+			editor.putInt("alarm3Volume", volumes[ALARM_3_INDEX]);
+			editor.putInt("alarmNapVolume", volumes[ALARM_NAP_INDEX]);
+			
 			editor.commit();
 			
 			
@@ -142,6 +200,53 @@ public class AlarmSettings extends Activity {
 			}
 		}
 	};
+	
+	View.OnClickListener volumeCrescentRadioButtonListener = new View.OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			if(volumeCrescentRadioButton.isChecked()) {
+				volumeLowRadioButton.setChecked(false);
+				volumeMediumRadioButton.setChecked(false);
+				volumeHighRadioButton.setChecked(false);
+			}
+			volumes[index] = volumeCrescent;
+			
+		}
+	};
+	View.OnClickListener volumeLowRadioButtonListener = new View.OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			if(volumeLowRadioButton.isChecked()) {
+				volumeCrescentRadioButton.setChecked(false);
+				volumeMediumRadioButton.setChecked(false);
+				volumeHighRadioButton.setChecked(false);
+			}
+			volumes[index] = volumeLow;
+		}
+	};
+	View.OnClickListener volumeMediumRadioButtonListener = new View.OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			if(volumeMediumRadioButton.isChecked()) {
+				volumeLowRadioButton.setChecked(false);
+				volumeCrescentRadioButton.setChecked(false);
+				volumeHighRadioButton.setChecked(false);
+			}
+			volumes[index] = volumeMedium;
+		}
+	};
+	View.OnClickListener volumeHighRadioButtonListener = new View.OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			if(volumeHighRadioButton.isChecked()) {
+				volumeLowRadioButton.setChecked(false);
+				volumeMediumRadioButton.setChecked(false);
+				volumeCrescentRadioButton.setChecked(false);
+			}
+			volumes[index] = volumeHigh;
+			
+		}
+	};
 
 	SeekBar.OnSeekBarChangeListener OnSeekBarChangeListener = new SeekBar.OnSeekBarChangeListener() {
 		@Override
@@ -158,6 +263,7 @@ public class AlarmSettings extends Activity {
 		public void onStopTrackingTouch(SeekBar seekBar) {
 		}
 	};
+	
 	
 	
 	public void adjustSeekBar(SeekBar seekBar, int index) {

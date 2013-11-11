@@ -4,14 +4,19 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import android.app.Service;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.preference.PreferenceManager;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.widget.Toast;
 import android.content.Context;
 import android.content.Intent;
@@ -31,22 +36,26 @@ public class AlarmService extends Service implements MediaPlayer.OnCompletionLis
 	int index;
 	int snooze; 
 	WakeLock wakeLock;
+	float currentVolume = 0.01f;
+	public int volumeCounter = 1;
+	Timer volumeRaiserTimer = new Timer();
 	
+
 	
-	@Override
-	public void onCreate() {
-		super.onCreate();
-		PowerManager mgr = (PowerManager)getApplicationContext().getSystemService(Context.POWER_SERVICE);
-		wakeLock = mgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MyWakeLock");
+	protected MyApplication getMyApplication() {
+		return (MyApplication)getApplication();
+	}
+	
+	TimerTask raiseVolumeTask = new TimerTask() {
+        public void run() {
+        	raiseVolume();
+            }
+        };
+
+	
 		
-	}
-	  
-	@Override
-	public IBinder onBind(Intent intent) {
-	//TODO for communication return IBinder implementation
-		return null;
-	}
- 
+      
+
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
@@ -54,31 +63,48 @@ public class AlarmService extends Service implements MediaPlayer.OnCompletionLis
 		if(mediaPlayer != null)
 			mediaPlayer.release();
 		wakeLock.release();
+		
+		
+		volumeRaiserTimer.cancel();
+		
 	}
 
+	
 	
 	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		super.onStartCommand(intent, flags, startId);
+		myApplication = getMyApplication();
+		
+		
+		//audioUris = myApplication.getAudioUris();
+		
+		
+		PowerManager mgr = (PowerManager)getApplicationContext().getSystemService(Context.POWER_SERVICE);
+		wakeLock = mgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MyWakeLock");
+		volumeRaiserTimer.schedule(raiseVolumeTask, 70000, 70000);
+		AudioManager audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+		
+		audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, 0);
+		audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
 		index = intent.getExtras().getInt("index");
 		snooze = intent.getExtras().getInt("snooze");
-		myApplication = getMyApplication();
+		
 
 		wakeLock.setReferenceCounted(false); //any release() can set wakeLock off
 		wakeLock.acquire();
 		
-		audioUris = myApplication.getAudioUris();
-		if(audioUris.size() == 0) {
-			SharedPreferences defaultPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-			String audioStringFromPreferences = defaultPreferences.getString("audioStringFromPreferences", "");
-			try {
-				audioUris = myApplication.deserialize(audioStringFromPreferences);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		
+		SharedPreferences defaultPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+		String audioStringFromPreferences = defaultPreferences.getString("audioStringFromPreferences", "");
+		try {
+			audioUris = myApplication.deserialize(audioStringFromPreferences);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+	
 		 
 		randomizedAudioUris = new ArrayList<Uri>(audioUris.size());
 		randomizedAudioUris = randomizeUriArrayList(audioUris);
@@ -87,9 +113,9 @@ public class AlarmService extends Service implements MediaPlayer.OnCompletionLis
 		     mediaPlayer.setOnCompletionListener(this);
 		     mediaPlayer.start();
 		}
+		else
+			Log.d("No songs", "No songs");
 
-		
-		
 		
 		Intent i = new Intent(getApplicationContext(), WakingTime.class);
 		i.putExtra("index", index);
@@ -97,33 +123,35 @@ public class AlarmService extends Service implements MediaPlayer.OnCompletionLis
 		i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		startActivity(i);
 		return START_STICKY;
-	}
-
-	
-	@Override
-	public boolean onUnbind(Intent intent) {
-		Toast.makeText(this, "MyAlarmService.onUnbind()", Toast.LENGTH_LONG).show();	
-		return super.onUnbind(intent);
-	
-	}
-	
-	protected MyApplication getMyApplication() {
-		return (MyApplication)getApplication();
+		
+		
 	}
 	
 	public void onCompletion(MediaPlayer arg0) {
 	      arg0.release();
+	      /*volumeCounter = 1;
+	      currentVolume = 0.04f;*/
 	      if(randomizedAudioUris == null)
 	    	  System.out.println("NULL playlist");
 	      else {
-		      if (currentTrack < randomizedAudioUris.size()) {
+		      if (currentTrack < randomizedAudioUris.size()-1) {
 		        currentTrack++;
-		        arg0 = MediaPlayer.create(getApplicationContext(), randomizedAudioUris.get(currentTrack));
-		        arg0.setOnCompletionListener(this);
-		        arg0.start();
+			        arg0 = MediaPlayer.create(getApplicationContext(), randomizedAudioUris.get(currentTrack));
+			        arg0.setOnCompletionListener(this);
+			        //arg0.setVolume(currentVolume, currentVolume);
+			        arg0.start();
+
 		      }
 	      }
 	}
+	
+	
+	
+	public void raiseVolume() {
+		AudioManager audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+		audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
+	}
+	
 	public ArrayList<Uri> randomizeUriArrayList(ArrayList<Uri> uriArrayList) {
 		// Shuffles and array of URIs 
 		ArrayList<Uri> randomizedArray = new ArrayList<Uri>(uriArrayList.size());
@@ -153,10 +181,22 @@ public class AlarmService extends Service implements MediaPlayer.OnCompletionLis
 		return randomIndexList;
 	}
 	
-	/*public void getAudioUrisInStringPreferences() {
-		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-		this.audioUrisInStringSet = preferences.getStringSet("AudioUrisInStringSet", emptySet);
-	}*/
+	@Override
+	public void onCreate() {
+		super.onCreate();	
+	}
+	
+	@Override
+	public boolean onUnbind(Intent intent) {
+		Toast.makeText(this, "MyAlarmService.onUnbind()", Toast.LENGTH_LONG).show();	
+		return super.onUnbind(intent);
+	
+	}
+
+
+	@Override
+	public IBinder onBind(Intent intent) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
-
-

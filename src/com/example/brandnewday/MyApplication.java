@@ -17,7 +17,7 @@ public class MyApplication extends Application{
 	private int[] alarmMinutes = new int[3];
 	private int[] alarmSnoozes = new int[3];
 	private boolean[] alarmActivated = new boolean[4];
-	//private ArrayList<String> audioPaths = new ArrayList<String>();
+	private ArrayList<String> audioPaths = new ArrayList<String>();
 	private ArrayList<Uri> audioUris = new ArrayList<Uri>();
 	private String audioArrayInString = new String();
 	PendingIntent pendingIntent;
@@ -53,6 +53,10 @@ public class MyApplication extends Application{
 		return audioUris;
 	}
 	
+	public ArrayList<String> getAudioPaths() {
+		return audioPaths;
+	}
+	
 	public ArrayList<Uri> deserialize(String string) throws Exception {
 		@SuppressWarnings("unchecked")
 		ArrayList<String> stringArray = (ArrayList<String>) ObjectSerializer.deserialize(string);
@@ -71,6 +75,26 @@ public class MyApplication extends Application{
 		String string = ObjectSerializer.serialize(stringArray);
 		return string;
 		
+	}
+	
+	public String serializePaths(ArrayList<String> pathsArray) throws Exception {
+		ArrayList<String> stringArray = new ArrayList<String>();
+		for(int i=0; i < pathsArray.size(); i+=1) {
+			stringArray.add((pathsArray.get(i)).toString());
+		}
+		String string = ObjectSerializer.serialize(stringArray);
+		return string;
+		
+	}
+	
+	public ArrayList<String> deserializePaths(String string) throws Exception {
+		@SuppressWarnings("unchecked")
+		ArrayList<String> stringArray = (ArrayList<String>) ObjectSerializer.deserialize(string);
+		ArrayList<String> pathsArray = new ArrayList<String>();
+		for(int i=0; i < stringArray.size(); i+=1) {
+			pathsArray.add((stringArray.get(i)));
+		}
+		return pathsArray;
 	}
 		
 
@@ -152,11 +176,12 @@ public class MyApplication extends Application{
 		
 		AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
 		Calendar rightNow = Calendar.getInstance();
-		
 		rightNow.setTimeInMillis(System.currentTimeMillis());
-		rightNow.add(Calendar.MINUTE, snooze);
+		Calendar alarm_time = rightNow;
+		
+		alarm_time.add(Calendar.MINUTE, snooze);
 
-		alarmManager.set(AlarmManager.RTC_WAKEUP, rightNow.getTimeInMillis(), pendingIntent);
+		alarmManager.set(AlarmManager.RTC_WAKEUP, alarm_time.getTimeInMillis(), pendingIntent);
 	}
 	
 
