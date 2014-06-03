@@ -96,10 +96,6 @@ public class MyApplication extends Application{
 		}
 		return pathsArray;
 	}
-		
-
-	
-	
 
 	public ArrayList<Uri> stringToUriArray(String uriInStringArray) {   
 		uriInStringArray.replace("[", "");
@@ -166,25 +162,41 @@ public class MyApplication extends Application{
     	alarmManager.cancel(pendingIntent);
 	}
 	
-	public void activateSnooze(int index, int snooze) {
-		
-		Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
-		intent.putExtra("snooze", snooze);
-		
-		//this will cancel the old alarm request and set the new one
-		pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), index, intent, PendingIntent.FLAG_UPDATE_CURRENT); 
-		
+	public void activateSnooze(int index, int snooze) {		
 		AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
 		Calendar rightNow = Calendar.getInstance();
 		rightNow.setTimeInMillis(System.currentTimeMillis());
-		Calendar alarm_time = rightNow;
-		
-		alarm_time.add(Calendar.MINUTE, snooze);
+		rightNow.add(Calendar.MINUTE, snooze);
 
-		alarmManager.set(AlarmManager.RTC_WAKEUP, alarm_time.getTimeInMillis(), pendingIntent);
+		Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
+		intent.putExtra("snooze", snooze);
+		pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), index, intent, PendingIntent.FLAG_UPDATE_CURRENT); 
+		alarmManager.set(AlarmManager.RTC_WAKEUP, rightNow.getTimeInMillis(), pendingIntent);
 	}
 	
+	public void activateNap(int nap) {
+		int index = ALARM_NAP_INDEX;
+		AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
+		Calendar rightNow = Calendar.getInstance();
+		rightNow.setTimeInMillis(System.currentTimeMillis());
+		rightNow.add(Calendar.MINUTE, nap);
 
+		Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
+		intent.putExtra("snooze", 0);
+		pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), index, intent, PendingIntent.FLAG_UPDATE_CURRENT); 
+		alarmManager.set(AlarmManager.RTC_WAKEUP, rightNow.getTimeInMillis(), pendingIntent);
+	}
 	
-	
+	public void deactivateNap(){
+		//Toast.makeText(getApplicationContext(), "alarme desativado", 2).show();
+		Intent i = new Intent(getApplicationContext(), AlarmReceiver.class);
+		
+		i.putExtra("snooze", 0);
+		
+		//this will cancel the old alarm
+		PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), ALARM_NAP_INDEX, i, 0); 
+		AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
+    	alarmManager.cancel(pendingIntent);
+	}
+
 }

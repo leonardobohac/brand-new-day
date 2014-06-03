@@ -7,18 +7,17 @@
     <string name="alarms_view">My Alarms</string>
     <string name="alarm_1_toggleButton">Alarm 1</string>
     <string name="alarm_2_toggleButton">Alarm 2</string>
-    <string name="alarm_3_toggleButton">Alarm 3</string>
-    <string name="alarm_4_toggleButton">Alarm 4</string>
     <string name="add_new_playlist_button">Add New Playlist</string>
     <string name="alarm_1_settings_button">Settings 1</string>
     <string name="alarm_2_settings_button">Settings 2</string>
-    <string name="alarm_3_settings_button">Settings 3</string>
-    <string name="quick_nap_toggleButton">Quick Nap</string>
+    <string name="alarm_nap_settings_button">Settings Nap</string>
+    <string name="alarm_nap_toggleButton">Quick Nap</string>
     <string name="playlist_button">PlayList</string>
     <string name="add_song_to_playlist">Add New Song</string>
     <string name="wake_up_button">Wake Up</string>
     <string name="sleep_more_button">Sleep More</string>
     <string name="set_alarm_button">Set Alarm</string>
+    <string name="set_nap_button">Set Nap</string>
     <string name="snooze_seekBar">Snooze</string>
     <string name="crescent_volume_mode_checkBox">Crescent Volume Mode</string>
     <string name="back_to_main_button">Back</string>
@@ -31,5 +30,9 @@
     <string name="volume_low_radioButton">Low</string>
     <string name="volume_medium_radioButton">Medium</string>
     <string name="volume_high_radioButton">High</string>
+    <string name="digitalclock">digitalClock</string>
+    <string name="title_activity_test">TestActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_song_list">SongList</string>
 
 </resources>

@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -113,11 +112,23 @@ public class AlarmSettings extends Activity {
 		index = intent.getExtras().getInt("index");
 
 		timePicker.setCurrentHour(alarmHours[index]);
-		Log.d("alarm1HourCREATE", Integer.toString(alarmHours[0]));
 		
 		timePicker.setCurrentMinute(alarmMinutes[index]);
 		adjustSeekBar(seekBar, index);
 		adjustSnoozeDisabledCheckBox(snoozeDisabledCheckBox, index);
+		
+		if(volumes[index] == volumeCrescent){
+			volumeCrescentRadioButton.toggle();
+		}
+		else if(volumes[index] == volumeLow){
+			volumeLowRadioButton.toggle();
+		}
+		else if(volumes[index] == volumeMedium){
+			volumeMediumRadioButton.toggle();
+		}
+		else if(volumes[index] == volumeHigh){
+			volumeHighRadioButton.toggle();
+		}
 		
 	}
 	

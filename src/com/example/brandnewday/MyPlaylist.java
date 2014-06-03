@@ -3,8 +3,11 @@ package com.example.brandnewday;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import android.app.Activity;
+import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -14,7 +17,6 @@ import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -26,7 +28,8 @@ public class MyPlaylist extends Activity {
 	MyApplication myApplication;
 	ArrayList<Uri> audioUris = new ArrayList<Uri>();
 	ArrayList<String> audioPaths = new ArrayList<String>();
-
+	ArrayList<Uri> randomAudioUris;
+	String[] mMusicList;
 
 	String audioUrisFromPreferences;
 	String audioPathsFromPreferences;
@@ -37,6 +40,7 @@ public class MyPlaylist extends Activity {
 	String songName;
 	ListView listView;
 	ArrayAdapter<String> adapter;
+	private static final String TAG = "BND";
 	
 	
 	@Override
@@ -44,15 +48,13 @@ public class MyPlaylist extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.my_playlist);
 		myApplication = getMyApplication();
-		//audioUris = myApplication.getAudioUris();
-		//audioPaths = myApplication.getAudioPaths();
 		
 		SharedPreferences defaultPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		audioUrisFromPreferences = defaultPreferences.getString("audioUrisFromPreferences", "");
 		//if(audioStringFromPreferences != ""){
 			try {
 				audioUris = myApplication.deserialize(audioUrisFromPreferences);
-				Log.d("uri", (audioUris.get(0)).toString());
+				//Log.d("uri", (audioUris.get(0)).toString());
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -60,18 +62,11 @@ public class MyPlaylist extends Activity {
 		//}
 		
 		audioPathsFromPreferences = defaultPreferences.getString("audioPathsFromPreferences", "");
-		//if(audioPathsFromPreferences != ""){
-			try {
-				audioPaths = myApplication.deserializePaths(audioPathsFromPreferences);
-				//Log.d("size", Integer.toString(audioPaths.size()));
-				Log.d("path", audioPaths.get(0));
-				//Log.d("path", audioPaths.get(1));
-				//Log.d("path", audioPaths.get(2));
+		try {
+			audioPaths = myApplication.deserializePaths(audioPathsFromPreferences);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		//}
 		
 		newSongButton = (Button)findViewById(R.id.add_new_song_button);
 		okButton = (Button)findViewById(R.id.playlistOkButton);
@@ -82,35 +77,39 @@ public class MyPlaylist extends Activity {
 		adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, audioPaths);
 		listView = (ListView) findViewById(R.id.playlist_view);
 		listView.setAdapter(adapter);
-		listView.setOnItemClickListener(new OnItemClickListener() {
-			 
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            	audioUris.remove(position);
+		listView.setOnItemClickListener(new OnItemClickListener() { 
+	        @Override
+	        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+	        	audioUris.remove(position);
 	            audioPaths.remove(position);
+	            randomAudioUris = new ArrayList<Uri>(audioUris.size());
+				randomAudioUris = randomizeUriArrayList(audioUris);
 	            SharedPreferences defaultPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 				SharedPreferences.Editor editor = defaultPreferences.edit();
 				try {
 					editor.putString("audioUrisFromPreferences", myApplication.serialize(audioUris));
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+			
+				try {
+					editor.putString("randomAudioUrisFromPreferences", myApplication.serialize(randomAudioUris));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
 				try {
 					editor.putString("audioPathsFromPreferences", myApplication.serializePaths(audioPaths));
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				
 				editor.commit();
 	            listView.setAdapter(adapter);	             
-            }
-       }); 
+	        }
+		}); 
 	}
-	
-
-	
+		
 	protected MyApplication getMyApplication() {
 		return (MyApplication)getApplication();
 	}
@@ -149,38 +148,46 @@ public class MyPlaylist extends Activity {
 				  audioPaths.add(songName);
 			  }
 			  else
-				  Toast.makeText(getApplicationContext(), "song already in list!", 1).show();
+				  Toast.makeText(getApplicationContext(), "song already in list!", Toast.LENGTH_SHORT).show();
+			  
+			  randomAudioUris = new ArrayList<Uri>(audioUris.size());
+			  randomAudioUris = randomizeUriArrayList(audioUris);
 			  
 			  SharedPreferences defaultPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-				SharedPreferences.Editor editor = defaultPreferences.edit();
-				try {
-					editor.putString("audioUrisFromPreferences", myApplication.serialize(audioUris));
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				try {
-					editor.putString("audioPathsFromPreferences", myApplication.serializePaths(audioPaths));
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+			  SharedPreferences.Editor editor = defaultPreferences.edit();
 				
-				editor.commit();
-
-			listView.setAdapter(adapter);
+			  try {
+				editor.putString("audioUrisFromPreferences", myApplication.serialize(audioUris));
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			  
+			  try {
+					editor.putString("randomAudioUrisFromPreferences", myApplication.serialize(randomAudioUris));
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+							e.printStackTrace();
+						}			
+			try {
+				editor.putString("audioPathsFromPreferences", myApplication.serializePaths(audioPaths));
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					editor.commit();
+		
+				listView.setAdapter(adapter);
+			  }
+			  break;
 		  }
-		  break;
-	  }
 	  
 	}
-
-
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-
 		}
 	
 	@Override
@@ -191,7 +198,6 @@ public class MyPlaylist extends Activity {
 	@Override
 	protected void onPause() {
 		super.onPause();
-		
 	}
 	
 	@Override
@@ -241,36 +247,45 @@ public class MyPlaylist extends Activity {
 		return songName.substring(firstLetterIndex, songName.length());
 	}
 	
+	public ArrayList<Uri> randomizeUriArrayList(ArrayList<Uri> uriArrayList) {
+		// Shuffles an array of URIs 
+		ArrayList<Uri> randomizedArray = new ArrayList<Uri>(uriArrayList.size());
+		ArrayList<Integer> randomIndexArray = generateRandomIndexList(uriArrayList.size());
+		
+		for(int i=0; i < randomIndexArray.size(); i += 1)
+			randomizedArray.add(uriArrayList.get(randomIndexArray.get(i)));
+		
+		return randomizedArray;
+	}
+	
+	public ArrayList<Integer> generateRandomIndexList(int size) {
+		// List of distinct random integers between 1 and size. Ex: [2,5,1,4,3], with size = 5 ///
+		Random generator = new Random();
+		ArrayList<Integer> indexList = new ArrayList<Integer>();
+		ArrayList<Integer> randomIndexList = new ArrayList<Integer>();
+		
+		for(int i=0; i < size; i += 1) {
+			indexList.add(i);
+		}
+		for(int j=0; j < size; j += 1) {
+			int randomIndex = generator.nextInt(indexList.size());
+			randomIndexList.add(indexList.get(randomIndex));
+			indexList.remove(indexList.get(randomIndex));
+		}
+		
+		return randomIndexList;
+	}
+	
+	
 	
 	  
 	  
-	  //audioPaths.add(selectedAudioPath);
-	  /*if(selectedAudioPath!=null)
-		  System.out.println("selectedAudioPath is the right one for you!");
-	  else
-		  System.out.println("filemanagerstring is the right one for you!");*/
-		   
-	  
-//String songRelativePath = (data.getData().getPath());
-	  //Uri songUri = Uri.parse("content://media" + songRelativePath);
-	  //String songUriString = ("contenṭ://media" + songRelativePath);
-	  
-	  /*if(myStringPlaylist.contains(songUriString))
-		  Toast.makeText(getApplicationContext(),"Song already in list!",1).show();
-	  else
-		  myStringPlaylist.add(songUriString);*/
-	  
-	  //Log.d("URI: ", songUri.toString());
-	  //String path = getPathFromUri(songUri);
-	  //System.out.println(path);
-	  //System.out.println("Playlist after result: " + myStringPlaylist);
-	/*public static Uri getAudioContentUri(Context context, File audioFile) {
-        String filePath = audioFile.getAbsolutePath();
+	/*public static Uri getAudioContentUri(Context context) {
         Cursor cursor = context.getContentResolver().query(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                new String[] { MediaStore.Audio.Media._ID },
-                MediaStore.Audio.Media.DATA + "=? ",
-                new String[] { filePath }, null);
+                null,
+                null,
+                null, null);
         if (cursor != null && cursor.moveToFirst()) {
             int id = cursor.getInt(cursor
                     .getColumnIndex(MediaStore.MediaColumns._ID));
@@ -286,10 +301,10 @@ public class MyPlaylist extends Activity {
                 return null;
             }
         }
-	}*/
+	}
 	
 
-	/*private String getFullFilePath(Context context, String filename) {  
+	private String getFullFilePath(Context context, String filename) {  
 	    File directory = context.getExternalFilesDir(null);
 	    File file = new File(directory, filename);
 	    if (!file.canRead()) {

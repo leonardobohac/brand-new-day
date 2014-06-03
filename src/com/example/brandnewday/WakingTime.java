@@ -1,9 +1,6 @@
 package com.example.brandnewday;
 
 import java.util.ArrayList;
-import java.util.Random;
-
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.PowerManager;
@@ -14,7 +11,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
@@ -36,7 +32,6 @@ public class WakingTime extends Activity{
 	static final int ALARM_2_INDEX = 1;
 	static final int ALARM_3_INDEX = 2;
 	static final int ALARM_NAP_INDEX = 3;
-	private MediaPlayer mediaPlayer;
 	PendingIntent pendingIntent;
 	
 	
@@ -52,7 +47,6 @@ public class WakingTime extends Activity{
 		Intent intent = getIntent();
 		index = intent.getExtras().getInt("index");
 
-		
 		SharedPreferences defaultPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		alarmHours[ALARM_1_INDEX] = defaultPreferences.getInt("alarm1Hour", 7);
 		alarmHours[ALARM_2_INDEX] = defaultPreferences.getInt("alarm2Hour", 8);
@@ -80,31 +74,16 @@ public class WakingTime extends Activity{
 	@Override
 	protected void onStop() {
 		super.onStop();
-		/*SharedPreferences defaultPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-		SharedPreferences.Editor editor = defaultPreferences.edit();
-		editor.putInt("alarm1Hour", alarmHours[ALARM_1_INDEX]);
-		editor.putInt("alarm2Hour", alarmHours[ALARM_2_INDEX]);
-		editor.putInt("alarm3Hour", alarmHours[ALARM_3_INDEX]);
-		editor.putInt("alarm1Minute", alarmMinutes[ALARM_1_INDEX]);
-		editor.putInt("alarm2Minute", alarmMinutes[ALARM_2_INDEX]);
-		editor.putInt("alarm3Minute", alarmMinutes[ALARM_3_INDEX]);
-		editor.putInt("alarm1Snooze", alarmSnoozes[ALARM_1_INDEX]);
-		editor.putInt("alarm2Snooze", alarmSnoozes[ALARM_2_INDEX]);
-		editor.putInt("alarm3Snooze", alarmSnoozes[ALARM_3_INDEX]);
-		editor.commit();*/
-		
-		
 		
 	}
 
 	View.OnClickListener wakeButtonOnClickListener = new View.OnClickListener() {
 		public void onClick(View v) {
-			if(mediaPlayer != null)
-				mediaPlayer.release();
 			PowerManager mgr = (PowerManager)getApplicationContext().getSystemService(Context.POWER_SERVICE);
 			WakeLock wakeLock = mgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MyWakeLock");
 			wakeLock.setReferenceCounted(false); //any release() can set wakeLock off
 			wakeLock.release();
+			
 			Intent i = new Intent(WakingTime.this, AlarmService.class);
 			stopService(i);
 			
@@ -119,7 +98,7 @@ public class WakingTime extends Activity{
 		public void onClick(View v) {
 			Intent i = new Intent(WakingTime.this, AlarmService.class);
 			stopService(i);
-			myApplication.activateSnooze(index, snooze);
+			myApplication.activateSnooze(index, alarmSnoozes[index]);
 			Intent intent = new Intent(getApplicationContext(), BrandNewDay.class);
 			startActivity(intent);
 			finish();

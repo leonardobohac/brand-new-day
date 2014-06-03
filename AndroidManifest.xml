@@ -3,34 +3,29 @@
     package="com.example.brandnewday"
     android:versionCode="1"
     android:versionName="1.0" >
-	
-    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
-	<uses-permission android:name="android.permission.WAKE_LOCK" />
-	<uses-permission android:name="android.permission.DEVICE_POWER"/>
-        
-		
+
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.DEVICE_POWER" />
+
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="16" />
 
     <application
+        android:name="com.example.brandnewday.MyApplication"
         android:allowBackup="true"
         android:debuggable="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" android:name="MyApplication">
-        
- 		<service
-  			android:name="AlarmService">
-		</service> 
- 		
- 		
- 	
- 
-        <activity    
+        android:theme="@style/AppTheme" >
+        <service android:name="com.example.brandnewday.AlarmService" >
+        </service>
+
+        <activity
             android:name="com.example.brandnewday.BrandNewDay"
-            android:label="@string/app_name"
-            android:configChanges="orientation|screenSize" >
+            android:configChanges="orientation|screenSize"
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -39,25 +34,44 @@
         </activity>
         <activity
             android:name="com.example.brandnewday.AlarmSettings"
-            android:label="@string/title_activity_alarm_settings"
-            android:configChanges="orientation|screenSize" >
+            android:configChanges="orientation|screenSize"
+            android:label="@string/title_activity_alarm_settings" >
         </activity>
         <activity
             android:name="com.example.brandnewday.WakingTime"
-            android:label="@string/title_activity_waking_time"
-            android:configChanges="orientation|screenSize" >
+            android:configChanges="orientation|screenSize"
+            android:label="@string/title_activity_waking_time" >
         </activity>
         <activity
             android:name="com.example.brandnewday.MyPlaylist"
-            android:label="@string/title_activity_my_playlist"
-            android:configChanges="orientation|screenSize" >
-        </activity>
-      
-        <service android:name=".AlarmService" />
-        
-        <receiver  android:name=".AlarmReceiver"/>
+            android:configChanges="orientation|screenSize"
+            android:label="@string/title_activity_my_playlist" >
+            <intent-filter>
+                <action android:name="android.intent.action.GET_CONTENT" />
 
-    
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEND_MULTIPLE" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+        </activity>
+
+        <service android:name="com.example.brandnewday.AlarmService" />
+
+        <receiver android:name="com.example.brandnewday.AlarmReceiver" />
+
+        <activity
+            android:name="com.example.brandnewday.TestActivity"
+            android:label="@string/title_activity_test" >
+        </activity>
+        <activity
+            android:name="com.example.brandnewday.SongList"
+            android:label="@string/title_activity_song_list" >
+        </activity>
     </application>
 
 </manifest>

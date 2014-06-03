@@ -1,8 +1,6 @@
 package com.example.brandnewday;
 
 import java.util.ArrayList;
-import java.util.List;
-
 import android.app.Activity;
 import android.content.Context;
 import android.text.Editable;

@@ -15,8 +15,6 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.preference.PreferenceManager;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.widget.Toast;
 import android.content.Context;
 import android.content.Intent;
@@ -27,20 +25,28 @@ import android.content.SharedPreferences;
 public class AlarmService extends Service implements MediaPlayer.OnCompletionListener {
 	MyApplication myApplication;
 	MediaPlayer mediaPlayer = null;
+	int[] volumes = new int[4];
 	Set<String> emptySet = new HashSet<String>();
-	ArrayList<Uri> randomizedAudioUris;
+	ArrayList<Uri> randomAudioUris;    //keeps only the not yet-played tracks
 	ArrayList<Uri> audioUris;
 	ArrayList<String> currentStrings;
-	int currentTrack = 0;
+	int firstTrack = 0;
 	String audioArrayInString;
 	int index;
 	int snooze; 
 	WakeLock wakeLock;
-	float currentVolume = 0.01f;
-	public int volumeCounter = 1;
+	float mediaPlayerDefaultVolume = 1.0f;
+	int volumeCounter = 1;
+	int volumeCode;
 	Timer volumeRaiserTimer = new Timer();
-	
-
+	static final int ALARM_1_INDEX = 0;
+	static final int ALARM_2_INDEX = 1;
+	static final int ALARM_3_INDEX = 2;
+	static final int ALARM_NAP_INDEX = 3;
+	int volumeCrescent = 0;
+	int volumeLow = 1;
+	int volumeMedium = 2;
+	int volumeHigh = 3;
 	
 	protected MyApplication getMyApplication() {
 		return (MyApplication)getApplication();
@@ -51,71 +57,100 @@ public class AlarmService extends Service implements MediaPlayer.OnCompletionLis
         	raiseVolume();
             }
         };
-
-	
-		
-      
-
-	@Override
-	public void onDestroy() {
-		super.onDestroy();
-		
-		if(mediaPlayer != null)
-			mediaPlayer.release();
-		wakeLock.release();
-		
-		
-		volumeRaiserTimer.cancel();
-		
+        
+    public void raiseVolume() {
+		AudioManager audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+		audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
 	}
 
 	
-	
-	
+
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		super.onStartCommand(intent, flags, startId);
 		myApplication = getMyApplication();
-		
-		
-		//audioUris = myApplication.getAudioUris();
-		
+		SharedPreferences defaultPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+		SharedPreferences.Editor editor = defaultPreferences.edit();
+		volumes[ALARM_1_INDEX] = defaultPreferences.getInt("alarm1Volume", volumeMedium);
+		volumes[ALARM_2_INDEX] = defaultPreferences.getInt("alarm2Volume", volumeMedium);
+		volumes[ALARM_NAP_INDEX] = defaultPreferences.getInt("alarmNapVolume", volumeMedium);
 		
 		PowerManager mgr = (PowerManager)getApplicationContext().getSystemService(Context.POWER_SERVICE);
-		wakeLock = mgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MyWakeLock");
-		volumeRaiserTimer.schedule(raiseVolumeTask, 70000, 70000);
 		AudioManager audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
 		
-		audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, 0);
-		audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
-		index = intent.getExtras().getInt("index");
-		snooze = intent.getExtras().getInt("snooze");
 		
-
+		wakeLock = mgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MyWakeLock");
 		wakeLock.setReferenceCounted(false); //any release() can set wakeLock off
 		wakeLock.acquire();
 		
+		index = intent.getExtras().getInt("index");
+		snooze = intent.getExtras().getInt("snooze");
 		
-		SharedPreferences defaultPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-		String audioStringFromPreferences = defaultPreferences.getString("audioStringFromPreferences", "");
+		String audioUrisFromPreferences = defaultPreferences.getString("audioUrisFromPreferences", "");
 		try {
-			audioUris = myApplication.deserialize(audioStringFromPreferences);
+			audioUris = myApplication.deserialize(audioUrisFromPreferences);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	
-		 
-		randomizedAudioUris = new ArrayList<Uri>(audioUris.size());
-		randomizedAudioUris = randomizeUriArrayList(audioUris);
-		if(randomizedAudioUris.size() != 0){
-			 mediaPlayer = MediaPlayer.create(getApplicationContext(), randomizedAudioUris.get(currentTrack));
-		     mediaPlayer.setOnCompletionListener(this);
-		     mediaPlayer.start();
+		
+		String randomAudioUrisFromPreferences = defaultPreferences.getString("randomAudioUrisFromPreferences", "");
+		try {
+			randomAudioUris = myApplication.deserialize(randomAudioUrisFromPreferences);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		else
-			Log.d("No songs", "No songs");
+		
+		if(audioUris.size()!=0){
+			if(randomAudioUris.size() == 0){
+				//No more unplayed tracks to play
+				randomAudioUris = new ArrayList<Uri>(audioUris.size());
+				randomAudioUris = randomizeUriArrayList(audioUris);
+				mediaPlayer = MediaPlayer.create(getApplicationContext(), randomAudioUris.get(firstTrack));
+				randomAudioUris.remove(firstTrack); 
+				try {
+					editor.putString("randomAudioUrisFromPreferences", myApplication.serialize(randomAudioUris));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+			}
+			else{
+				mediaPlayer = MediaPlayer.create(getApplicationContext(), randomAudioUris.get(firstTrack));
 
+				randomAudioUris.remove(firstTrack);  //remove track so it's not going to play again until the playlist ends
+				try {
+					editor.putString("randomAudioUrisFromPreferences", myApplication.serialize(randomAudioUris));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				editor.commit();
+			}
+			mediaPlayer.setOnCompletionListener(this);
+
+			
+		    if(volumes[index] == volumeCrescent){
+			    mediaPlayer.setVolume(mediaPlayerDefaultVolume, mediaPlayerDefaultVolume);
+				audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 1, 0);
+				volumeRaiserTimer.schedule(raiseVolumeTask, 4500, 4500);
+			}
+			else if(volumes[index] == volumeLow){
+			    mediaPlayer.setVolume(mediaPlayerDefaultVolume, mediaPlayerDefaultVolume);
+				audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 5, 0);
+			}
+			else if(volumes[index] == volumeMedium){
+			    mediaPlayer.setVolume(mediaPlayerDefaultVolume, mediaPlayerDefaultVolume);
+				audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 10, 0);
+			}
+			else if(volumes[index] == volumeHigh){
+			    mediaPlayer.setVolume(mediaPlayerDefaultVolume, mediaPlayerDefaultVolume);
+				audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,  audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
+			}
+		    
+			mediaPlayer.start();
+		    
+		}
 		
 		Intent i = new Intent(getApplicationContext(), WakingTime.class);
 		i.putExtra("index", index);
@@ -123,37 +158,53 @@ public class AlarmService extends Service implements MediaPlayer.OnCompletionLis
 		i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		startActivity(i);
 		return START_STICKY;
-		
-		
 	}
 	
-	public void onCompletion(MediaPlayer arg0) {
-	      arg0.release();
-	      /*volumeCounter = 1;
-	      currentVolume = 0.04f;*/
-	      if(randomizedAudioUris == null)
-	    	  System.out.println("NULL playlist");
-	      else {
-		      if (currentTrack < randomizedAudioUris.size()-1) {
-		        currentTrack++;
-			        arg0 = MediaPlayer.create(getApplicationContext(), randomizedAudioUris.get(currentTrack));
-			        arg0.setOnCompletionListener(this);
-			        //arg0.setVolume(currentVolume, currentVolume);
-			        arg0.start();
-
-		      }
-	      }
-	}
+	public void onCompletion(MediaPlayer mediaPlayer) {
+	    AudioManager audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+		mediaPlayer.release();
+		if(randomAudioUris == null){
+			randomAudioUris = new ArrayList<Uri>(audioUris.size());
+			randomAudioUris = randomizeUriArrayList(audioUris);
+			mediaPlayer = MediaPlayer.create(getApplicationContext(), randomAudioUris.get(firstTrack));
+			randomAudioUris.remove(firstTrack);
+		}
+		else {
+		    mediaPlayer = MediaPlayer.create(getApplicationContext(), randomAudioUris.get(firstTrack));
+		    randomAudioUris.remove(firstTrack);
+		    //mediaPlayer.setOnCompletionListener(this);
+		    if(volumes[index] == volumeCrescent){
+		        mediaPlayer.setVolume(mediaPlayerDefaultVolume, mediaPlayerDefaultVolume);
+			    audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 1, 0);
+			    volumeRaiserTimer.schedule(raiseVolumeTask, 3000, 3000);
+		    }
+		    else if(volumes[index] == volumeLow){
+		    	mediaPlayer.setVolume(mediaPlayerDefaultVolume, mediaPlayerDefaultVolume);
+		    	audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 5, 0);
+		    }
+		    else if(volumes[index] == volumeMedium){
+		    	mediaPlayer.setVolume(mediaPlayerDefaultVolume, mediaPlayerDefaultVolume);
+		    	audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 10, 0);
+		    }
+		    else if(volumes[index] == volumeHigh){
+		    	mediaPlayer.setVolume(mediaPlayerDefaultVolume, mediaPlayerDefaultVolume);
+		    	audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,  audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
+		    }
+		    mediaPlayer.start();
+		}
+      }
 	
-	
-	
-	public void raiseVolume() {
-		AudioManager audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
-		audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		if(mediaPlayer != null)
+			mediaPlayer.release();
+		wakeLock.release();
+		volumeRaiserTimer.cancel();
 	}
 	
 	public ArrayList<Uri> randomizeUriArrayList(ArrayList<Uri> uriArrayList) {
-		// Shuffles and array of URIs 
+		// Shuffles an array of URIs 
 		ArrayList<Uri> randomizedArray = new ArrayList<Uri>(uriArrayList.size());
 		ArrayList<Integer> randomIndexArray = generateRandomIndexList(uriArrayList.size());
 		
@@ -164,7 +215,7 @@ public class AlarmService extends Service implements MediaPlayer.OnCompletionLis
 	}
 	
 	public ArrayList<Integer> generateRandomIndexList(int size) {
-		// List of distinct random integers between 0 and size. Ex: [2,5,1,4,3], with size = 5 ///
+		// List of distinct random integers between 1 and size. Ex: [2,5,1,4,3], with size = 5 ///
 		Random generator = new Random();
 		ArrayList<Integer> indexList = new ArrayList<Integer>();
 		ArrayList<Integer> randomIndexList = new ArrayList<Integer>();
