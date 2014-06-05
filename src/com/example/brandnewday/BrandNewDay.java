@@ -297,7 +297,7 @@ public class BrandNewDay extends Activity {
 
 	View.OnClickListener settings1Listener = new View.OnClickListener() {
 	    public void onClick(View v) {
-	    	Intent intent = new Intent(getApplicationContext(), AlarmSettings.class);
+	    	Intent intent = new Intent(getApplicationContext(), Settings.class);
 	    	intent.putExtra("index", ALARM_1_INDEX);
             //startActivityForResult(intent, SET_ALARM_REQUEST);
 	    	startActivity(intent);

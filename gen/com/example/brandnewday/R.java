@@ -44,61 +44,87 @@ public final class R {
     }
     public static final class drawable {
         public static final int boatday=0x7f020000;
-        public static final int ic_edit=0x7f020001;
-        public static final int ic_launcher=0x7f020002;
-        public static final int ic_notes=0x7f020003;
-        public static final int ic_playlist=0x7f020004;
-        public static final int ic_settings=0x7f020005;
-        public static final int ic_sun=0x7f020006;
+        public static final int btn_active=0x7f020001;
+        public static final int btn_check=0x7f020002;
+        public static final int btn_inactive=0x7f020003;
+        public static final int btn_up=0x7f020004;
+        public static final int ic_edit=0x7f020005;
+        public static final int ic_launcher=0x7f020006;
+        public static final int ic_notes=0x7f020007;
+        public static final int ic_playlist=0x7f020008;
+        public static final int ic_settings=0x7f020009;
+        public static final int ic_sun=0x7f02000a;
+        public static final int ic_volume=0x7f02000b;
     }
     public static final class id {
-        public static final int action_settings=0x7f0c001f;
-        public static final int add_new_song_button=0x7f0c0018;
-        public static final int alarm1_settings_button=0x7f0c0012;
-        public static final int alarm2_settings_button=0x7f0c0013;
-        public static final int back_button=0x7f0c0004;
-        public static final int digitalClock1=0x7f0c000e;
-        public static final int linearLayout1=0x7f0c0005;
-        public static final int nap_seekBar=0x7f0c000f;
-        public static final int nap_settings_button=0x7f0c0014;
-        public static final int nap_toggleButton=0x7f0c000d;
-        public static final int playlistOkButton=0x7f0c0016;
-        public static final int playlist_button=0x7f0c0015;
-        public static final int playlist_view=0x7f0c0017;
-        public static final int set_alarm_button=0x7f0c0003;
-        public static final int snooze_bar=0x7f0c000b;
-        public static final int snooze_disabled_checkBox=0x7f0c0002;
-        public static final int snooze_linearLayout=0x7f0c001d;
-        public static final int snooze_textView=0x7f0c001e;
-        public static final int snooze_time_textView=0x7f0c000c;
-        public static final int song_artist=0x7f0c001a;
-        public static final int song_list=0x7f0c0000;
-        public static final int song_title=0x7f0c0019;
-        public static final int time_picker=0x7f0c0001;
-        public static final int toggleButton1=0x7f0c0011;
-        public static final int toggleButton2=0x7f0c0010;
-        public static final int volumeCrescentRadioButton=0x7f0c0006;
-        public static final int volumeHighRadioButton=0x7f0c0007;
-        public static final int volumeLowRadioButton=0x7f0c0009;
-        public static final int volumeMediumRadioButton=0x7f0c0008;
-        public static final int volumeTextView=0x7f0c000a;
-        public static final int wake_linearLayout=0x7f0c001b;
-        public static final int wake_textView=0x7f0c001c;
+        public static final int action_settings=0x7f0c0032;
+        public static final int add_new_song_button=0x7f0c002b;
+        public static final int alarm1_settings_button=0x7f0c0025;
+        public static final int alarm2_settings_button=0x7f0c0026;
+        public static final int back_button=0x7f0c0016;
+        public static final int digitalClock1=0x7f0c0021;
+        public static final int friday=0x7f0c0004;
+        public static final int imageView1=0x7f0c000a;
+        public static final int linearLayout1=0x7f0c0007;
+        public static final int monday=0x7f0c0000;
+        public static final int nap_seekBar=0x7f0c0022;
+        public static final int nap_settings_button=0x7f0c0027;
+        public static final int nap_toggleButton=0x7f0c0020;
+        public static final int playlistOkButton=0x7f0c0029;
+        public static final int playlist_button=0x7f0c0028;
+        public static final int playlist_view=0x7f0c002a;
+        public static final int relativeLayout1=0x7f0c0009;
+        public static final int relativeLayout2=0x7f0c000d;
+        public static final int relativeLayout3=0x7f0c0011;
+        public static final int saturday=0x7f0c0005;
+        public static final int seekBar1=0x7f0c000b;
+        public static final int set_alarm_button=0x7f0c0015;
+        public static final int snooze_bar=0x7f0c001e;
+        public static final int snooze_disabled_checkBox=0x7f0c001d;
+        public static final int snooze_linearLayout=0x7f0c0030;
+        public static final int snooze_textView=0x7f0c0031;
+        public static final int snooze_time_textView=0x7f0c001c;
+        public static final int song_artist=0x7f0c002d;
+        public static final int song_list=0x7f0c0014;
+        public static final int song_title=0x7f0c002c;
+        public static final int sunday=0x7f0c0006;
+        public static final int textView1=0x7f0c0008;
+        public static final int textView2=0x7f0c000e;
+        public static final int textView3=0x7f0c000f;
+        public static final int textView4=0x7f0c000c;
+        public static final int textView5=0x7f0c0010;
+        public static final int textView6=0x7f0c0012;
+        public static final int textView7=0x7f0c0013;
+        public static final int thursday=0x7f0c0003;
+        public static final int time_picker=0x7f0c001f;
+        public static final int toggleButton1=0x7f0c0024;
+        public static final int toggleButton2=0x7f0c0023;
+        public static final int tuesday=0x7f0c0001;
+        public static final int volumeCrescentRadioButton=0x7f0c0017;
+        public static final int volumeHighRadioButton=0x7f0c0018;
+        public static final int volumeLowRadioButton=0x7f0c001a;
+        public static final int volumeMediumRadioButton=0x7f0c0019;
+        public static final int volumeTextView=0x7f0c001b;
+        public static final int wake_linearLayout=0x7f0c002e;
+        public static final int wake_textView=0x7f0c002f;
+        public static final int wednesday=0x7f0c0002;
     }
     public static final class layout {
-        public static final int activity_song_list=0x7f030000;
-        public static final int activity_test=0x7f030001;
-        public static final int alarm_settings=0x7f030002;
-        public static final int brand_new_day=0x7f030003;
-        public static final int my_playlist=0x7f030004;
-        public static final int song=0x7f030005;
-        public static final int waking_time=0x7f030006;
+        public static final int activity_settings=0x7f030000;
+        public static final int activity_song_list=0x7f030001;
+        public static final int activity_test=0x7f030002;
+        public static final int alarm_settings=0x7f030003;
+        public static final int brand_new_day=0x7f030004;
+        public static final int my_playlist=0x7f030005;
+        public static final int song=0x7f030006;
+        public static final int waking_time=0x7f030007;
     }
     public static final class menu {
         public static final int brand_new_day=0x7f0b0000;
-        public static final int song_list=0x7f0b0001;
-        public static final int test=0x7f0b0002;
-        public static final int waking_time=0x7f0b0003;
+        public static final int settings=0x7f0b0001;
+        public static final int song_list=0x7f0b0002;
+        public static final int test=0x7f0b0003;
+        public static final int waking_time=0x7f0b0004;
     }
     public static final class raw {
         public static final int teste=0x7f050000;
@@ -120,36 +146,39 @@ public final class R {
         public static final int crescent_volume_mode_checkBox=0x7f080012;
         public static final int digitalclock=0x7f08001d;
         public static final int hello_world=0x7f08001f;
+        public static final int live=0x7f080021;
         public static final int playlist_button=0x7f08000b;
-        public static final int pref_default_display_name=0x7f080026;
-        public static final int pref_description_social_recommendations=0x7f080024;
+        public static final int pref_default_display_name=0x7f080029;
+        public static final int pref_description_social_recommendations=0x7f080027;
         /**  Example settings for Data & Sync 
          */
-        public static final int pref_header_data_sync=0x7f080028;
+        public static final int pref_header_data_sync=0x7f08002b;
         /**  Strings related to Settings 
  Example General settings 
          */
-        public static final int pref_header_general=0x7f080022;
+        public static final int pref_header_general=0x7f080025;
         /**  Example settings for Notifications 
          */
-        public static final int pref_header_notifications=0x7f08002b;
-        public static final int pref_ringtone_silent=0x7f08002e;
-        public static final int pref_title_add_friends_to_messages=0x7f080027;
-        public static final int pref_title_display_name=0x7f080025;
-        public static final int pref_title_new_message_notifications=0x7f08002c;
-        public static final int pref_title_ringtone=0x7f08002d;
-        public static final int pref_title_social_recommendations=0x7f080023;
-        public static final int pref_title_sync_frequency=0x7f080029;
-        public static final int pref_title_system_sync_settings=0x7f08002a;
-        public static final int pref_title_vibrate=0x7f08002f;
+        public static final int pref_header_notifications=0x7f08002e;
+        public static final int pref_ringtone_silent=0x7f080031;
+        public static final int pref_title_add_friends_to_messages=0x7f08002a;
+        public static final int pref_title_display_name=0x7f080028;
+        public static final int pref_title_new_message_notifications=0x7f08002f;
+        public static final int pref_title_ringtone=0x7f080030;
+        public static final int pref_title_social_recommendations=0x7f080026;
+        public static final int pref_title_sync_frequency=0x7f08002c;
+        public static final int pref_title_system_sync_settings=0x7f08002d;
+        public static final int pref_title_vibrate=0x7f080032;
         public static final int set_alarm_button=0x7f08000f;
         public static final int set_nap_button=0x7f080010;
         public static final int sleep_more_button=0x7f08000e;
         public static final int snooze_disabled_checkBox=0x7f080017;
+        public static final int snooze_more=0x7f080022;
         public static final int snooze_seekBar=0x7f080011;
         public static final int snoozing_time=0x7f080016;
-        public static final int title_activity_alarm_settings=0x7f080021;
+        public static final int title_activity_alarm_settings=0x7f080024;
         public static final int title_activity_my_playlist=0x7f080015;
+        public static final int title_activity_settings=0x7f080023;
         public static final int title_activity_song_list=0x7f080020;
         public static final int title_activity_test=0x7f08001e;
         public static final int title_activity_waking_time=0x7f080014;

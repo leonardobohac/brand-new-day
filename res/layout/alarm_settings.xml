@@ -1,24 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
-
-    <TimePicker
-        android:id="@+id/time_picker"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
-   
-    <CheckBox
-        android:id="@+id/snooze_disabled_checkBox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/time_picker"
-        android:layout_marginTop="14dp"
-        android:text="@string/snooze_disabled_checkBox"
-        android:textColorHint="@color/black"
-        android:textSize="20sp" />
+    android:layout_height="match_parent"
+    android:background="@color/black" >
 
     <Button
         android:id="@+id/set_alarm_button"
@@ -83,17 +66,6 @@
         android:text="@string/volume_textView"
         android:textSize="20sp" />
 
-    <SeekBar
-        android:id="@+id/snooze_bar"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/snooze_time_textView"
-        android:layout_marginLeft="12dp"
-        android:layout_marginRight="12dp"
-        android:max="12" />
-
     <TextView
         android:id="@+id/snooze_time_textView"
         android:layout_width="wrap_content"
@@ -102,5 +74,39 @@
         android:layout_below="@+id/snooze_disabled_checkBox"
         android:text="@string/snoozing_time"
         android:textSize="18sp" />
+
+    <SeekBar
+        android:id="@+id/snooze_bar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/volumeTextView"
+        android:layout_alignParentEnd="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp"
+        android:max="12" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+    </LinearLayout>
+
+    <TimePicker
+        android:id="@+id/time_picker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <CheckBox
+        android:id="@+id/snooze_disabled_checkBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/time_picker"
+        android:layout_marginTop="42dp"
+        android:text="@string/snooze_disabled_checkBox"
+        android:textColorHint="@color/black"
+        android:textSize="20sp" />
 
 </RelativeLayout>

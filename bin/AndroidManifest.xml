@@ -72,6 +72,10 @@
             android:name="com.example.brandnewday.SongList"
             android:label="@string/title_activity_song_list" >
         </activity>
+        <activity
+            android:name="com.example.brandnewday.Settings"
+            android:label="@string/title_activity_settings" >
+        </activity>
     </application>
 
 </manifest>
