@@ -13,7 +13,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.view.Menu;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 public class WakingTime extends Activity{
 	MyApplication myApplication;
@@ -38,6 +43,10 @@ public class WakingTime extends Activity{
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+	    //Remove notification bar
+	    this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.waking_time);
 		myApplication = getMyApplication();
 		alarmHours = new int[3]; //myApplication.getAlarmHours();
@@ -58,17 +67,18 @@ public class WakingTime extends Activity{
 		alarmSnoozes[ALARM_2_INDEX] = defaultPreferences.getInt("alarm2Snooze", 0);
 		alarmSnoozes[ALARM_3_INDEX] = defaultPreferences.getInt("alarm3Snooze", 0);
 
-		Button wakeButton = (Button)findViewById(R.id.wake_button);
-		Button snoozeButton = (Button)findViewById(R.id.snooze_button);
 		
-		wakeButton.setOnClickListener(wakeButtonOnClickListener);
-		snoozeButton.setOnClickListener(snoozeButtonOnClickListener);
+		LinearLayout snoozeLayout = (LinearLayout)findViewById(R.id.snooze_linearLayout);
+		snoozeLayout.setOnClickListener(snoozeButtonOnClickListener);
+		LinearLayout wakeLayout = (LinearLayout)findViewById(R.id.wake_linearLayout);
+		wakeLayout.setOnClickListener(wakeButtonOnClickListener);
+		
 		
 		int snooze = alarmSnoozes[index];
 		if(snooze == 0)
-			snoozeButton.setVisibility(View.GONE);
+			snoozeLayout.setVisibility(View.GONE);
 		else
-			snoozeButton.setVisibility(View.VISIBLE);		
+			snoozeLayout.setVisibility(View.VISIBLE);		
 	}
 
 	@Override

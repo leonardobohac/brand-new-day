@@ -34,5 +34,7 @@
     <string name="title_activity_test">TestActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_song_list">SongList</string>
+    <string name="live">Viver</string>
+    <string name="snooze_more">Zzzz...</string>
 
 </resources>

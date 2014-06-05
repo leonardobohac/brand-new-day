@@ -10,9 +10,10 @@
       android:id="@+id/song_title"
       android:layout_width="fill_parent"
       android:layout_height="wrap_content"
+      android:contentDescription="22sp"
       android:textAppearance="?android:attr/textAppearanceSmall"
       android:textColor="#FFFFFFFF"
-      android:textSize="21sp"
+      android:textSize="22sp"
       android:textStyle="italic" />
  
   <TextView
@@ -20,6 +21,6 @@
       android:layout_width="fill_parent"
       android:layout_height="wrap_content"
       android:textColor="#FFFFFFFF"
-      android:textSize="16sp" />
+      android:textSize="15sp" />
  
 </LinearLayout>

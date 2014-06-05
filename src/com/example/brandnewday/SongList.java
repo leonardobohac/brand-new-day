@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,6 +41,10 @@ public class SongList extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+	    //Remove notification bar
+	    this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_song_list);
 		myApplication = getMyApplication();
 		songView = (ListView)findViewById(R.id.song_list);
@@ -83,6 +89,7 @@ public class SongList extends Activity {
 	        	if(audioUris.contains(trackUri) == false){
 	        		audioUris.add(trackUri);
 	        		((TextView)((LinearLayout)view).getChildAt(0)).setTextColor(Color.parseColor("#33B6E5"));
+	        		
 	        		
 	        	}
 	        	else {

@@ -49,9 +49,10 @@ public final class R {
         public static final int ic_notes=0x7f020003;
         public static final int ic_playlist=0x7f020004;
         public static final int ic_settings=0x7f020005;
+        public static final int ic_sun=0x7f020006;
     }
     public static final class id {
-        public static final int action_settings=0x7f0c001d;
+        public static final int action_settings=0x7f0c001f;
         public static final int add_new_song_button=0x7f0c0018;
         public static final int alarm1_settings_button=0x7f0c0012;
         public static final int alarm2_settings_button=0x7f0c0013;
@@ -66,8 +67,9 @@ public final class R {
         public static final int playlist_view=0x7f0c0017;
         public static final int set_alarm_button=0x7f0c0003;
         public static final int snooze_bar=0x7f0c000b;
-        public static final int snooze_button=0x7f0c001c;
         public static final int snooze_disabled_checkBox=0x7f0c0002;
+        public static final int snooze_linearLayout=0x7f0c001d;
+        public static final int snooze_textView=0x7f0c001e;
         public static final int snooze_time_textView=0x7f0c000c;
         public static final int song_artist=0x7f0c001a;
         public static final int song_list=0x7f0c0000;
@@ -80,7 +82,8 @@ public final class R {
         public static final int volumeLowRadioButton=0x7f0c0009;
         public static final int volumeMediumRadioButton=0x7f0c0008;
         public static final int volumeTextView=0x7f0c000a;
-        public static final int wake_button=0x7f0c001b;
+        public static final int wake_linearLayout=0x7f0c001b;
+        public static final int wake_textView=0x7f0c001c;
     }
     public static final class layout {
         public static final int activity_song_list=0x7f030000;
