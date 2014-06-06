@@ -4,78 +4,121 @@
     android:background="@color/black"
     android:orientation="vertical" >
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/days_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" >
+        android:layout_weight="1.5" >
 
         <RelativeLayout
             android:id="@+id/mon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:background="@drawable/btn_active" >
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:background="@drawable/btn_active_small" >
+
+            <TextView
+                android:id="@+id/mon_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/mon_textView" />
+
         </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/tue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_toRightOf="@id/mon"
-            android:background="@drawable/btn_active" >
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:background="@drawable/btn_active_small" >
+            
+            <TextView
+                android:id="@+id/tue_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/tue_textView" />
         </RelativeLayout>
         
         <RelativeLayout
             android:id="@+id/wed"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_toRightOf="@id/tue"
-            android:background="@drawable/btn_active" >
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:background="@drawable/btn_active_small" >
+            
+            <TextView
+                android:id="@+id/wed_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/wed_textView" />
         </RelativeLayout>
         
         <RelativeLayout
             android:id="@+id/thu"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_toRightOf="@id/wed"
-            android:background="@drawable/btn_active" >
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:background="@drawable/btn_active_small" >
+            
+            <TextView
+                android:id="@+id/thu_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/thu_textView" />
         </RelativeLayout>
         
         <RelativeLayout
             android:id="@+id/fri"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_toRightOf="@id/thu"
-            android:background="@drawable/btn_active" >
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:background="@drawable/btn_active_small" >
+            
+            <TextView
+                android:id="@+id/fri_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/fri_textView" />
         </RelativeLayout>
         
         <RelativeLayout
             android:id="@+id/sat"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_toRightOf="@id/fri"
-            android:background="@drawable/btn_active" >
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:background="@drawable/btn_active_small" >
+            
+            <TextView
+                android:id="@+id/sat_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/sat_textView" />
         </RelativeLayout>
         
         <RelativeLayout
             android:id="@+id/sun"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_toRightOf="@id/sat"
-            android:background="@drawable/btn_active" >
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:background="@drawable/btn_active_small" >
+            
+            <TextView
+                android:id="@+id/sun_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/sun_textView" />
         </RelativeLayout>
 
         
 
-    </RelativeLayout>
+    </LinearLayout>
 
     <RelativeLayout
         android:id="@+id/check_layout"
@@ -105,7 +148,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/settings_d_minute"
+            android:layout_centerHorizontal="true"
             android:text="@string/two_points"
             android:textSize="90sp"
             android:textStyle="bold" />
@@ -117,17 +160,17 @@
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/two_points"
             android:text="@string/settings_hour"
-            android:textSize="90sp"
+            android:textSize="95sp"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/settings_d_minute"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/two_points"
             android:text="@string/settings_d_minutes"
-            android:textSize="90sp"
+            android:textSize="95sp"
             android:textStyle="bold" />
 
         <TextView
@@ -137,7 +180,7 @@
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/settings_d_minute"
             android:text="@string/settings_u_minute"
-            android:textSize="90sp"
+            android:textSize="95sp"
             android:textStyle="bold" />
 
         <ImageView
@@ -146,6 +189,7 @@
             android:layout_height="wrap_content"
             android:layout_above="@id/settings_hour"
             android:layout_alignLeft="@+id/settings_hour"
+            android:layout_marginLeft="25dp"
             android:contentDescription="@string/desc"
             android:src="@drawable/ic_up" />
         
@@ -171,8 +215,9 @@
             android:id="@+id/decrease_hour"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/settings_hour"
             android:layout_alignLeft="@+id/settings_hour"
+            android:layout_below="@id/settings_hour"
+            android:layout_marginLeft="25dp"
             android:contentDescription="@string/desc"
             android:src="@drawable/ic_down" />
         
@@ -242,7 +287,7 @@
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:text="@string/snooze"
-            android:textSize="50sp"
+            android:textSize="60sp"
             android:textStyle="bold" />
 
         <TextView
@@ -262,6 +307,28 @@
             android:layout_below="@id/min_textView"
             android:layout_centerHorizontal="true"
             android:text="@string/snooze_textView" />
+
+        <TextView
+            android:id="@+id/decrease_snooze"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="25dp"
+            android:layout_toLeftOf="@+id/snooze"
+            android:text="@string/decrease_snooze"
+            android:textSize="70sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/increase_snooze"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="25dp"
+            android:layout_toRightOf="@+id/snooze"
+            android:text="@string/increase_snooze"
+            android:textSize="60sp"
+            android:textStyle="bold" />
 
     </RelativeLayout>
 
