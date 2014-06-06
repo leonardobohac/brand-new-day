@@ -25,7 +25,7 @@
     <string name="title_activity_my_playlist">Song Selection</string>
     <string name="snoozing_time">3 minutes</string>
     <string name="snooze_disabled_checkBox">No Snooze</string>
-    <string name="volume_textView">Volume</string>
+    <string name="volume_textView">(volume)</string>
     <string name="volume_crescent_radioButton">Crescent</string>
     <string name="volume_low_radioButton">Low</string>
     <string name="volume_medium_radioButton">Medium</string>
@@ -37,5 +37,14 @@
     <string name="live">Viver</string>
     <string name="snooze_more">Zzzz...</string>
     <string name="title_activity_settings">Settings</string>
+    <string name="two_points">:</string>
+    <string name="settings_hour">8</string>
+    <string name="settings_d_minutes">3</string>
+    <string name="settings_u_minute">0</string>
+    <string name="desc">description</string>
+    <string name="snooze">10</string>
+    <string name="min_textView">min</string>
+    <string name="snooze_textView">(soneca)</string>
+    <string name="mon_textView">SEG</string>
 
 </resources>

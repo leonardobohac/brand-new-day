@@ -87,7 +87,7 @@ public class Settings extends Activity {
 		alarmActivated[ALARM_2_INDEX] = defaultPreferences.getBoolean("alarm2Activated", false);
 		alarmActivated[ALARM_3_INDEX] = defaultPreferences.getBoolean("alarm3Activated", false);
 		
-		inc_hour = (ImageView)findViewById(R.id.increase_hour);
+		/*inc_hour = (ImageView)findViewById(R.id.increase_hour);
 		dec_hour = (ImageView)findViewById(R.id.decrease_hour);
 		inc_minute = (ImageView)findViewById(R.id.increase_minute);
 		dec_minute = (ImageView)findViewById(R.id.decrease_minute);
@@ -120,7 +120,7 @@ public class Settings extends Activity {
 		sat = (ImageView)findViewById(R.id.saturday);
 		sat.setOnClickListener(dayButtonListener);
 		sun = (ImageView)findViewById(R.id.sunday);
-		sun.setOnClickListener(dayButtonListener);
+		sun.setOnClickListener(dayButtonListener);*/
 		
 		
 		
