@@ -54,5 +54,10 @@
     <string name="sun_textView">DOM</string>
     <string name="decrease_snooze">-</string>
     <string name="increase_snooze">+</string>
+    <string name="alarm_1">8:30</string>
+    <string name="alarm_2">10:10</string>
+    <string name="alarm_3">9:30</string>
+    <string name="nap">45</string>
+    <string name="playlist_textView">Para acordar bem</string>
 
 </resources>

@@ -120,6 +120,14 @@ public class Settings extends Activity {
 		inc_snooze = (TextView)findViewById(R.id.increase_snooze);
 		dec_snooze = (TextView)findViewById(R.id.decrease_snooze);
 		
+		mon.setOnClickListener(day_button_Listener);
+		tue.setOnClickListener(day_button_Listener);
+		wed.setOnClickListener(day_button_Listener);
+		thu.setOnClickListener(day_button_Listener);
+		fri.setOnClickListener(day_button_Listener);
+		sat.setOnClickListener(day_button_Listener);
+		sun.setOnClickListener(day_button_Listener);
+		
 		inc_hour.setOnClickListener(inc_hour_Listener);
 		dec_hour.setOnClickListener(dec_hour_Listener);
 		inc_d_minute.setOnClickListener(inc_d_minute_Listener);
@@ -223,6 +231,19 @@ public class Settings extends Activity {
 	    	if(new_snooze < 29)
 	    		new_snooze += 2;
 	    	snooze.setText(Integer.toString(new_snooze));	    	
+	    }
+	};
+	View.OnClickListener day_button_Listener = new View.OnClickListener() {
+	    public void onClick(View v) {
+	    	v = (RelativeLayout)v;
+	    	if(v.isSelected() == true){
+	    		v.setBackground(getResources().getDrawable(R.drawable.btn_inactive_small));
+	    		v.setSelected(false);
+	    	}
+	    	else{
+	    		v.setBackground(getResources().getDrawable(R.drawable.btn_active_small));
+	    		v.setSelected(true);
+	    	}		
 	    }
 	};
 	View.OnClickListener check_Listener = new View.OnClickListener() {

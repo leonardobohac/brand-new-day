@@ -1,95 +1,190 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="fill_parent" android:layout_height="fill_parent">
-	
-	<ToggleButton
-	    android:id="@+id/nap_toggleButton"
-	    android:layout_width="90dp"
-	    android:layout_height="70dp"
-	    android:layout_alignParentTop="true"
-	    android:layout_centerHorizontal="true"
-	    android:text="@string/alarm_nap_toggleButton"
-	    android:textOff="@string/alarm_nap_toggleButton"
-	    android:textOn="@string/alarm_nap_toggleButton" />
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/cachecolor"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/playlist_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.84" >
+
+        <RelativeLayout
+            android:id="@+id/playlist"
+            android:layout_width="270dp"
+            android:layout_height="105dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/btn_playlist" >
+
+            <TextView
+                android:id="@+id/playlist_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:text="@string/playlist_textView"
+                android:textColor="@color/white"
+                android:textSize="30sp"
+                android:textStyle="bold" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/alarm_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" >
+
+    <RelativeLayout
+        android:id="@+id/alarm_2"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/btn_alarm" >
+        
+        <TextView
+            android:id="@+id/alarm_2_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="@string/alarm_2"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/alarm_1"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_alignTop="@+id/alarm_2"
+        android:layout_marginLeft="30dp"
+        android:background="@drawable/btn_alarm" >
+
+        <TextView
+            android:id="@+id/alarm_1_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="@string/alarm_1"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/alarm_3"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/alarm_2"
+        android:layout_marginRight="30dp"
+        android:background="@drawable/btn_alarm" >
+        
+        <TextView
+            android:id="@+id/alarm_3_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="@string/alarm_3"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/check_alarm_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/alarm_1"
+        android:layout_alignRight="@+id/alarm_1"
+        android:layout_below="@+id/alarm_1"
+        android:layout_marginTop="5dp"
+        android:contentDescription="@string/desc"
+        android:src="@drawable/btn_check_alarm" />
     
-	<DigitalClock
-	    android:id="@+id/digitalClock1"
-	    android:layout_width="wrap_content"
-	    android:layout_height="70dp"
-	    android:layout_alignParentBottom="true"
-	    android:layout_centerHorizontal="true"
-	    android:text="@string/digitalclock"
-	    android:textColor="@color/black"
-	    android:textColorHint="@color/white"
-	    android:textSize="50sp" />
-
-	<SeekBar
-	    android:id="@+id/nap_seekBar"
-	    android:layout_width="190dp"
-	    android:layout_height="wrap_content"
-	    android:layout_centerHorizontal="true"
-	    android:layout_marginTop="190dp"
-	    android:rotation="270" />
-
-	<ToggleButton
-	    android:id="@+id/toggleButton2"
-	    android:layout_width="110dp"
-	    android:layout_height="85dp"
-	    android:layout_alignParentRight="true"
-	    android:layout_alignParentTop="true"
-	    android:text="@string/alarm_2_toggleButton"
-	    android:textOff="@string/alarm_2_toggleButton"
-	    android:textOn="@string/alarm_2_toggleButton"
-	    android:textSize="@dimen/alarmTextSize" />
-
-	<ToggleButton
-	    android:id="@+id/toggleButton1"
-	    android:layout_width="110dp"
-	    android:layout_height="85dp"
-	    android:layout_alignParentLeft="true"
-	    android:layout_alignParentTop="true"
-	    android:minWidth="64dp"
-	    android:text="@string/alarm_1_toggleButton"
-	    android:textAppearance="@style/AppTheme"
-	    android:textOff="@string/alarm_1_toggleButton"
-	    android:textOn="@string/alarm_1_toggleButton"
-	    android:textSize="@dimen/alarmTextSize" />
-
-	<Button
-	    android:id="@+id/alarm1_settings_button"
-	    android:layout_width="50dp"
-	    android:layout_height="50dp"
-	    android:layout_alignBaseline="@+id/alarm2_settings_button"
-	    android:layout_alignBottom="@+id/alarm2_settings_button"
-	    android:layout_alignParentLeft="true"
-	    android:text="@string/alarm_1_settings_button"
-	    android:textSize="8sp" />
-
-	<Button
-	    android:id="@+id/alarm2_settings_button"
-	    android:layout_width="50dp"
-	    android:layout_height="50dp"
-	    android:layout_alignParentRight="true"
-	    android:layout_below="@+id/toggleButton2"
-	    android:text="@string/alarm_2_settings_button"
-	    android:textSize="8sp" />
-
-	<Button
-	    android:id="@+id/nap_settings_button"
-	    android:layout_width="50dp"
-	    android:layout_height="40dp"
-	    android:layout_below="@+id/nap_toggleButton"
-	    android:layout_centerHorizontal="true"
-	    android:text="@string/alarm_nap_settings_button"
-	    android:textSize="6sp" />
-
-	<Button
-	    android:id="@+id/playlist_button"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:layout_above="@+id/digitalClock1"
-	    android:layout_centerInParent="true"
-	    android:layout_marginBottom="17dp"
-	    android:text="@string/playlist_button" />
+    <ImageView
+        android:id="@+id/check_alarm_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/alarm_2"
+        android:layout_alignRight="@+id/alarm_2"
+        android:layout_below="@+id/alarm_2"
+        android:layout_marginTop="5dp"
+        android:contentDescription="@string/desc"
+        android:src="@drawable/btn_check_alarm" />
+    
+    <ImageView
+        android:id="@+id/check_alarm_3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/alarm_3"
+        android:layout_alignRight="@+id/alarm_3"
+        android:layout_below="@+id/alarm_3"
+        android:layout_marginTop="5dp"
+        android:contentDescription="@string/desc"
+        android:src="@drawable/btn_check_alarm" />
 
 </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/nap_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" >
+
+        <RelativeLayout
+            android:id="@+id/nap"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="30dp"
+            android:background="@drawable/btn_nap" >
+
+            <TextView
+                android:id="@+id/nap_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:text="@string/nap"
+                android:textColor="@color/white"
+                android:textSize="23sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/min_nap"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/nap_textView"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="-3dp"
+                android:text="@string/min_textView"
+                android:textColor="@color/white"
+                android:textStyle="italic" />
+
+        </RelativeLayout>
+
+        <SeekBar
+            android:id="@+id/nap_seekBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="15dp"
+            android:layout_toRightOf="@+id/nap" />
+
+    </RelativeLayout>
+
+</LinearLayout>

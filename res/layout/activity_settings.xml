@@ -8,14 +8,15 @@
         android:id="@+id/days_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1.5" >
+        android:layout_weight="1.5"
+        android:baselineAligned="false" >
 
         <RelativeLayout
             android:id="@+id/mon"
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_weight="1"
-            android:background="@drawable/btn_active_small" >
+            android:background="@drawable/btn_inactive_small" >
 
             <TextView
                 android:id="@+id/mon_textView"
@@ -31,7 +32,7 @@
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_weight="1"
-            android:background="@drawable/btn_active_small" >
+            android:background="@drawable/btn_inactive_small" >
             
             <TextView
                 android:id="@+id/tue_textView"
@@ -46,7 +47,7 @@
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_weight="1"
-            android:background="@drawable/btn_active_small" >
+            android:background="@drawable/btn_inactive_small" >
             
             <TextView
                 android:id="@+id/wed_textView"
@@ -61,7 +62,7 @@
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_weight="1"
-            android:background="@drawable/btn_active_small" >
+            android:background="@drawable/btn_inactive_small" >
             
             <TextView
                 android:id="@+id/thu_textView"
@@ -76,7 +77,7 @@
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_weight="1"
-            android:background="@drawable/btn_active_small" >
+            android:background="@drawable/btn_inactive_small" >
             
             <TextView
                 android:id="@+id/fri_textView"
@@ -91,7 +92,7 @@
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_weight="1"
-            android:background="@drawable/btn_active_small" >
+            android:background="@drawable/btn_inactive_small" >
             
             <TextView
                 android:id="@+id/sat_textView"
@@ -106,7 +107,7 @@
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_weight="1"
-            android:background="@drawable/btn_active_small" >
+            android:background="@drawable/btn_inactive_small" >
             
             <TextView
                 android:id="@+id/sun_textView"

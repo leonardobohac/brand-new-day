@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Point;
@@ -23,9 +24,11 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -51,21 +54,24 @@ public class BrandNewDay extends Activity {
 	int volumeLow = 1;
 	int volumeMedium = 2;
 	int volumeHigh = 3;
-	int nap;
+	int nap_time;
 
-	ToggleButton alarm1ToggleButton;
-	ToggleButton alarm2ToggleButton;
-	ToggleButton alarm3ToggleButton;
-	ToggleButton alarmNapToggleButton;
-	Button alarm1SettingsButton;
-	Button alarm2SettingsButton;
-	Button alarmNapSettingsButton;
-	Button playlistButton;
-	SeekBar napSeekBar;
-	Boolean isActive;
-	String alarm1ToggleButtonText;
-	String alarm2ToggleButtonText;
-	String alarm3ToggleButtonText;
+	RelativeLayout playlist;
+	RelativeLayout alarm_1;
+	RelativeLayout alarm_2;
+	RelativeLayout alarm_3;
+	RelativeLayout nap;
+	
+	ImageView check_alarm_1;
+	ImageView check_alarm_2;
+	ImageView check_alarm_3;
+	
+	TextView alarm_1_textView;
+	TextView alarm_2_textView;
+	TextView alarm_3_textView;
+	TextView nap_textView;
+	
+	SeekBar nap_seekBar;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -75,65 +81,72 @@ public class BrandNewDay extends Activity {
 	    //Remove notification bar
 	    this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.brand_new_day);
-		getWindow().getDecorView().setBackgroundColor(getResources().getColor(R.color.blue));
+		//getWindow().getDecorView().setBackgroundColor(getResources().getColor(R.color.blue));
 		
-
 		myApplication = getMyApplication();
-		alarmHours = new int[3];
-		alarmMinutes = new int[3];
+		alarmHours = new int[4];
+		alarmMinutes = new int[4];
 		alarmSnoozes = new int[3];
 		alarmActivated = new boolean[4];
 		volumes = new int[4];
 		
-		
-
 		//PREFERENCES
 		SharedPreferences defaultPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-		alarmHours[ALARM_1_INDEX] = defaultPreferences.getInt("alarm1Hour", 7);
-		alarmHours[ALARM_2_INDEX] = defaultPreferences.getInt("alarm2Hour", 8);
+		alarmHours[ALARM_1_INDEX] = defaultPreferences.getInt("alarm1Hour", 8);
+		alarmHours[ALARM_2_INDEX] = defaultPreferences.getInt("alarm2Hour", 10);
+		alarmHours[ALARM_3_INDEX] = defaultPreferences.getInt("alarm3Hour", 9);
 		alarmMinutes[ALARM_1_INDEX] = defaultPreferences.getInt("alarm1Minute", 30);
-		alarmMinutes[ALARM_2_INDEX] = defaultPreferences.getInt("alarm2Minute", 15);
+		alarmMinutes[ALARM_2_INDEX] = defaultPreferences.getInt("alarm2Minute", 10);
+		alarmMinutes[ALARM_3_INDEX] = defaultPreferences.getInt("alarm3Minute", 30);
 		alarmSnoozes[ALARM_1_INDEX] = defaultPreferences.getInt("alarm1Snooze", 0);
 		alarmSnoozes[ALARM_2_INDEX] = defaultPreferences.getInt("alarm2Snooze", 0);
+		alarmSnoozes[ALARM_3_INDEX] = defaultPreferences.getInt("alarm3Snooze", 0);
 		alarmActivated[ALARM_1_INDEX] = defaultPreferences.getBoolean("alarm1Activated", false);
 		alarmActivated[ALARM_2_INDEX] = defaultPreferences.getBoolean("alarm2Activated", false);
+		alarmActivated[ALARM_3_INDEX] = defaultPreferences.getBoolean("alarm3Activated", false);
 		alarmActivated[ALARM_NAP_INDEX] = defaultPreferences.getBoolean("alarmNapActivated", false);
 		volumes[ALARM_1_INDEX] = defaultPreferences.getInt("alarm1Volume", volumeMedium);
 		volumes[ALARM_2_INDEX] = defaultPreferences.getInt("alarm2Volume", volumeMedium);
-		volumes[ALARM_NAP_INDEX] = defaultPreferences.getInt("alarmNapVolume", volumeMedium);
-		nap = defaultPreferences.getInt("nap", 20);
+		volumes[ALARM_3_INDEX] = defaultPreferences.getInt("alarm3Volume", volumeMedium);
+		//volumes[ALARM_NAP_INDEX] = defaultPreferences.getInt("alarmNapVolume", volumeMedium);
+		nap_time = defaultPreferences.getInt("nap_time", 30);
 		//////
-
-		alarm1ToggleButton = (ToggleButton)findViewById(R.id.toggleButton1);
-		alarm2ToggleButton = (ToggleButton)findViewById(R.id.toggleButton2);
-	    alarmNapToggleButton = (ToggleButton)findViewById(R.id.nap_toggleButton);
-	    alarm1SettingsButton = (Button)findViewById(R.id.alarm1_settings_button);
-	    alarm2SettingsButton = (Button)findViewById(R.id.alarm2_settings_button);
-	    alarmNapSettingsButton = (Button)findViewById(R.id.nap_settings_button);
-	    napSeekBar = (SeekBar) findViewById(R.id.nap_seekBar);
-	    playlistButton = (Button)findViewById(R.id.playlist_button);
+		
+		playlist = (RelativeLayout)findViewById(R.id.playlist);
+		alarm_1 = (RelativeLayout)findViewById(R.id.alarm_1);
+		alarm_2 = (RelativeLayout)findViewById(R.id.alarm_2);
+		alarm_3 = (RelativeLayout)findViewById(R.id.alarm_3);
+		nap = (RelativeLayout)findViewById(R.id.nap);
+		
+		check_alarm_1 = (ImageView)findViewById(R.id.check_alarm_1);
+		check_alarm_2 = (ImageView)findViewById(R.id.check_alarm_2);
+		check_alarm_3 = (ImageView)findViewById(R.id.check_alarm_3);
 	    
+		alarm_1_textView = (TextView)findViewById(R.id.alarm_1_textView);
+		alarm_2_textView = (TextView)findViewById(R.id.alarm_2_textView);
+		alarm_3_textView = (TextView)findViewById(R.id.alarm_3_textView);
+		nap_textView = (TextView)findViewById(R.id.nap_textView);
+		
+		nap_seekBar = (SeekBar)findViewById(R.id.nap_seekBar);
 	    
-	        
-	    alarm1ToggleButton.setChecked(alarmActivated[ALARM_1_INDEX]);
-		setButtonText(ALARM_1_INDEX);
-		alarm2ToggleButton.setChecked(alarmActivated[ALARM_2_INDEX]);
-		setButtonText(ALARM_2_INDEX);
-		alarmNapToggleButton.setChecked(alarmActivated[ALARM_NAP_INDEX]);
-		setButtonText(ALARM_NAP_INDEX);
+		set_alarm_text(ALARM_1_INDEX);
+		set_alarm_text(ALARM_2_INDEX);
+		set_alarm_text(ALARM_3_INDEX);
+		set_alarm_text(ALARM_NAP_INDEX);
 	
-	    alarm1SettingsButton.setOnClickListener(settings1Listener);
-	    alarm2SettingsButton.setOnClickListener(settings2Listener);
-	    alarmNapSettingsButton.setOnClickListener(settingsNapListener);
+	    alarm_1.setOnClickListener(alarm_1_listener);
+	    alarm_2.setOnClickListener(alarm_2_listener);
+	    alarm_3.setOnClickListener(alarm_3_listener);
 	    
-	    playlistButton.setOnClickListener(playlistButtonListener);
-	    alarm1ToggleButton.setOnClickListener(alarm1ToggleButtonListener);
-	    alarm2ToggleButton.setOnClickListener(alarm2ToggleButtonListener);
-	    alarmNapToggleButton.setOnClickListener(alarmNapToggleButtonListener);
-	    napSeekBar.setOnSeekBarChangeListener(OnSeekBarChangeListener);
-	    napSeekBar.setVisibility(View.GONE);
-	    //setNapButton.setOnClickListener(setNapButtonListener);
+	    check_alarm_1.setOnClickListener(check_alarm_1_listener);
+	    check_alarm_2.setOnClickListener(check_alarm_2_listener);
+	    check_alarm_3.setOnClickListener(check_alarm_3_listener);
+	    nap.setOnClickListener(nap_listener);
+	    
+	    playlist.setOnClickListener(playlist_listener);
+	    nap_seekBar.setOnSeekBarChangeListener(OnSeekBarChangeListener);    
 	}
+	
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -149,44 +162,42 @@ public class BrandNewDay extends Activity {
 		alarmActivated[ALARM_NAP_INDEX] = defaultPreferences.getBoolean("alarmNapActivated", false);
 		volumes[ALARM_1_INDEX] = defaultPreferences.getInt("alarm1Volume", volumeMedium);
 		volumes[ALARM_2_INDEX] = defaultPreferences.getInt("alarm2Volume", volumeMedium);
-		volumes[ALARM_NAP_INDEX] = defaultPreferences.getInt("alarmNapVolume", volumeMedium);
-		nap = defaultPreferences.getInt("nap", 20);
+		//volumes[ALARM_NAP_INDEX] = defaultPreferences.getInt("alarmNapVolume", volumeMedium);
+		nap_time = defaultPreferences.getInt("nap_time", 20);
 
-		alarm1ToggleButton.setChecked(alarmActivated[ALARM_1_INDEX]);
-		setButtonText(ALARM_1_INDEX);
-		alarm2ToggleButton.setChecked(alarmActivated[ALARM_2_INDEX]);
-		setButtonText(ALARM_2_INDEX);
-		alarmNapToggleButton.setChecked(alarmActivated[ALARM_NAP_INDEX]);
-		alarmNapToggleButton.setText(Integer.toString(nap) + " minutes");
+		set_alarm_text(ALARM_1_INDEX);
+		set_alarm_text(ALARM_2_INDEX);
+		set_alarm_text(ALARM_3_INDEX);
+		set_alarm_text(ALARM_NAP_INDEX);
+
 		
-		if(nap == 10)
-			napSeekBar.setProgress(4);
-		else if(nap == 15)
-			napSeekBar.setProgress(12);
-		else if(nap == 20)
-			napSeekBar.setProgress(20);
-		else if(nap == 25)
-			napSeekBar.setProgress(28);
-		else if(nap == 30)
-			napSeekBar.setProgress(36);
-		else if(nap == 35)
-			napSeekBar.setProgress(44);
-		else if(nap == 40)
-			napSeekBar.setProgress(52);
-		else if(nap == 45)
-			napSeekBar.setProgress(60);
-		else if(nap == 50)
-			napSeekBar.setProgress(68);
-		else if(nap == 55)
-			napSeekBar.setProgress(76);
-		else if(nap == 60)
-			napSeekBar.setProgress(84);
-		else if(nap == 75)
-			napSeekBar.setProgress(92);
-		else if(nap == 90)
-			napSeekBar.setProgress(100);
+		if(nap_time == 10)
+			nap_seekBar.setProgress(4);
+		else if(nap_time == 15)
+			nap_seekBar.setProgress(12);
+		else if(nap_time == 20)
+			nap_seekBar.setProgress(20);
+		else if(nap_time == 25)
+			nap_seekBar.setProgress(28);
+		else if(nap_time == 30)
+			nap_seekBar.setProgress(36);
+		else if(nap_time == 35)
+			nap_seekBar.setProgress(44);
+		else if(nap_time == 40)
+			nap_seekBar.setProgress(52);
+		else if(nap_time == 45)
+			nap_seekBar.setProgress(60);
+		else if(nap_time == 50)
+			nap_seekBar.setProgress(68);
+		else if(nap_time == 55)
+			nap_seekBar.setProgress(76);
+		else if(nap_time == 60)
+			nap_seekBar.setProgress(84);
+		else if(nap_time == 75)
+			nap_seekBar.setProgress(92);
+		else if(nap_time == 90)
+			nap_seekBar.setProgress(100);
 		
-		napSeekBar.setVisibility(View.GONE);
 		
 	}
 
@@ -216,8 +227,8 @@ public class BrandNewDay extends Activity {
 		editor.putBoolean("alarmNapActivated", alarmActivated[ALARM_NAP_INDEX]);
 		editor.putInt("alarm1Volume", volumes[ALARM_1_INDEX]);
 		editor.putInt("alarm2Volume", volumes[ALARM_2_INDEX]);
-		editor.putInt("alarmNapVolume", volumes[ALARM_NAP_INDEX]);
-		editor.putInt("nap", nap);
+		//editor.putInt("alarmNapVolume", volumes[ALARM_NAP_INDEX]);
+		editor.putInt("nap_time", nap_time);
 		
 		editor.commit();	
 	}
@@ -240,42 +251,61 @@ public class BrandNewDay extends Activity {
 		editor.putBoolean("alarmNapActivated", alarmActivated[ALARM_NAP_INDEX]);
 		editor.putInt("alarm1Volume", volumes[ALARM_1_INDEX]);
 		editor.putInt("alarm2Volume", volumes[ALARM_2_INDEX]);
-		editor.putInt("alarmNapVolume", volumes[ALARM_NAP_INDEX]);
-		editor.putInt("nap", nap);
+		//editor.putInt("alarmNapVolume", volumes[ALARM_NAP_INDEX]);
+		editor.putInt("nap_time", nap_time);
 		editor.commit();
 	}
 	
 	SeekBar.OnSeekBarChangeListener OnSeekBarChangeListener = new SeekBar.OnSeekBarChangeListener() {
 		@Override
 		public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-			if(progress <  8)
-				nap = 10;
+			if(progress < 2)
+				nap_time = 1;
+			else if(progress < 4)
+				nap_time = 2;
+			else if(progress < 6)
+				nap_time = 3;
+			else if(progress < 8)
+				nap_time = 4;
+			else if(progress < 10)
+				nap_time = 5;
+			else if(progress < 12)
+				nap_time = 6;
+			else if(progress < 14)
+				nap_time = 7;
 			else if(progress < 16)
-				nap = 15;
+				nap_time = 8;
+			else if(progress < 18)
+				nap_time = 9;
+			else if(progress < 20)
+				nap_time = 10;
 			else if(progress < 24)
-				nap = 20;
-			else if(progress < 32)
-				nap = 25;
-			else if(progress < 40)
-				nap = 30;
+				nap_time = 15;
+			else if(progress < 30)
+				nap_time = 20;
+			else if(progress < 36)
+				nap_time = 25;
+			else if(progress < 42)
+				nap_time = 30;
 			else if(progress < 48)
-				nap = 35;
-			else if(progress < 56)
-				nap = 40;
-			else if(progress < 64)
-				nap = 45;
+				nap_time = 35;
+			else if(progress < 54)
+				nap_time = 40;
+			else if(progress < 60)
+				nap_time = 45;
+			else if(progress < 66)
+				nap_time = 50;
 			else if(progress < 72)
-				nap = 50;
-			else if(progress < 80)
-				nap = 55;
-			else if(progress < 88)
-				nap = 60;
+				nap_time = 55;
+			else if(progress < 78)
+				nap_time = 60;
+			else if(progress < 86)
+				nap_time = 75;
 			else if(progress < 94)
-				nap = 75;
-			else if(progress < 100)
-				nap = 90;
-			
-			alarmNapToggleButton.setText(Integer.toString(nap) + " minutes");
+				nap_time = 90;
+			else if(progress <= 100)
+				nap_time = 120;
+			nap_textView.setText(Integer.toString(nap_time));
 		}
 
 		@Override
@@ -290,110 +320,108 @@ public class BrandNewDay extends Activity {
 			SharedPreferences defaultPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 			SharedPreferences.Editor editor = defaultPreferences.edit();
 			
-			editor.putInt("nap", nap);
+			editor.putInt("nap", nap_time);
 			editor.commit();
 		};
 	};
 
-	View.OnClickListener settings1Listener = new View.OnClickListener() {
+	
+	View.OnClickListener alarm_1_listener = new View.OnClickListener() {
 	    public void onClick(View v) {
 	    	Intent intent = new Intent(getApplicationContext(), Settings.class);
 	    	intent.putExtra("index", ALARM_1_INDEX);
-            //startActivityForResult(intent, SET_ALARM_REQUEST);
 	    	startActivity(intent);
 	    }
 	};
 	
-	View.OnClickListener settings2Listener = new View.OnClickListener() {
+	View.OnClickListener alarm_2_listener = new View.OnClickListener() {
 	    public void onClick(View v) {	    	
-	    	Intent intent = new Intent(getApplicationContext(), AlarmSettings.class);
+	    	Intent intent = new Intent(getApplicationContext(), Settings.class);
 	    	intent.putExtra("index", ALARM_2_INDEX);
-            //startActivityForResult(intent, SET_ALARM_REQUEST);
 	    	startActivity(intent);
 	    }
 	};
 	
-	View.OnClickListener settings3Listener = new View.OnClickListener() {
+	View.OnClickListener alarm_3_listener = new View.OnClickListener() {
 	    public void onClick(View v) {
-	    	Intent intent = new Intent(getApplicationContext(), AlarmSettings.class);
+	    	Intent intent = new Intent(getApplicationContext(), Settings.class);
 	    	intent.putExtra("index", ALARM_3_INDEX);
-            //startActivityForResult(intent, SET_ALARM_REQUEST);
 	    	startActivity(intent);
 	    }
 	};
 	
-	View.OnClickListener settingsNapListener = new View.OnClickListener() {
-	    public void onClick(View v) {
-	    	Log.d("nap", Integer.toString(nap));
-	    	if(napSeekBar.isActivated() == false){
-	    		napSeekBar.setVisibility(View.VISIBLE);
-	    		napSeekBar.setActivated(true);
-	    	}
-	    	else {
-	    		napSeekBar.setVisibility(View.GONE);
-	    		napSeekBar.setActivated(false);
-	    	}
-	    		
-	    }
-	};
-
-	View.OnClickListener alarm1ToggleButtonListener = new View.OnClickListener() {
+	View.OnClickListener check_alarm_1_listener = new View.OnClickListener() {
 	    	@Override
 	        public void onClick(View arg0) {
-	    		Log.d("TAG", "OI");
-	    		if(alarm1ToggleButton.isChecked()){
+	    		if(alarmActivated[ALARM_1_INDEX] == false){
 	            	alarmActivated[ALARM_1_INDEX] = true;
 	            	myApplication.activateAlarm(ALARM_1_INDEX, alarmHours, alarmMinutes, alarmSnoozes);
+	            	alarm_1_textView.setTextColor(getResources().getColor(R.color.blue));
 	            }
 	            else {
 	            	alarmActivated[ALARM_1_INDEX] = false;
 	            	myApplication.deactivateAlarm(ALARM_1_INDEX);
+	            	alarm_1_textView.setTextColor(Color.WHITE);
 	            }	
 	    	}
 	  	};
 	
-	  	View.OnClickListener alarm2ToggleButtonListener = new View.OnClickListener() {
+	  	View.OnClickListener check_alarm_2_listener = new View.OnClickListener() {
 	    	@Override
-	        public void onClick(View arg0) {     
-	    		if(alarm2ToggleButton.isChecked()){
+	        public void onClick(View arg0) {
+	    		if(alarmActivated[ALARM_2_INDEX] == false){
 	            	alarmActivated[ALARM_2_INDEX] = true;
 	            	myApplication.activateAlarm(ALARM_2_INDEX, alarmHours, alarmMinutes, alarmSnoozes);
+	            	alarm_1_textView.setTextColor(getResources().getColor(R.color.blue));
 	            }
 	            else {
 	            	alarmActivated[ALARM_2_INDEX] = false;
 	            	myApplication.deactivateAlarm(ALARM_2_INDEX);
+	            	alarm_2_textView.setTextColor(Color.WHITE);
 	            }	
 	    	}
 	  	};
 	  	
-
-	  	View.OnClickListener alarmNapToggleButtonListener = new View.OnClickListener() {
+	  	View.OnClickListener check_alarm_3_listener = new View.OnClickListener() {
 	    	@Override
 	        public void onClick(View arg0) {
-	    		alarmNapToggleButton.setText(Integer.toString(nap) + " minutes");
-	    		napSeekBar.setVisibility(View.GONE);
-	    		napSeekBar.setActivated(false);
-	    		if(alarmNapToggleButton.isChecked()){
-	            	//activated toggle button
-	            	alarmActivated[ALARM_NAP_INDEX] = true;
-	            	myApplication.activateNap(nap);
+	    		if(alarmActivated[ALARM_3_INDEX] == false){
+	            	alarmActivated[ALARM_3_INDEX] = true;
+	            	myApplication.activateAlarm(ALARM_3_INDEX, alarmHours, alarmMinutes, alarmSnoozes);
+	            	alarm_1_textView.setTextColor(getResources().getColor(R.color.blue));
 	            }
 	            else {
-	            	//toggle button is inactive
+	            	alarmActivated[ALARM_3_INDEX] = false;
+	            	myApplication.deactivateAlarm(ALARM_1_INDEX);
+	            	alarm_3_textView.setTextColor(Color.WHITE);
+	            }	
+	    	}
+	  	};
+	
+	  	View.OnClickListener nap_listener = new View.OnClickListener() {
+	    	@Override
+	        public void onClick(View arg0) {
+	    		if(alarmActivated[ALARM_NAP_INDEX] = false){
+	            	alarmActivated[ALARM_NAP_INDEX] = true;
+	            	nap_textView.setTextColor((getResources().getColor(R.color.blue)));
+	            	myApplication.activateNap(nap_time);
+	            	
+	            }
+	            else {
 	            	alarmActivated[ALARM_NAP_INDEX] = false;
+	            	nap_textView.setTextColor(Color.WHITE);
 	            	myApplication.deactivateNap();
 	            }	
-	    	
 	    	}
 	  	};
 	  	
-	  	View.OnClickListener playlistButtonListener = new View.OnClickListener() {
+	  	View.OnClickListener playlist_listener = new View.OnClickListener() {
 		    public void onClick(View v) {
 		    	Intent i = new Intent(getApplicationContext(), SongList.class);
                 startActivity(i);
             }
 	  	};
-	  
+	  	
         
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -403,27 +431,18 @@ public class BrandNewDay extends Activity {
 	}
 
         
-	public void setButtonText(int index) {
-		if(index < 3){
+	public void set_alarm_text(int index) {
 		String hour_string = formatter.format(alarmHours[index]);
 		String minute_string = formatter.format(alarmMinutes[index]);
-			if(index == ALARM_1_INDEX) {
-				alarm1ToggleButton.setText(hour_string + ':' + minute_string);
-				alarm1ToggleButton.setTextOff(hour_string + ':' + minute_string);
-			    alarm1ToggleButton.setTextOn(hour_string + ':' + minute_string);
-			}
-			else if(index == ALARM_2_INDEX) {
-				alarm2ToggleButton.setText(hour_string + ':' + minute_string);
-				alarm2ToggleButton.setTextOff(hour_string + ':' + minute_string);
-			    alarm2ToggleButton.setTextOn(hour_string + ':' + minute_string);
-			}
-			else if(index == ALARM_NAP_INDEX) {
-				alarmNapToggleButton.setText(Integer.toString(nap));
-				alarmNapToggleButton.setTextOff(Integer.toString(nap));
-				alarmNapToggleButton.setTextOn(Integer.toString(nap));
-			}
+			if(index == ALARM_1_INDEX)
+				alarm_1_textView.setText(hour_string + ':' + minute_string);
+			else if(index == ALARM_2_INDEX)
+				alarm_2_textView.setText(hour_string + ':' + minute_string);
+			else if(index == ALARM_3_INDEX)
+				alarm_3_textView.setText(hour_string + ':' + minute_string);
+			else if(index == ALARM_NAP_INDEX)
+				nap_textView.setText(Integer.toString(nap_time));			
 		}
-	}
 	
 	public MyApplication getMyApplication() {
 		return (MyApplication)getApplication();
@@ -509,10 +528,11 @@ public class BrandNewDay extends Activity {
 		editor.commit();
 	}*/
 	
-	
-	
-	
+	  	
 }
+	
+	
+
 
 
         
