@@ -25,7 +25,7 @@ import android.content.SharedPreferences;
 public class AlarmService extends Service implements MediaPlayer.OnCompletionListener {
 	MyApplication myApplication;
 	MediaPlayer mediaPlayer = null;
-	int[] volumes = new int[4];
+	float[] volumes = new float[3];
 	Set<String> emptySet = new HashSet<String>();
 	ArrayList<Uri> randomAudioUris;    //keeps only the not yet-played tracks
 	ArrayList<Uri> audioUris;
@@ -35,7 +35,8 @@ public class AlarmService extends Service implements MediaPlayer.OnCompletionLis
 	int index;
 	int snooze; 
 	WakeLock wakeLock;
-	float mediaPlayerDefaultVolume = 1.0f;
+	public static float volumeMedium = 0.5f;
+	float volume;
 	int volumeCounter = 1;
 	int volumeCode;
 	Timer volumeRaiserTimer = new Timer();
@@ -43,10 +44,6 @@ public class AlarmService extends Service implements MediaPlayer.OnCompletionLis
 	static final int ALARM_2_INDEX = 1;
 	static final int ALARM_3_INDEX = 2;
 	static final int ALARM_NAP_INDEX = 3;
-	int volumeCrescent = 0;
-	int volumeLow = 1;
-	int volumeMedium = 2;
-	int volumeHigh = 3;
 	
 	protected MyApplication getMyApplication() {
 		return (MyApplication)getApplication();
@@ -71,9 +68,9 @@ public class AlarmService extends Service implements MediaPlayer.OnCompletionLis
 		myApplication = getMyApplication();
 		SharedPreferences defaultPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		SharedPreferences.Editor editor = defaultPreferences.edit();
-		volumes[ALARM_1_INDEX] = defaultPreferences.getInt("alarm1Volume", volumeMedium);
-		volumes[ALARM_2_INDEX] = defaultPreferences.getInt("alarm2Volume", volumeMedium);
-		volumes[ALARM_NAP_INDEX] = defaultPreferences.getInt("alarmNapVolume", volumeMedium);
+		volumes[ALARM_1_INDEX] = defaultPreferences.getFloat("alarm1Volume", volumeMedium);
+		volumes[ALARM_2_INDEX] = defaultPreferences.getFloat("alarm2Volume", volumeMedium);
+		volumes[ALARM_3_INDEX] = defaultPreferences.getFloat("alarm3Volume", volumeMedium);
 		
 		PowerManager mgr = (PowerManager)getApplicationContext().getSystemService(Context.POWER_SERVICE);
 		AudioManager audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
@@ -85,6 +82,7 @@ public class AlarmService extends Service implements MediaPlayer.OnCompletionLis
 		
 		index = intent.getExtras().getInt("index");
 		snooze = intent.getExtras().getInt("snooze");
+		volume = volumes[index];
 		
 		String audioUrisFromPreferences = defaultPreferences.getString("audioUrisFromPreferences", "");
 		try {
@@ -128,26 +126,8 @@ public class AlarmService extends Service implements MediaPlayer.OnCompletionLis
 				editor.commit();
 			}
 			mediaPlayer.setOnCompletionListener(this);
-
-			
-		    if(volumes[index] == volumeCrescent){
-			    mediaPlayer.setVolume(mediaPlayerDefaultVolume, mediaPlayerDefaultVolume);
-				audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 1, 0);
-				volumeRaiserTimer.schedule(raiseVolumeTask, 4500, 4500);
-			}
-			else if(volumes[index] == volumeLow){
-			    mediaPlayer.setVolume(mediaPlayerDefaultVolume, mediaPlayerDefaultVolume);
-				audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 5, 0);
-			}
-			else if(volumes[index] == volumeMedium){
-			    mediaPlayer.setVolume(mediaPlayerDefaultVolume, mediaPlayerDefaultVolume);
-				audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 10, 0);
-			}
-			else if(volumes[index] == volumeHigh){
-			    mediaPlayer.setVolume(mediaPlayerDefaultVolume, mediaPlayerDefaultVolume);
-				audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,  audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
-			}
-		    
+			audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,  audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
+			mediaPlayer.setVolume(volume, volume); 
 			mediaPlayer.start();
 		    
 		}
@@ -172,24 +152,8 @@ public class AlarmService extends Service implements MediaPlayer.OnCompletionLis
 		else {
 		    mediaPlayer = MediaPlayer.create(getApplicationContext(), randomAudioUris.get(firstTrack));
 		    randomAudioUris.remove(firstTrack);
-		    //mediaPlayer.setOnCompletionListener(this);
-		    if(volumes[index] == volumeCrescent){
-		        mediaPlayer.setVolume(mediaPlayerDefaultVolume, mediaPlayerDefaultVolume);
-			    audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 1, 0);
-			    volumeRaiserTimer.schedule(raiseVolumeTask, 3000, 3000);
-		    }
-		    else if(volumes[index] == volumeLow){
-		    	mediaPlayer.setVolume(mediaPlayerDefaultVolume, mediaPlayerDefaultVolume);
-		    	audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 5, 0);
-		    }
-		    else if(volumes[index] == volumeMedium){
-		    	mediaPlayer.setVolume(mediaPlayerDefaultVolume, mediaPlayerDefaultVolume);
-		    	audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 10, 0);
-		    }
-		    else if(volumes[index] == volumeHigh){
-		    	mediaPlayer.setVolume(mediaPlayerDefaultVolume, mediaPlayerDefaultVolume);
-		    	audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,  audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
-		    }
+		    audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,  audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
+			mediaPlayer.setVolume(volume, volume); 
 		    mediaPlayer.start();
 		}
       }

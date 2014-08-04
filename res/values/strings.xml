@@ -34,7 +34,7 @@
     <string name="title_activity_test">TestActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_song_list">SongList</string>
-    <string name="live">Viver</string>
+    <string name="live">Acordar e Viver</string>
     <string name="snooze_more">Zzzz...</string>
     <string name="title_activity_settings">Settings</string>
     <string name="two_points">:</string>
@@ -58,6 +58,12 @@
     <string name="alarm_2">10:10</string>
     <string name="alarm_3">9:30</string>
     <string name="nap">45</string>
-    <string name="playlist_textView">Para acordar bem</string>
+    <string name="playlist_textView">Meus Toques</string>
+    <string name="nap_of">(cochilo)</string>
+    <string name="my_songs">(meus toques)</string>
+    <string name="random_play">"(que vão tocar aleatoriamente nos alarmes)"</string>
+    <string name="alarm1_textView">Alarme 1</string>
+    <string name="alarm2_textView">Alarme 2</string>
+    <string name="alarm3_textView">Alarme 3</string>
 
 </resources>

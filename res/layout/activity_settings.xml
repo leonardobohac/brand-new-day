@@ -2,13 +2,14 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@color/black"
+    android:contentDescription="@string/desc"
     android:orientation="vertical" >
 
     <LinearLayout
         android:id="@+id/days_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1.5"
+        android:layout_weight="0.3"
         android:baselineAligned="false" >
 
         <RelativeLayout
@@ -122,35 +123,20 @@
     </LinearLayout>
 
     <RelativeLayout
-        android:id="@+id/check_layout"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.8" >
-
-        <ImageView
-            android:id="@+id/check"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:contentDescription="@string/desc"
-            android:src="@drawable/btn_check" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
         android:id="@+id/time_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="2" >
+        android:layout_height="0dp"
+        android:layout_marginTop="30dp"
+        android:layout_weight="0.8" >
 
         <TextView
             android:id="@+id/two_points"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
             android:text="@string/two_points"
+            android:textColor="@color/blue"
             android:textSize="90sp"
             android:textStyle="bold" />
 
@@ -161,6 +147,7 @@
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/two_points"
             android:text="@string/settings_hour"
+            android:textColor="@color/blue"
             android:textSize="95sp"
             android:textStyle="bold" />
 
@@ -171,6 +158,7 @@
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/two_points"
             android:text="@string/settings_d_minutes"
+            android:textColor="@color/blue"
             android:textSize="95sp"
             android:textStyle="bold" />
 
@@ -181,6 +169,7 @@
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/settings_d_minute"
             android:text="@string/settings_u_minute"
+            android:textColor="@color/blue"
             android:textSize="95sp"
             android:textStyle="bold" />
 
@@ -245,7 +234,7 @@
     <RelativeLayout
         android:id="@+id/volume_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_weight="0.4" >
 
         <ImageView
@@ -271,6 +260,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/volume_icon"
             android:layout_centerHorizontal="true"
+            android:layout_marginTop="-10dp"
             android:text="@string/volume_textView" />
 
     </RelativeLayout>
@@ -278,8 +268,8 @@
     <RelativeLayout
         android:id="@+id/snooze_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="2" >
+        android:layout_height="0dp"
+        android:layout_weight="0.8" >
 
         <TextView
             android:id="@+id/snooze"
@@ -288,6 +278,7 @@
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:text="@string/snooze"
+            android:textColor="@color/gold"
             android:textSize="60sp"
             android:textStyle="bold" />
 
@@ -297,7 +288,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/snooze"
             android:layout_centerHorizontal="true"
+            android:layout_marginTop="-15dp"
             android:text="@string/min_textView"
+            android:textColor="@color/gold"
             android:textSize="20sp"
             android:textStyle="italic" />
 
@@ -317,6 +310,7 @@
             android:layout_marginRight="25dp"
             android:layout_toLeftOf="@+id/snooze"
             android:text="@string/decrease_snooze"
+            android:textColor="@color/gold"
             android:textSize="70sp"
             android:textStyle="bold" />
 
@@ -328,9 +322,18 @@
             android:layout_marginLeft="25dp"
             android:layout_toRightOf="@+id/snooze"
             android:text="@string/increase_snooze"
+            android:textColor="@color/gold"
             android:textSize="60sp"
             android:textStyle="bold" />
 
     </RelativeLayout>
+
+    <ImageButton
+        android:id="@+id/check"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:contentDescription="@string/desc"
+        android:src="@drawable/ic_action_accept" />
 
 </LinearLayout>

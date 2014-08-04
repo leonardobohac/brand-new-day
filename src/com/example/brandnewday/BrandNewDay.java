@@ -13,7 +13,9 @@ import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
@@ -37,7 +39,7 @@ public class BrandNewDay extends Activity {
 	public int[] alarmHours;
 	public int[] alarmMinutes;
 	public int[] alarmSnoozes;
-	public int[] volumes;
+	public float[] volumes;
 	public boolean[] alarmActivated;
 	PendingIntent pendingIntent;
 	ArrayList<Uri> audioUris;
@@ -50,10 +52,7 @@ public class BrandNewDay extends Activity {
 	static final int ALARM_NAP_INDEX = 3;
 	static final boolean ALARM_ACTIVE = true;
 	static final boolean ALARM_NOT_ACTIVE = false;
-	int volumeCrescent = 0;
-	int volumeLow = 1;
-	int volumeMedium = 2;
-	int volumeHigh = 3;
+	float volumeMedium = 0.5f;
 	int nap_time;
 
 	RelativeLayout playlist;
@@ -62,9 +61,9 @@ public class BrandNewDay extends Activity {
 	RelativeLayout alarm_3;
 	RelativeLayout nap;
 	
-	ImageView check_alarm_1;
-	ImageView check_alarm_2;
-	ImageView check_alarm_3;
+	ImageView settings_alarm_1;
+	ImageView settings_alarm_2;
+	ImageView settings_alarm_3;
 	
 	TextView alarm_1_textView;
 	TextView alarm_2_textView;
@@ -84,11 +83,11 @@ public class BrandNewDay extends Activity {
 		//getWindow().getDecorView().setBackgroundColor(getResources().getColor(R.color.blue));
 		
 		myApplication = getMyApplication();
-		alarmHours = new int[4];
-		alarmMinutes = new int[4];
+		alarmHours = new int[3];
+		alarmMinutes = new int[3];
 		alarmSnoozes = new int[3];
 		alarmActivated = new boolean[4];
-		volumes = new int[4];
+		volumes = new float[3];
 		
 		//PREFERENCES
 		SharedPreferences defaultPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -105,12 +104,10 @@ public class BrandNewDay extends Activity {
 		alarmActivated[ALARM_2_INDEX] = defaultPreferences.getBoolean("alarm2Activated", false);
 		alarmActivated[ALARM_3_INDEX] = defaultPreferences.getBoolean("alarm3Activated", false);
 		alarmActivated[ALARM_NAP_INDEX] = defaultPreferences.getBoolean("alarmNapActivated", false);
-		volumes[ALARM_1_INDEX] = defaultPreferences.getInt("alarm1Volume", volumeMedium);
-		volumes[ALARM_2_INDEX] = defaultPreferences.getInt("alarm2Volume", volumeMedium);
-		volumes[ALARM_3_INDEX] = defaultPreferences.getInt("alarm3Volume", volumeMedium);
-		//volumes[ALARM_NAP_INDEX] = defaultPreferences.getInt("alarmNapVolume", volumeMedium);
+		volumes[ALARM_1_INDEX] = defaultPreferences.getFloat("alarm1Volume", volumeMedium);
+		volumes[ALARM_2_INDEX] = defaultPreferences.getFloat("alarm2Volume", volumeMedium);
+		volumes[ALARM_3_INDEX] = defaultPreferences.getFloat("alarm3Volume", volumeMedium);
 		nap_time = defaultPreferences.getInt("nap_time", 30);
-		//////
 		
 		playlist = (RelativeLayout)findViewById(R.id.playlist);
 		alarm_1 = (RelativeLayout)findViewById(R.id.alarm_1);
@@ -118,9 +115,9 @@ public class BrandNewDay extends Activity {
 		alarm_3 = (RelativeLayout)findViewById(R.id.alarm_3);
 		nap = (RelativeLayout)findViewById(R.id.nap);
 		
-		check_alarm_1 = (ImageView)findViewById(R.id.check_alarm_1);
-		check_alarm_2 = (ImageView)findViewById(R.id.check_alarm_2);
-		check_alarm_3 = (ImageView)findViewById(R.id.check_alarm_3);
+		settings_alarm_1 = (ImageView)findViewById(R.id.settings_alarm_1);
+		settings_alarm_2 = (ImageView)findViewById(R.id.settings_alarm_2);
+		settings_alarm_3 = (ImageView)findViewById(R.id.settings_alarm_3);
 	    
 		alarm_1_textView = (TextView)findViewById(R.id.alarm_1_textView);
 		alarm_2_textView = (TextView)findViewById(R.id.alarm_2_textView);
@@ -137,34 +134,42 @@ public class BrandNewDay extends Activity {
 	    alarm_1.setOnClickListener(alarm_1_listener);
 	    alarm_2.setOnClickListener(alarm_2_listener);
 	    alarm_3.setOnClickListener(alarm_3_listener);
-	    
-	    check_alarm_1.setOnClickListener(check_alarm_1_listener);
-	    check_alarm_2.setOnClickListener(check_alarm_2_listener);
-	    check_alarm_3.setOnClickListener(check_alarm_3_listener);
 	    nap.setOnClickListener(nap_listener);
 	    
+	    settings_alarm_1.setOnClickListener(settings_alarm_1_listener);
+	    settings_alarm_2.setOnClickListener(settings_alarm_2_listener);
+	    settings_alarm_3.setOnClickListener(settings_alarm_3_listener);
+	    
+	    
 	    playlist.setOnClickListener(playlist_listener);
-	    nap_seekBar.setOnSeekBarChangeListener(OnSeekBarChangeListener);    
+	    nap_seekBar.setOnSeekBarChangeListener(OnSeekBarChangeListener);
+	    
+	    Log.d("ativado", Boolean.toString(alarmActivated[ALARM_NAP_INDEX]));
 	}
 	
 	@Override
 	protected void onResume() {
 		super.onResume();
 		SharedPreferences defaultPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-		alarmHours[ALARM_1_INDEX] = defaultPreferences.getInt("alarm1Hour", 7);
-		alarmHours[ALARM_2_INDEX] = defaultPreferences.getInt("alarm2Hour", 8);
+		alarmHours[ALARM_1_INDEX] = defaultPreferences.getInt("alarm1Hour", 8);
+		alarmHours[ALARM_2_INDEX] = defaultPreferences.getInt("alarm2Hour", 10);
+		alarmHours[ALARM_3_INDEX] = defaultPreferences.getInt("alarm3Hour", 9);
 		alarmMinutes[ALARM_1_INDEX] = defaultPreferences.getInt("alarm1Minute", 30);
-		alarmMinutes[ALARM_2_INDEX] = defaultPreferences.getInt("alarm2Minute", 15);
+		alarmMinutes[ALARM_2_INDEX] = defaultPreferences.getInt("alarm2Minute", 10);
+		alarmMinutes[ALARM_3_INDEX] = defaultPreferences.getInt("alarm3Minute", 30);
 		alarmSnoozes[ALARM_1_INDEX] = defaultPreferences.getInt("alarm1Snooze", 0);
 		alarmSnoozes[ALARM_2_INDEX] = defaultPreferences.getInt("alarm2Snooze", 0);
+		alarmSnoozes[ALARM_3_INDEX] = defaultPreferences.getInt("alarm3Snooze", 0);
 		alarmActivated[ALARM_1_INDEX] = defaultPreferences.getBoolean("alarm1Activated", false);
 		alarmActivated[ALARM_2_INDEX] = defaultPreferences.getBoolean("alarm2Activated", false);
+		alarmActivated[ALARM_3_INDEX] = defaultPreferences.getBoolean("alarm3Activated", false);
 		alarmActivated[ALARM_NAP_INDEX] = defaultPreferences.getBoolean("alarmNapActivated", false);
-		volumes[ALARM_1_INDEX] = defaultPreferences.getInt("alarm1Volume", volumeMedium);
-		volumes[ALARM_2_INDEX] = defaultPreferences.getInt("alarm2Volume", volumeMedium);
-		//volumes[ALARM_NAP_INDEX] = defaultPreferences.getInt("alarmNapVolume", volumeMedium);
-		nap_time = defaultPreferences.getInt("nap_time", 20);
+		volumes[ALARM_1_INDEX] = defaultPreferences.getFloat("alarm1Volume", volumeMedium);
+		volumes[ALARM_2_INDEX] = defaultPreferences.getFloat("alarm2Volume", volumeMedium);
+		volumes[ALARM_3_INDEX] = defaultPreferences.getFloat("alarm3Volume", volumeMedium);
+		nap_time = defaultPreferences.getInt("nap_time", 30);
 
+		
 		set_alarm_text(ALARM_1_INDEX);
 		set_alarm_text(ALARM_2_INDEX);
 		set_alarm_text(ALARM_3_INDEX);
@@ -204,6 +209,28 @@ public class BrandNewDay extends Activity {
 	@Override
 	protected void onPause() {
 		super.onPause();
+		SharedPreferences defaultPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+		SharedPreferences.Editor editor = defaultPreferences.edit();
+
+		editor.putInt("alarm1Hour", alarmHours[ALARM_1_INDEX]);
+		editor.putInt("alarm2Hour", alarmHours[ALARM_2_INDEX]);
+		editor.putInt("alarm3Hour", alarmHours[ALARM_3_INDEX]);
+		editor.putInt("alarm1Minute", alarmMinutes[ALARM_1_INDEX]);
+		editor.putInt("alarm2Minute", alarmMinutes[ALARM_2_INDEX]);
+		editor.putInt("alarm3Minute", alarmMinutes[ALARM_3_INDEX]);
+		editor.putInt("alarm1Snooze", alarmSnoozes[ALARM_1_INDEX]);
+		editor.putInt("alarm2Snooze", alarmSnoozes[ALARM_2_INDEX]);
+		editor.putInt("alarm3Snooze", alarmSnoozes[ALARM_3_INDEX]);
+		editor.putBoolean("alarm1Activated", alarmActivated[ALARM_1_INDEX]);
+		editor.putBoolean("alarm2Activated", alarmActivated[ALARM_2_INDEX]);
+		editor.putBoolean("alarm3Activated", alarmActivated[ALARM_3_INDEX]);
+		editor.putBoolean("alarmNapActivated", alarmActivated[ALARM_NAP_INDEX]);
+		editor.putFloat("alarm1Volume", volumes[ALARM_1_INDEX]);
+		editor.putFloat("alarm2Volume", volumes[ALARM_2_INDEX]);
+		editor.putFloat("alarm3Volume", volumes[ALARM_3_INDEX]);
+		editor.putInt("nap_time", nap_time);
+		
+		editor.commit();
 		
 	}
 		
@@ -222,12 +249,14 @@ public class BrandNewDay extends Activity {
 		editor.putInt("alarm3Minute", alarmMinutes[ALARM_3_INDEX]);
 		editor.putInt("alarm1Snooze", alarmSnoozes[ALARM_1_INDEX]);
 		editor.putInt("alarm2Snooze", alarmSnoozes[ALARM_2_INDEX]);
+		editor.putInt("alarm3Snooze", alarmSnoozes[ALARM_3_INDEX]);
 		editor.putBoolean("alarm1Activated", alarmActivated[ALARM_1_INDEX]);
 		editor.putBoolean("alarm2Activated", alarmActivated[ALARM_2_INDEX]);
+		editor.putBoolean("alarm3Activated", alarmActivated[ALARM_3_INDEX]);
 		editor.putBoolean("alarmNapActivated", alarmActivated[ALARM_NAP_INDEX]);
-		editor.putInt("alarm1Volume", volumes[ALARM_1_INDEX]);
-		editor.putInt("alarm2Volume", volumes[ALARM_2_INDEX]);
-		//editor.putInt("alarmNapVolume", volumes[ALARM_NAP_INDEX]);
+		editor.putFloat("alarm1Volume", volumes[ALARM_1_INDEX]);
+		editor.putFloat("alarm2Volume", volumes[ALARM_2_INDEX]);
+		editor.putFloat("alarm3Volume", volumes[ALARM_3_INDEX]);
 		editor.putInt("nap_time", nap_time);
 		
 		editor.commit();	
@@ -242,18 +271,23 @@ public class BrandNewDay extends Activity {
 
 		editor.putInt("alarm1Hour", alarmHours[ALARM_1_INDEX]);
 		editor.putInt("alarm2Hour", alarmHours[ALARM_2_INDEX]);
+		editor.putInt("alarm3Hour", alarmHours[ALARM_3_INDEX]);
 		editor.putInt("alarm1Minute", alarmMinutes[ALARM_1_INDEX]);
 		editor.putInt("alarm2Minute", alarmMinutes[ALARM_2_INDEX]);
+		editor.putInt("alarm3Minute", alarmMinutes[ALARM_3_INDEX]);
 		editor.putInt("alarm1Snooze", alarmSnoozes[ALARM_1_INDEX]);
 		editor.putInt("alarm2Snooze", alarmSnoozes[ALARM_2_INDEX]);
+		editor.putInt("alarm3Snooze", alarmSnoozes[ALARM_3_INDEX]);
 		editor.putBoolean("alarm1Activated", alarmActivated[ALARM_1_INDEX]);
 		editor.putBoolean("alarm2Activated", alarmActivated[ALARM_2_INDEX]);
+		editor.putBoolean("alarm3Activated", alarmActivated[ALARM_3_INDEX]);
 		editor.putBoolean("alarmNapActivated", alarmActivated[ALARM_NAP_INDEX]);
-		editor.putInt("alarm1Volume", volumes[ALARM_1_INDEX]);
-		editor.putInt("alarm2Volume", volumes[ALARM_2_INDEX]);
-		//editor.putInt("alarmNapVolume", volumes[ALARM_NAP_INDEX]);
+		editor.putFloat("alarm1Volume", volumes[ALARM_1_INDEX]);
+		editor.putFloat("alarm2Volume", volumes[ALARM_2_INDEX]);
+		editor.putFloat("alarm3Volume", volumes[ALARM_3_INDEX]);
 		editor.putInt("nap_time", nap_time);
-		editor.commit();
+		
+		editor.commit();	
 	}
 	
 	SeekBar.OnSeekBarChangeListener OnSeekBarChangeListener = new SeekBar.OnSeekBarChangeListener() {
@@ -326,7 +360,7 @@ public class BrandNewDay extends Activity {
 	};
 
 	
-	View.OnClickListener alarm_1_listener = new View.OnClickListener() {
+	View.OnClickListener settings_alarm_1_listener = new View.OnClickListener() {
 	    public void onClick(View v) {
 	    	Intent intent = new Intent(getApplicationContext(), Settings.class);
 	    	intent.putExtra("index", ALARM_1_INDEX);
@@ -334,7 +368,7 @@ public class BrandNewDay extends Activity {
 	    }
 	};
 	
-	View.OnClickListener alarm_2_listener = new View.OnClickListener() {
+	View.OnClickListener settings_alarm_2_listener = new View.OnClickListener() {
 	    public void onClick(View v) {	    	
 	    	Intent intent = new Intent(getApplicationContext(), Settings.class);
 	    	intent.putExtra("index", ALARM_2_INDEX);
@@ -342,7 +376,7 @@ public class BrandNewDay extends Activity {
 	    }
 	};
 	
-	View.OnClickListener alarm_3_listener = new View.OnClickListener() {
+	View.OnClickListener settings_alarm_3_listener = new View.OnClickListener() {
 	    public void onClick(View v) {
 	    	Intent intent = new Intent(getApplicationContext(), Settings.class);
 	    	intent.putExtra("index", ALARM_3_INDEX);
@@ -350,50 +384,63 @@ public class BrandNewDay extends Activity {
 	    }
 	};
 	
-	View.OnClickListener check_alarm_1_listener = new View.OnClickListener() {
+	View.OnClickListener alarm_1_listener = new View.OnClickListener() {
 	    	@Override
 	        public void onClick(View arg0) {
 	    		if(alarmActivated[ALARM_1_INDEX] == false){
 	            	alarmActivated[ALARM_1_INDEX] = true;
 	            	myApplication.activateAlarm(ALARM_1_INDEX, alarmHours, alarmMinutes, alarmSnoozes);
-	            	alarm_1_textView.setTextColor(getResources().getColor(R.color.blue));
+	            	alarm_1_textView.setTextColor(getResources().getColor(R.color.blueback));
+	            	setBackground(alarm_1, getResources().getDrawable(R.drawable.btn_alarm_checked));
+	            	Toast.makeText(getApplicationContext(), "Alarme Ativado! Sonhe com os anjos", Toast.LENGTH_SHORT).show();
 	            }
 	            else {
 	            	alarmActivated[ALARM_1_INDEX] = false;
 	            	myApplication.deactivateAlarm(ALARM_1_INDEX);
 	            	alarm_1_textView.setTextColor(Color.WHITE);
+	            	setBackground(alarm_1, getResources().getDrawable(R.drawable.btn_alarm));
+	            	Toast.makeText(getApplicationContext(), "Alarme Desativado", Toast.LENGTH_SHORT).show();
+	            	
 	            }	
 	    	}
 	  	};
 	
-	  	View.OnClickListener check_alarm_2_listener = new View.OnClickListener() {
+	  	View.OnClickListener alarm_2_listener = new View.OnClickListener() {
 	    	@Override
 	        public void onClick(View arg0) {
 	    		if(alarmActivated[ALARM_2_INDEX] == false){
 	            	alarmActivated[ALARM_2_INDEX] = true;
 	            	myApplication.activateAlarm(ALARM_2_INDEX, alarmHours, alarmMinutes, alarmSnoozes);
-	            	alarm_1_textView.setTextColor(getResources().getColor(R.color.blue));
+	            	alarm_2_textView.setTextColor(getResources().getColor(R.color.blueback));
+	            	setBackground(alarm_2, getResources().getDrawable(R.drawable.btn_alarm_checked));
+	            	Toast.makeText(getApplicationContext(), "Alarme Ativado! Sonhe com os anjos", Toast.LENGTH_SHORT).show();
 	            }
 	            else {
 	            	alarmActivated[ALARM_2_INDEX] = false;
 	            	myApplication.deactivateAlarm(ALARM_2_INDEX);
 	            	alarm_2_textView.setTextColor(Color.WHITE);
+	            	setBackground(alarm_2, getResources().getDrawable(R.drawable.btn_alarm));
+	            	Toast.makeText(getApplicationContext(), "Alarme Desativado", Toast.LENGTH_SHORT).show();
 	            }	
 	    	}
 	  	};
 	  	
-	  	View.OnClickListener check_alarm_3_listener = new View.OnClickListener() {
+	  	View.OnClickListener alarm_3_listener = new View.OnClickListener() {
 	    	@Override
 	        public void onClick(View arg0) {
 	    		if(alarmActivated[ALARM_3_INDEX] == false){
 	            	alarmActivated[ALARM_3_INDEX] = true;
 	            	myApplication.activateAlarm(ALARM_3_INDEX, alarmHours, alarmMinutes, alarmSnoozes);
-	            	alarm_1_textView.setTextColor(getResources().getColor(R.color.blue));
+	            	alarm_3_textView.setTextColor(getResources().getColor(R.color.blueback));
+	            	setBackground(alarm_3, getResources().getDrawable(R.drawable.btn_alarm_checked));
+	            	Toast.makeText(getApplicationContext(), "Alarme Ativado! Sonhe com os anjos", Toast.LENGTH_SHORT).show();
 	            }
 	            else {
 	            	alarmActivated[ALARM_3_INDEX] = false;
-	            	myApplication.deactivateAlarm(ALARM_1_INDEX);
+	            	myApplication.deactivateAlarm(ALARM_3_INDEX);
 	            	alarm_3_textView.setTextColor(Color.WHITE);
+	            	setBackground(alarm_3, getResources().getDrawable(R.drawable.btn_alarm));
+	            	Toast.makeText(getApplicationContext(), "Alarme Desativado", Toast.LENGTH_SHORT).show();
 	            }	
 	    	}
 	  	};
@@ -401,16 +448,18 @@ public class BrandNewDay extends Activity {
 	  	View.OnClickListener nap_listener = new View.OnClickListener() {
 	    	@Override
 	        public void onClick(View arg0) {
-	    		if(alarmActivated[ALARM_NAP_INDEX] = false){
+	    		if(alarmActivated[ALARM_NAP_INDEX] == false){
 	            	alarmActivated[ALARM_NAP_INDEX] = true;
-	            	nap_textView.setTextColor((getResources().getColor(R.color.blue)));
+	            	nap_textView.setTextColor((getResources().getColor(R.color.blueback)));
 	            	myApplication.activateNap(nap_time);
+	            	Toast.makeText(getApplicationContext(), "Bom Cochilo!", Toast.LENGTH_SHORT).show();
 	            	
 	            }
 	            else {
 	            	alarmActivated[ALARM_NAP_INDEX] = false;
 	            	nap_textView.setTextColor(Color.WHITE);
 	            	myApplication.deactivateNap();
+	            	Toast.makeText(getApplicationContext(), "Cochilo Desativado", Toast.LENGTH_SHORT).show();
 	            }	
 	    	}
 	  	};
@@ -422,6 +471,18 @@ public class BrandNewDay extends Activity {
             }
 	  	};
 	  	
+	  	@SuppressWarnings("deprecation")
+		public void setBackground(RelativeLayout layout, Drawable bg){
+	  		if (Build.VERSION.SDK_INT >= 16) {
+
+	  		    layout.setBackground(bg);
+
+	  		} else {
+
+	  		    layout.setBackgroundDrawable(bg);
+	  		}
+	  	}
+	  	
         
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -432,14 +493,45 @@ public class BrandNewDay extends Activity {
 
         
 	public void set_alarm_text(int index) {
-		String hour_string = formatter.format(alarmHours[index]);
-		String minute_string = formatter.format(alarmMinutes[index]);
-			if(index == ALARM_1_INDEX)
+			if(index == ALARM_1_INDEX){
+				String hour_string = formatter.format(alarmHours[index]);
+				String minute_string = formatter.format(alarmMinutes[index]);
 				alarm_1_textView.setText(hour_string + ':' + minute_string);
-			else if(index == ALARM_2_INDEX)
+				if(alarmActivated[index] == true){
+					alarm_1_textView.setTextColor(getResources().getColor(R.color.blueback));
+					setBackground(alarm_1, getResources().getDrawable(R.drawable.btn_alarm_checked));
+				}
+				else{
+					alarm_1_textView.setTextColor(getResources().getColor(R.color.white));
+	            	setBackground(alarm_1, getResources().getDrawable(R.drawable.btn_alarm));
+				}
+			}
+			else if(index == ALARM_2_INDEX){
+				String hour_string = formatter.format(alarmHours[index]);
+				String minute_string = formatter.format(alarmMinutes[index]);
 				alarm_2_textView.setText(hour_string + ':' + minute_string);
-			else if(index == ALARM_3_INDEX)
+				if(alarmActivated[index] == true){
+					alarm_2_textView.setTextColor(getResources().getColor(R.color.blueback));
+					setBackground(alarm_2, getResources().getDrawable(R.drawable.btn_alarm_checked));
+				}
+				else{
+					alarm_2_textView.setTextColor(getResources().getColor(R.color.white));
+	            	setBackground(alarm_2, getResources().getDrawable(R.drawable.btn_alarm));
+				}
+			}
+			else if(index == ALARM_3_INDEX){ 
+				String hour_string = formatter.format(alarmHours[index]);
+				String minute_string = formatter.format(alarmMinutes[index]);
 				alarm_3_textView.setText(hour_string + ':' + minute_string);
+				if(alarmActivated[index] == true){
+					alarm_3_textView.setTextColor(getResources().getColor(R.color.blueback));
+					setBackground(alarm_3, getResources().getDrawable(R.drawable.btn_alarm_checked));
+				}
+				else{
+					alarm_3_textView.setTextColor(getResources().getColor(R.color.white));
+	            	setBackground(alarm_3, getResources().getDrawable(R.drawable.btn_alarm));
+				}
+			}
 			else if(index == ALARM_NAP_INDEX)
 				nap_textView.setText(Integer.toString(nap_time));			
 		}

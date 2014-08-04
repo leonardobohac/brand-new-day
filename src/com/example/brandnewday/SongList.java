@@ -42,6 +42,7 @@ public class SongList extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		Toast.makeText(getApplicationContext(), "Escolha as músicas boas para você acordar", Toast.LENGTH_LONG).show();
 
 	    //Remove notification bar
 	    this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -180,7 +181,7 @@ public class SongList extends Activity {
 	}
 	
 	public ArrayList<Integer> generateRandomIndexList(int size) {
-		// List of distinct random integers between 1 and size. Ex: [2,5,1,4,3], with size = 5 ///
+		// List of distinct random integers between 1 and size. Ex: [2,5,1,4,3], with size = 5 //
 		Random generator = new Random();
 		ArrayList<Integer> indexList = new ArrayList<Integer>();
 		ArrayList<Integer> randomIndexList = new ArrayList<Integer>();

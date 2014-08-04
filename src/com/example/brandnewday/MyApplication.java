@@ -77,7 +77,7 @@ public class MyApplication extends Application{
 		
 	}
 	
-	public String serializePaths(ArrayList<String> pathsArray) throws Exception {
+	public String serializeStrings(ArrayList<String> pathsArray) throws Exception {
 		ArrayList<String> stringArray = new ArrayList<String>();
 		for(int i=0; i < pathsArray.size(); i+=1) {
 			stringArray.add((pathsArray.get(i)).toString());
@@ -87,7 +87,7 @@ public class MyApplication extends Application{
 		
 	}
 	
-	public ArrayList<String> deserializePaths(String string) throws Exception {
+	public ArrayList<String> deserializeStrings(String string) throws Exception {
 		@SuppressWarnings("unchecked")
 		ArrayList<String> stringArray = (ArrayList<String>) ObjectSerializer.deserialize(string);
 		ArrayList<String> pathsArray = new ArrayList<String>();

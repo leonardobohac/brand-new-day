@@ -63,7 +63,7 @@ public class MyPlaylist extends Activity {
 		
 		audioPathsFromPreferences = defaultPreferences.getString("audioPathsFromPreferences", "");
 		try {
-			audioPaths = myApplication.deserializePaths(audioPathsFromPreferences);
+			audioPaths = myApplication.deserializeStrings(audioPathsFromPreferences);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -99,7 +99,7 @@ public class MyPlaylist extends Activity {
 				}
 				
 				try {
-					editor.putString("audioPathsFromPreferences", myApplication.serializePaths(audioPaths));
+					editor.putString("audioPathsFromPreferences", myApplication.serializeStrings(audioPaths));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -170,7 +170,7 @@ public class MyPlaylist extends Activity {
 							e.printStackTrace();
 						}			
 			try {
-				editor.putString("audioPathsFromPreferences", myApplication.serializePaths(audioPaths));
+				editor.putString("audioPathsFromPreferences", myApplication.serializeStrings(audioPaths));
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -212,7 +212,7 @@ public class MyPlaylist extends Activity {
 			e.printStackTrace();
 		}
 		try {
-			editor.putString("audioPathsFromPreferences", myApplication.serializePaths(audioPaths));
+			editor.putString("audioPathsFromPreferences", myApplication.serializeStrings(audioPaths));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

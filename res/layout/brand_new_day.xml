@@ -12,7 +12,7 @@
 
         <RelativeLayout
             android:id="@+id/playlist"
-            android:layout_width="270dp"
+            android:layout_width="285dp"
             android:layout_height="105dp"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
@@ -31,6 +31,16 @@
 
         </RelativeLayout>
 
+        <TextView
+            android:id="@+id/random_play_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/playlist"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
+            android:text="@string/random_play"
+            android:textSize="15sp" />
+
     </RelativeLayout>
 
     <RelativeLayout
@@ -41,8 +51,8 @@
 
     <RelativeLayout
         android:id="@+id/alarm_2"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:background="@drawable/btn_alarm" >
@@ -55,16 +65,16 @@
             android:layout_centerVertical="true"
             android:text="@string/alarm_2"
             android:textColor="@color/white"
-            android:textSize="20sp"
+            android:textSize="23sp"
             android:textStyle="bold" />
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/alarm_1"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
         android:layout_alignTop="@+id/alarm_2"
-        android:layout_marginLeft="30dp"
+        android:layout_marginLeft="20dp"
         android:background="@drawable/btn_alarm" >
 
         <TextView
@@ -75,18 +85,18 @@
             android:layout_centerVertical="true"
             android:text="@string/alarm_1"
             android:textColor="@color/white"
-            android:textSize="20sp"
+            android:textSize="23sp"
             android:textStyle="bold" />
 
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/alarm_3"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
         android:layout_alignParentRight="true"
         android:layout_alignTop="@+id/alarm_2"
-        android:layout_marginRight="30dp"
+        android:layout_marginRight="20dp"
         android:background="@drawable/btn_alarm" >
         
         <TextView
@@ -97,12 +107,12 @@
             android:layout_centerVertical="true"
             android:text="@string/alarm_3"
             android:textColor="@color/white"
-            android:textSize="20sp"
+            android:textSize="23sp"
             android:textStyle="bold" />
     </RelativeLayout>
 
     <ImageView
-        android:id="@+id/check_alarm_1"
+        android:id="@+id/settings_alarm_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/alarm_1"
@@ -110,10 +120,10 @@
         android:layout_below="@+id/alarm_1"
         android:layout_marginTop="5dp"
         android:contentDescription="@string/desc"
-        android:src="@drawable/btn_check_alarm" />
+        android:src="@drawable/ic_action_settings" />
     
     <ImageView
-        android:id="@+id/check_alarm_2"
+        android:id="@+id/settings_alarm_2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/alarm_2"
@@ -121,10 +131,10 @@
         android:layout_below="@+id/alarm_2"
         android:layout_marginTop="5dp"
         android:contentDescription="@string/desc"
-        android:src="@drawable/btn_check_alarm" />
+        android:src="@drawable/ic_action_settings" />
     
     <ImageView
-        android:id="@+id/check_alarm_3"
+        android:id="@+id/settings_alarm_3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/alarm_3"
@@ -132,7 +142,32 @@
         android:layout_below="@+id/alarm_3"
         android:layout_marginTop="5dp"
         android:contentDescription="@string/desc"
-        android:src="@drawable/btn_check_alarm" />
+        android:src="@drawable/ic_action_settings" />
+
+    <TextView
+        android:id="@+id/alarm2_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/alarm_2"
+        android:layout_centerHorizontal="true"
+        android:text="@string/alarm2_textView" />
+
+    <TextView
+        android:id="@+id/alarm3_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/alarm2_textView"
+        android:layout_alignRight="@+id/alarm_3"
+        android:text="@string/alarm3_textView" />
+
+    <TextView
+        android:id="@+id/alarm1_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/alarm2_textView"
+        android:layout_alignBottom="@+id/alarm2_textView"
+        android:layout_alignLeft="@+id/alarm_1"
+        android:text="@string/alarm1_textView" />
 
 </RelativeLayout>
 
@@ -184,6 +219,19 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="15dp"
             android:layout_toRightOf="@+id/nap" />
+
+        <TextView
+            android:id="@+id/nap_of"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/nap"
+            android:layout_below="@+id/nap"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="5dp"
+            android:text="@string/nap_of"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
     </RelativeLayout>
 
