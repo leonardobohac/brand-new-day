@@ -54,6 +54,14 @@ public class BrandNewDay extends Activity {
 	static final boolean ALARM_NOT_ACTIVE = false;
 	float volumeMedium = 0.5f;
 	int nap_time;
+	
+	public ArrayList<String> alarm1_days;
+	public ArrayList<String> alarm2_days;
+	public ArrayList<String> alarm3_days;
+	public ArrayList<ArrayList<String>> alarm_days;
+	public String alarm1_days_preferences;
+	public String alarm2_days_preferences;
+	public String alarm3_days_preferences;
 
 	RelativeLayout playlist;
 	RelativeLayout alarm_1;
@@ -89,6 +97,11 @@ public class BrandNewDay extends Activity {
 		alarmActivated = new boolean[4];
 		volumes = new float[3];
 		
+		alarm_days = new ArrayList<ArrayList<String>>(3);
+		alarm1_days = new ArrayList<String>();
+		alarm2_days = new ArrayList<String>();
+		alarm3_days = new ArrayList<String>();
+		
 		//PREFERENCES
 		SharedPreferences defaultPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		alarmHours[ALARM_1_INDEX] = defaultPreferences.getInt("alarm1Hour", 8);
@@ -108,6 +121,10 @@ public class BrandNewDay extends Activity {
 		volumes[ALARM_2_INDEX] = defaultPreferences.getFloat("alarm2Volume", volumeMedium);
 		volumes[ALARM_3_INDEX] = defaultPreferences.getFloat("alarm3Volume", volumeMedium);
 		nap_time = defaultPreferences.getInt("nap_time", 30);
+		alarm1_days_preferences = defaultPreferences.getString("alarm1_days_preferences", "");
+		alarm2_days_preferences = defaultPreferences.getString("alarm2_days_preferences", "");
+		alarm3_days_preferences = defaultPreferences.getString("alarm3_days_preferences", "");
+		///////
 		
 		playlist = (RelativeLayout)findViewById(R.id.playlist);
 		alarm_1 = (RelativeLayout)findViewById(R.id.alarm_1);
@@ -144,7 +161,19 @@ public class BrandNewDay extends Activity {
 	    playlist.setOnClickListener(playlist_listener);
 	    nap_seekBar.setOnSeekBarChangeListener(OnSeekBarChangeListener);
 	    
-	    Log.d("ativado", Boolean.toString(alarmActivated[ALARM_NAP_INDEX]));
+	    try {
+			alarm1_days = myApplication.deserializeStrings(alarm1_days_preferences);
+			alarm2_days = myApplication.deserializeStrings(alarm2_days_preferences);
+			alarm3_days = myApplication.deserializeStrings(alarm3_days_preferences);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	alarm_days.add(ALARM_1_INDEX, alarm1_days);
+	alarm_days.add(ALARM_2_INDEX, alarm2_days);
+	alarm_days.add(ALARM_3_INDEX, alarm3_days);
+
 	}
 	
 	@Override
@@ -389,7 +418,7 @@ public class BrandNewDay extends Activity {
 	        public void onClick(View arg0) {
 	    		if(alarmActivated[ALARM_1_INDEX] == false){
 	            	alarmActivated[ALARM_1_INDEX] = true;
-	            	myApplication.activateAlarm(ALARM_1_INDEX, alarmHours, alarmMinutes, alarmSnoozes);
+	            	myApplication.activateAlarm(ALARM_1_INDEX, alarm_days, alarmHours, alarmMinutes, alarmSnoozes);
 	            	alarm_1_textView.setTextColor(getResources().getColor(R.color.blueback));
 	            	setBackground(alarm_1, getResources().getDrawable(R.drawable.btn_alarm_checked));
 	            	Toast.makeText(getApplicationContext(), "Alarme Ativado! Sonhe com os anjos", Toast.LENGTH_SHORT).show();
@@ -410,7 +439,7 @@ public class BrandNewDay extends Activity {
 	        public void onClick(View arg0) {
 	    		if(alarmActivated[ALARM_2_INDEX] == false){
 	            	alarmActivated[ALARM_2_INDEX] = true;
-	            	myApplication.activateAlarm(ALARM_2_INDEX, alarmHours, alarmMinutes, alarmSnoozes);
+	            	myApplication.activateAlarm(ALARM_2_INDEX, alarm_days, alarmHours, alarmMinutes, alarmSnoozes);
 	            	alarm_2_textView.setTextColor(getResources().getColor(R.color.blueback));
 	            	setBackground(alarm_2, getResources().getDrawable(R.drawable.btn_alarm_checked));
 	            	Toast.makeText(getApplicationContext(), "Alarme Ativado! Sonhe com os anjos", Toast.LENGTH_SHORT).show();
@@ -430,7 +459,7 @@ public class BrandNewDay extends Activity {
 	        public void onClick(View arg0) {
 	    		if(alarmActivated[ALARM_3_INDEX] == false){
 	            	alarmActivated[ALARM_3_INDEX] = true;
-	            	myApplication.activateAlarm(ALARM_3_INDEX, alarmHours, alarmMinutes, alarmSnoozes);
+	            	myApplication.activateAlarm(ALARM_3_INDEX, alarm_days, alarmHours, alarmMinutes, alarmSnoozes);
 	            	alarm_3_textView.setTextColor(getResources().getColor(R.color.blueback));
 	            	setBackground(alarm_3, getResources().getDrawable(R.drawable.btn_alarm_checked));
 	            	Toast.makeText(getApplicationContext(), "Alarme Ativado! Sonhe com os anjos", Toast.LENGTH_SHORT).show();

@@ -1,4 +1,4 @@
-package com.example.brandnewday;
+/*package com.example.brandnewday;
 
 import java.util.ArrayList;
 
@@ -306,7 +306,7 @@ public class AlarmSettings extends Activity {
 	
 }
 
-	
+	*/
 	
 	
 		

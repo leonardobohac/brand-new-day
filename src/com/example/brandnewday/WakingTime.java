@@ -97,7 +97,6 @@ public class WakingTime extends Activity{
 			Intent i = new Intent(WakingTime.this, AlarmService.class);
 			stopService(i);
 			
-			myApplication.activateAlarm(index, alarmHours, alarmMinutes, alarmSnoozes);
 			Intent intent = new Intent(getApplicationContext(), BrandNewDay.class);
 			startActivity(intent);
 	        finish();
@@ -108,7 +107,7 @@ public class WakingTime extends Activity{
 		public void onClick(View v) {
 			Intent i = new Intent(WakingTime.this, AlarmService.class);
 			stopService(i);
-			myApplication.activateSnooze(index, alarmSnoozes[index]);
+			myApplication.activateSnooze(alarmSnoozes[index]);
 			Intent intent = new Intent(getApplicationContext(), BrandNewDay.class);
 			startActivity(intent);
 			finish();

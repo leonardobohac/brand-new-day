@@ -423,7 +423,7 @@ public class Settings extends Activity {
 			editor.commit();
 			
 			
-			myApplication.activateAlarm(index, alarmHours, alarmMinutes, alarmSnoozes);
+			myApplication.activateAlarm(index, alarm_days, alarmHours, alarmMinutes, alarmSnoozes);
 			Toast.makeText(getApplicationContext(),"Alarme Ativado! Sonhe com os anjos", Toast.LENGTH_SHORT).show();
 			finish();
 	    }
