@@ -87,6 +87,7 @@ public class BrandNewDay extends Activity {
 		alarmSnoozes = new int[3];
 		alarmActivated = new boolean[4];
 		volumes = new float[3];
+	
 		
 		alarm_days = new ArrayList<ArrayList<String>>(3);
 		alarm1_days = new ArrayList<String>();
@@ -137,6 +138,7 @@ public class BrandNewDay extends Activity {
 		set_alarm_text(ALARM_1_INDEX);
 		set_alarm_text(ALARM_2_INDEX);
 		set_alarm_text(ALARM_3_INDEX);
+		Toast.makeText(getApplicationContext(), Boolean.toString(alarmActivated[ALARM_NAP_INDEX]), Toast.LENGTH_SHORT).show();
 		set_alarm_text(ALARM_NAP_INDEX);
 	
 	    alarm_1.setOnClickListener(alarm_1_listener);
@@ -196,34 +198,52 @@ public class BrandNewDay extends Activity {
 		set_alarm_text(ALARM_NAP_INDEX);
 
 		
-		if(nap_time == 10)
-			nap_seekBar.setProgress(4);
+		if(nap_time == 1)
+			nap_seekBar.setProgress(1);
+		else if(nap_time == 2)
+			nap_seekBar.setProgress(3);
+		else if(nap_time == 3)
+			nap_seekBar.setProgress(5);
+		else if(nap_time == 4)
+			nap_seekBar.setProgress(7);
+		else if(nap_time == 5)
+			nap_seekBar.setProgress(9);
+		else if(nap_time == 6)
+			nap_seekBar.setProgress(11);
+		else if(nap_time == 7)
+			nap_seekBar.setProgress(13);
+		else if(nap_time == 8)
+			nap_seekBar.setProgress(15);
+		else if(nap_time == 9)
+			nap_seekBar.setProgress(17);
+		else if(nap_time == 10)
+			nap_seekBar.setProgress(19);
 		else if(nap_time == 15)
-			nap_seekBar.setProgress(12);
+			nap_seekBar.setProgress(23);
 		else if(nap_time == 20)
-			nap_seekBar.setProgress(20);
+			nap_seekBar.setProgress(29);
 		else if(nap_time == 25)
-			nap_seekBar.setProgress(28);
+			nap_seekBar.setProgress(35);
 		else if(nap_time == 30)
-			nap_seekBar.setProgress(36);
+			nap_seekBar.setProgress(41);
 		else if(nap_time == 35)
-			nap_seekBar.setProgress(44);
+			nap_seekBar.setProgress(47);
 		else if(nap_time == 40)
-			nap_seekBar.setProgress(52);
+			nap_seekBar.setProgress(53);
 		else if(nap_time == 45)
-			nap_seekBar.setProgress(60);
+			nap_seekBar.setProgress(59);
 		else if(nap_time == 50)
-			nap_seekBar.setProgress(68);
+			nap_seekBar.setProgress(65);
 		else if(nap_time == 55)
-			nap_seekBar.setProgress(76);
+			nap_seekBar.setProgress(71);
 		else if(nap_time == 60)
-			nap_seekBar.setProgress(84);
+			nap_seekBar.setProgress(77);
 		else if(nap_time == 75)
-			nap_seekBar.setProgress(92);
+			nap_seekBar.setProgress(85);
 		else if(nap_time == 90)
-			nap_seekBar.setProgress(100);
-		
-		
+			nap_seekBar.setProgress(93);
+		else if(nap_time == 120)
+			nap_seekBar.setProgress(99);
 	}
 
 	@Override
@@ -594,8 +614,10 @@ public class BrandNewDay extends Activity {
 			}
 			else if(index == ALARM_NAP_INDEX){
 				nap_textView.setText(Integer.toString(nap_time));
-				if(alarmActivated[ALARM_NAP_INDEX] = false)		
+				
+				if(alarmActivated[ALARM_NAP_INDEX] == false)
 					nap_textView.setTextColor(Color.WHITE);
+					
 				else
 					nap_textView.setTextColor((getResources().getColor(R.color.blueback)));
 			}

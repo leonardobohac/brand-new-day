@@ -1,6 +1,7 @@
 package com.example.brandnewday;
 
 import java.util.ArrayList;
+
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.PowerManager;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 public class WakingTime extends Activity{
 	MyApplication myApplication;
@@ -26,6 +28,7 @@ public class WakingTime extends Activity{
 	public int[] alarmSnoozes;
 	public int [] alarmHours;
 	public int [] alarmMinutes;
+	public boolean[] alarmActivated;
 	int currentTrack = 0;
 	ArrayList<Uri> randomizedAudioUris;
 	ArrayList<Uri> audioUris;
@@ -49,7 +52,8 @@ public class WakingTime extends Activity{
 		alarmHours = new int[3]; //myApplication.getAlarmHours();
 		alarmMinutes = new int[3]; //myApplication.getAlarmMinutes();
 		alarmSnoozes = new int[3]; //myApplication.getAlarmSnoozes();
-		
+		alarmActivated = new boolean[4];
+
 		Intent intent = getIntent();
 		index = intent.getExtras().getInt("index");
 
@@ -63,6 +67,7 @@ public class WakingTime extends Activity{
 		alarmSnoozes[ALARM_1_INDEX] = defaultPreferences.getInt("alarm1Snooze", 0);
 		alarmSnoozes[ALARM_2_INDEX] = defaultPreferences.getInt("alarm2Snooze", 0);
 		alarmSnoozes[ALARM_3_INDEX] = defaultPreferences.getInt("alarm3Snooze", 0);
+		alarmActivated[ALARM_NAP_INDEX] = defaultPreferences.getBoolean("alarmNapActivated", false);
 
 		
 		LinearLayout snoozeLayout = (LinearLayout)findViewById(R.id.snooze_linearLayout);
@@ -93,6 +98,12 @@ public class WakingTime extends Activity{
 			
 			Intent i = new Intent(WakingTime.this, AlarmService.class);
 			stopService(i);
+			if(alarmActivated[ALARM_NAP_INDEX] == true)
+				alarmActivated[ALARM_NAP_INDEX] = false;
+			SharedPreferences defaultPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+			SharedPreferences.Editor editor = defaultPreferences.edit();
+			editor.putBoolean("alarmNapActivated", alarmActivated[ALARM_NAP_INDEX]);
+			editor.commit();
 			
 			Intent intent = new Intent(getApplicationContext(), BrandNewDay.class);
 			startActivity(intent);
