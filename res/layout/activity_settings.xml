@@ -127,7 +127,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="30dp"
-        android:layout_weight="0.8" >
+        android:layout_weight="1.1" >
 
         <TextView
             android:id="@+id/two_points"
@@ -235,10 +235,11 @@
         android:id="@+id/volume_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="7dp"
         android:layout_weight="0.4" >
 
-        <ImageView
-            android:id="@+id/volume_icon"
+        <ImageButton
+            android:id="@+id/volume_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
@@ -252,15 +253,15 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/volume_icon" />
+            android:layout_toRightOf="@+id/volume_button" />
 
         <TextView
             android:id="@+id/volume_textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/volume_icon"
+            android:layout_below="@+id/volume_seekBar"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="-10dp"
+            android:layout_marginTop="-3dp"
             android:text="@string/volume_textView" />
 
     </RelativeLayout>

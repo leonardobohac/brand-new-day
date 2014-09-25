@@ -4,17 +4,21 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.util.Log;
 import android.view.Menu;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
@@ -24,6 +28,10 @@ import android.widget.Toast;
 public class Settings extends Activity {
 	MyApplication myApplication;
 	static NumberFormat formatter = new DecimalFormat("00");
+	
+	MediaPlayer mediaPlayer = null;
+	ArrayList<Uri> randomAudioUris;    //keeps only the not yet-played tracks
+	ArrayList<Uri> audioUris;
 	
 	RelativeLayout mon;
 	RelativeLayout tue;
@@ -48,6 +56,7 @@ public class Settings extends Activity {
 	TextView inc_snooze;
 	TextView dec_snooze;
 	TextView snooze;
+	ImageButton volume_button;
 	SeekBar volume_seekBar;
 	
 	Context context = this;
@@ -164,6 +173,7 @@ public class Settings extends Activity {
 		d_minute = (TextView)findViewById(R.id.settings_d_minute);
 		u_minute = (TextView)findViewById(R.id.settings_u_minute);
 		
+		volume_button = (ImageButton)findViewById(R.id.volume_button);
 		volume_seekBar = (SeekBar)findViewById(R.id.volume_seekBar);
 		
 		snooze = (TextView)findViewById(R.id.snooze);
@@ -187,6 +197,7 @@ public class Settings extends Activity {
 		inc_snooze.setOnClickListener(inc_snooze_Listener);
 		dec_snooze.setOnClickListener(dec_snooze_Listener);
 		check.setOnClickListener(check_Listener);
+		volume_button.setOnTouchListener(volume_button_listener);
 		volume_seekBar.setOnSeekBarChangeListener(OnSeekBarChangeListener);
 		
 		new_hour = alarmHours[index];
@@ -274,6 +285,21 @@ public class Settings extends Activity {
 	    	snooze.setText(Integer.toString(new_snooze));	    	
 	    }
 	};
+	
+	View.OnTouchListener volume_button_listener = new View.OnTouchListener(){
+		@Override
+	    public boolean onTouch(View v, MotionEvent event) {
+			if(event.getAction() == MotionEvent.ACTION_DOWN){
+				playMusic();
+			}
+			if(event.getAction() == MotionEvent.ACTION_UP){
+				stopMusic();
+			}
+			
+	     return false;	
+	    }
+	};
+	
 	View.OnClickListener day_button_Listener = new View.OnClickListener() {
 	    public void onClick(View v) {
 	    	RelativeLayout rl = (RelativeLayout)v;
@@ -424,10 +450,39 @@ public class Settings extends Activity {
 			
 			
 			myApplication.activateAlarm(index, alarm_days, alarmHours, alarmMinutes, alarmSnoozes);
-			Toast.makeText(getApplicationContext(),"Alarme Ativado! Sonhe com os anjos", Toast.LENGTH_SHORT).show();
+			String hour_string = formatter.format(alarmHours[index]);
+			String minute_string = formatter.format(alarmMinutes[index]);
+			String text = (hour_string + ":" + minute_string);
+			Toast.makeText(getApplicationContext(), "Alarme ativado para " + text, Toast.LENGTH_SHORT).show();
 			finish();
 	    }
 	};
+	
+	public void playMusic(){
+		SharedPreferences defaultPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+		AudioManager audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+		String randomAudioUrisFromPreferences = defaultPreferences.getString("randomAudioUrisFromPreferences", "");
+		try {
+			randomAudioUris = myApplication.deserialize(randomAudioUrisFromPreferences);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if(randomAudioUris.size() != 0){
+			mediaPlayer = MediaPlayer.create(getApplicationContext(), randomAudioUris.get(0));
+			audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,  audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
+			mediaPlayer.setVolume(volumes[index], volumes[index]); 
+			mediaPlayer.start();
+		}
+		else
+			Toast.makeText(getApplicationContext(), "Sua playlist está vazia, adicione músicas!", Toast.LENGTH_SHORT).show();
+	}
+	
+	public void stopMusic(){
+		if(mediaPlayer != null)
+			mediaPlayer.release();
+			mediaPlayer = null;
+	}
 	
 	SeekBar.OnSeekBarChangeListener OnSeekBarChangeListener = new SeekBar.OnSeekBarChangeListener() {
 		
@@ -449,6 +504,9 @@ public class Settings extends Activity {
 			// TODO Auto-generated method stub
 			double volume = progress/100.0;
 			volumes[index] = (float)volume;
+			if(mediaPlayer != null){
+				mediaPlayer.setVolume(volumes[index], volumes[index]);
+			}
 		}
 	};
 	

@@ -61,6 +61,7 @@ public class MyApplication extends Application{
 			alarm_time.set(Calendar.HOUR_OF_DAY, alarmHours[index]);
 			alarm_time.set(Calendar.MINUTE, alarmMinutes[index]);
 			alarm_time.set(Calendar.SECOND,0);
+			alarm_time.set(Calendar.MILLISECOND, 0);
 			
 			if(rightNow.compareTo(alarm_time) == 0) {
 				//equal alarms
@@ -74,10 +75,11 @@ public class MyApplication extends Application{
 			Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
 			intent.putExtra("index", index);
 			intent.putExtra("snooze", alarmSnoozes[index]);
-
+			
+			Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		    Log.d("calendar", formatter.format(alarm_time.getTime()));
 		    pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), default_alarm_id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-		    //alarmManager.set(AlarmManager.RTC_WAKEUP, alarm_time.getTimeInMillis(), pendingIntent);
-		    Log.d("pi", pendingIntent.toString());
+		    alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, alarm_time.getTimeInMillis(), 1000*60*60*24, pendingIntent);
 		}
 		
 		else{
@@ -93,6 +95,7 @@ public class MyApplication extends Application{
 					alarmCalendar.set(Calendar.HOUR_OF_DAY, alarmHours[index]);
 					alarmCalendar.set(Calendar.MINUTE, alarmMinutes[index]);
 					alarmCalendar.set(Calendar.SECOND,0);
+					alarmCalendar.set(Calendar.MILLISECOND, 0);
 				}
 				
 				else if (alarm_day == today){
@@ -118,6 +121,7 @@ public class MyApplication extends Application{
 					alarmCalendar.set(Calendar.HOUR_OF_DAY, alarmHours[index]);
 					alarmCalendar.set(Calendar.MINUTE, alarmMinutes[index]);
 					alarmCalendar.set(Calendar.SECOND,0);
+					alarmCalendar.set(Calendar.MILLISECOND, 0);
 				}
 					
 				int alarm_id = 10*index + alarm_day;  // identifies the alarm based on it index and day selected
@@ -126,7 +130,7 @@ public class MyApplication extends Application{
 				intent.putExtra("index", index);
 				intent.putExtra("snooze", alarmSnoozes[index]);
 	
-			    pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), alarm_id, intent, 0);
+			    pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), alarm_id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 			    alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, alarmCalendar.getTimeInMillis(), 7 * 24 * 60 * 60 * 1000, pendingIntent);
 			    
 			    Log.d("day", Integer.toString(alarm_day));

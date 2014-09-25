@@ -10,7 +10,7 @@
       android:id="@+id/song_title"
       android:layout_width="fill_parent"
       android:layout_height="wrap_content"
-      android:contentDescription="22sp"
+      android:contentDescription="@string/desc"
       android:textAppearance="?android:attr/textAppearanceSmall"
       android:textColor="#FFFFFFFF"
       android:textSize="22sp"

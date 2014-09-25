@@ -3,8 +3,6 @@ package com.example.brandnewday;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.app.Activity;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.Window;
@@ -42,7 +40,7 @@ public class SongList extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		Toast.makeText(getApplicationContext(), "Escolha as músicas boas para você acordar", Toast.LENGTH_LONG).show();
+		Toast.makeText(getApplicationContext(), "Clique para adicionar/remover a música da playlist", Toast.LENGTH_LONG).show();
 
 	    //Remove notification bar
 	    this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);

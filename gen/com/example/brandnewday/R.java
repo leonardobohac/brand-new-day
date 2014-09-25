@@ -33,6 +33,11 @@ public final class R {
     public static final class dimen {
         /**  Default screen margins, per the Android Design guidelines. 
 
+         Example customization of dimensions originally defined in res/values/dimens.xml
+         (such as screen margins) for screens with more than 820dp of available width. This
+         would include 7" and 10" devices in landscape (~960dp and ~1280dp respectively).
+    
+
          Customize dimensions originally defined in res/values/dimens.xml (such as
          screen margins) for sw720dp devices (e.g. 10" tablets) in landscape here.
     
@@ -65,7 +70,8 @@ public final class R {
         public static final int ic_volume=0x7f020013;
     }
     public static final class id {
-        public static final int action_settings=0x7f0c0051;
+        public static final int LinearLayout01=0x7f0c004e;
+        public static final int action_settings=0x7f0c0052;
         public static final int add_new_song_button=0x7f0c004b;
         public static final int alarm1_textView=0x7f0c0042;
         public static final int alarm2_textView=0x7f0c0040;
@@ -119,7 +125,7 @@ public final class R {
         public static final int snooze_bar=0x7f0c0030;
         public static final int snooze_disabled_checkBox=0x7f0c002f;
         public static final int snooze_layout=0x7f0c001e;
-        public static final int snooze_linearLayout=0x7f0c0050;
+        public static final int snooze_linearLayout=0x7f0c0051;
         public static final int snooze_textView=0x7f0c0021;
         public static final int snooze_time_textView=0x7f0c002e;
         public static final int song_artist=0x7f0c004d;
@@ -139,31 +145,39 @@ public final class R {
         public static final int volumeLowRadioButton=0x7f0c002c;
         public static final int volumeMediumRadioButton=0x7f0c002b;
         public static final int volumeTextView=0x7f0c002d;
-        public static final int volume_icon=0x7f0c001b;
+        public static final int volume_button=0x7f0c001b;
         public static final int volume_layout=0x7f0c001a;
         public static final int volume_seekBar=0x7f0c001c;
         public static final int volume_textView=0x7f0c001d;
-        public static final int wake_linearLayout=0x7f0c004e;
-        public static final int wake_textView=0x7f0c004f;
+        public static final int wake_linearLayout=0x7f0c004f;
+        public static final int wake_textView=0x7f0c0050;
         public static final int wed=0x7f0c0005;
         public static final int wed_textView=0x7f0c0006;
     }
     public static final class layout {
-        public static final int activity_settings=0x7f030000;
-        public static final int activity_song_list=0x7f030001;
-        public static final int activity_test=0x7f030002;
-        public static final int alarm_settings=0x7f030003;
-        public static final int brand_new_day=0x7f030004;
-        public static final int my_playlist=0x7f030005;
-        public static final int song=0x7f030006;
-        public static final int waking_time=0x7f030007;
+        public static final int activity_ringtones=0x7f030000;
+        public static final int activity_settings=0x7f030001;
+        public static final int activity_song_list=0x7f030002;
+        public static final int activity_song_tab=0x7f030003;
+        public static final int activity_tab=0x7f030004;
+        public static final int activity_tab_host=0x7f030005;
+        public static final int activity_test=0x7f030006;
+        public static final int alarm_settings=0x7f030007;
+        public static final int brand_new_day=0x7f030008;
+        public static final int my_playlist=0x7f030009;
+        public static final int song=0x7f03000a;
+        public static final int tab_host=0x7f03000b;
+        public static final int waking_time=0x7f03000c;
     }
     public static final class menu {
         public static final int brand_new_day=0x7f0b0000;
         public static final int settings=0x7f0b0001;
         public static final int song_list=0x7f0b0002;
-        public static final int test=0x7f0b0003;
-        public static final int waking_time=0x7f0b0004;
+        public static final int song_tab=0x7f0b0003;
+        public static final int tab=0x7f0b0004;
+        public static final int tab_host=0x7f0b0005;
+        public static final int test=0x7f0b0006;
+        public static final int waking_time=0x7f0b0007;
     }
     public static final class raw {
         public static final int teste=0x7f050000;
@@ -203,27 +217,27 @@ public final class R {
         public static final int nap_of=0x7f08003a;
         public static final int playlist_button=0x7f08000b;
         public static final int playlist_textView=0x7f080039;
-        public static final int pref_default_display_name=0x7f080045;
-        public static final int pref_description_social_recommendations=0x7f080043;
+        public static final int pref_default_display_name=0x7f080049;
+        public static final int pref_description_social_recommendations=0x7f080047;
         /**  Example settings for Data & Sync 
          */
-        public static final int pref_header_data_sync=0x7f080047;
+        public static final int pref_header_data_sync=0x7f08004b;
         /**  Strings related to Settings 
  Example General settings 
          */
-        public static final int pref_header_general=0x7f080041;
+        public static final int pref_header_general=0x7f080045;
         /**  Example settings for Notifications 
          */
-        public static final int pref_header_notifications=0x7f08004a;
-        public static final int pref_ringtone_silent=0x7f08004d;
-        public static final int pref_title_add_friends_to_messages=0x7f080046;
-        public static final int pref_title_display_name=0x7f080044;
-        public static final int pref_title_new_message_notifications=0x7f08004b;
-        public static final int pref_title_ringtone=0x7f08004c;
-        public static final int pref_title_social_recommendations=0x7f080042;
-        public static final int pref_title_sync_frequency=0x7f080048;
-        public static final int pref_title_system_sync_settings=0x7f080049;
-        public static final int pref_title_vibrate=0x7f08004e;
+        public static final int pref_header_notifications=0x7f08004e;
+        public static final int pref_ringtone_silent=0x7f080051;
+        public static final int pref_title_add_friends_to_messages=0x7f08004a;
+        public static final int pref_title_display_name=0x7f080048;
+        public static final int pref_title_new_message_notifications=0x7f08004f;
+        public static final int pref_title_ringtone=0x7f080050;
+        public static final int pref_title_social_recommendations=0x7f080046;
+        public static final int pref_title_sync_frequency=0x7f08004c;
+        public static final int pref_title_system_sync_settings=0x7f08004d;
+        public static final int pref_title_vibrate=0x7f080052;
         public static final int random_play=0x7f08003c;
         public static final int sat_textView=0x7f080031;
         public static final int set_alarm_button=0x7f08000f;
@@ -240,10 +254,14 @@ public final class R {
         public static final int snoozing_time=0x7f080016;
         public static final int sun_textView=0x7f080032;
         public static final int thu_textView=0x7f08002f;
-        public static final int title_activity_alarm_settings=0x7f080040;
+        public static final int title_activity_alarm_settings=0x7f080044;
         public static final int title_activity_my_playlist=0x7f080015;
+        public static final int title_activity_ringtones=0x7f080043;
         public static final int title_activity_settings=0x7f080023;
         public static final int title_activity_song_list=0x7f080020;
+        public static final int title_activity_song_tab=0x7f080042;
+        public static final int title_activity_tab=0x7f080041;
+        public static final int title_activity_tab_host=0x7f080040;
         public static final int title_activity_test=0x7f08001e;
         public static final int title_activity_waking_time=0x7f080014;
         public static final int tue_textView=0x7f08002d;

@@ -6,26 +6,25 @@
 
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.DEVICE_POWER"/>
+    <uses-permission android:name="android.permission.DEVICE_POWER" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-   
 
     <uses-sdk
         android:minSdkVersion="8"
-        android:targetSdkVersion="16" />
+        android:targetSdkVersion="20" />
 
     <application
-        android:name="com.example.brandnewday.MyApplication"
+        android:name=".MyApplication"
         android:allowBackup="true"
-        android:debuggable="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-        <service android:name="com.example.brandnewday.AlarmService" >
+        <service android:name=".AlarmService" >
         </service>
 
         <activity
-            android:name="com.example.brandnewday.BrandNewDay"
+            android:name=".BrandNewDay"
+            android:screenOrientation="portrait"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name" >
             <intent-filter>
@@ -35,17 +34,20 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.example.brandnewday.AlarmSettings"
+            android:name=".AlarmSettings"
+            android:screenOrientation="portrait"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_alarm_settings" >
         </activity>
         <activity
-            android:name="com.example.brandnewday.WakingTime"
+            android:name=".WakingTime"
+            android:screenOrientation="portrait"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_waking_time" >
         </activity>
         <activity
-            android:name="com.example.brandnewday.MyPlaylist"
+            android:name=".MyPlaylist"
+            android:screenOrientation="portrait"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_my_playlist" >
             <intent-filter>
@@ -62,21 +64,46 @@
             </intent-filter>
         </activity>
 
-        <service android:name="com.example.brandnewday.AlarmService" />
+        <service android:name=".AlarmService" />
 
-        <receiver android:name="com.example.brandnewday.AlarmReceiver" />
+        <receiver android:name=".AlarmReceiver" />
 
         <activity
-            android:name="com.example.brandnewday.TestActivity"
+            android:name=".TestActivity"
             android:label="@string/title_activity_test" >
         </activity>
         <activity
-            android:name="com.example.brandnewday.SongList"
+            android:name=".SongList"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_song_list" >
         </activity>
         <activity
-            android:name="com.example.brandnewday.Settings"
+            android:name=".Settings"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_settings" >
+        </activity>
+        <activity
+            android:name=".TabHost"
+            android:label="@string/title_activity_tab_host" >
+        </activity>
+        <activity
+            android:name=".TabActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/title_activity_tab" >
+        </activity>
+        <activity
+            android:name=".SongTab"
+            android:label="@string/title_activity_song_tab"
+            android:screenOrientation="portrait"
+            android:parentActivityName="android.app.TabActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="android.app.TabActivity" />
+        </activity>
+        <activity
+            android:name=".Ringtones"
+            android:label="@string/title_activity_ringtones"
+            android:screenOrientation="portrait" >
         </activity>
     </application>
 

@@ -22,7 +22,7 @@ import android.content.SharedPreferences;
 
 
 
-public class AlarmService extends Service implements MediaPlayer.OnCompletionListener {
+public class AlarmService extends Service {
 	MyApplication myApplication;
 	MediaPlayer mediaPlayer = null;
 	float[] volumes = new float[3];
@@ -100,71 +100,103 @@ public class AlarmService extends Service implements MediaPlayer.OnCompletionLis
 			e.printStackTrace();
 		}
 		
-		if(audioUris.size()!=0){
-			if(randomAudioUris.size() == 0){
-				//No more unplayed tracks to play
-				randomAudioUris = new ArrayList<Uri>(audioUris.size());
-				randomAudioUris = randomizeUriArrayList(audioUris);
-				mediaPlayer = MediaPlayer.create(getApplicationContext(), randomAudioUris.get(firstTrack));
-				randomAudioUris.remove(firstTrack); 
-				try {
-					editor.putString("randomAudioUrisFromPreferences", myApplication.serialize(randomAudioUris));
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				
-			}
-			else{
-				mediaPlayer = MediaPlayer.create(getApplicationContext(), randomAudioUris.get(firstTrack));
-
-				randomAudioUris.remove(firstTrack);  //remove track so it's not going to play again until the playlist ends
-				try {
-					editor.putString("randomAudioUrisFromPreferences", myApplication.serialize(randomAudioUris));
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				editor.commit();
-			}
-			mediaPlayer.setOnCompletionListener(this);
-			audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,  audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
-			mediaPlayer.setVolume(volume, volume); 
-			mediaPlayer.start();
-		    
-		}
 		
-		Intent i = new Intent(getApplicationContext(), WakingTime.class);
-		i.putExtra("index", index);
-		i.putExtra("snooze", snooze);
-		i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		startActivity(i);
-		return START_STICKY;
-	}
-	
-	public void onCompletion(MediaPlayer mediaPlayer) {
-	    AudioManager audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
-		mediaPlayer.release();
-		if(randomAudioUris == null){
+		mediaPlayer = MediaPlayer.create(getApplicationContext(), randomAudioUris.get(firstTrack));
+		randomAudioUris.remove(firstTrack);
+		if(randomAudioUris.size() == 0){
 			randomAudioUris = new ArrayList<Uri>(audioUris.size());
 			randomAudioUris = randomizeUriArrayList(audioUris);
-			mediaPlayer = MediaPlayer.create(getApplicationContext(), randomAudioUris.get(firstTrack));
+		}
+		
+		try {
+			editor.putString("randomAudioUrisFromPreferences", myApplication.serialize(randomAudioUris));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		editor.commit();
+		
+	
+		mediaPlayer.setOnCompletionListener(completionListener);
+		audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,  audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
+		mediaPlayer.setVolume(volume, volume); 
+		mediaPlayer.start();
+	    
+	
+	
+	Intent i = new Intent(getApplicationContext(), WakingTime.class);
+	i.putExtra("index", index);
+	i.putExtra("snooze", snooze);
+	i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+	startActivity(i);
+	return START_STICKY;
+	}
+	
+	
+	MediaPlayer.OnCompletionListener completionListener = new MediaPlayer.OnCompletionListener(){
+
+		@Override
+		public void onCompletion(MediaPlayer mp) {
+			AudioManager audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+		    SharedPreferences defaultPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+			SharedPreferences.Editor editor = defaultPreferences.edit();
+			
+			mp = MediaPlayer.create(getApplicationContext(), randomAudioUris.get(firstTrack));
 			randomAudioUris.remove(firstTrack);
+			if(randomAudioUris.size() == 0){
+				randomAudioUris = new ArrayList<Uri>(audioUris.size());
+				randomAudioUris = randomizeUriArrayList(audioUris);
+			}
+			
+			try {
+				editor.putString("randomAudioUrisFromPreferences", myApplication.serialize(randomAudioUris));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			editor.commit();
+			
+		
+			mp.setOnCompletionListener(this);
+			audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,  audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
+			mp.setVolume(volume, volume);
+			mediaPlayer = mp;
+			mediaPlayer.start();
 		}
-		else {
-		    mediaPlayer = MediaPlayer.create(getApplicationContext(), randomAudioUris.get(firstTrack));
-		    randomAudioUris.remove(firstTrack);
-		    audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,  audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
-			mediaPlayer.setVolume(volume, volume); 
-		    mediaPlayer.start();
-		}
-      }
+	};	
+		
+		
+//	public void onCompletion(MediaPlayer mediaPlayer) {
+//	    AudioManager audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+//	    SharedPreferences defaultPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+//		SharedPreferences.Editor editor = defaultPreferences.edit();
+//		
+//		mediaPlayer = MediaPlayer.create(getApplicationContext(), randomAudioUris.get(firstTrack));
+//		randomAudioUris.remove(firstTrack);
+//		if(randomAudioUris.size() == 0){
+//			randomAudioUris = new ArrayList<Uri>(audioUris.size());
+//			randomAudioUris = randomizeUriArrayList(audioUris);
+//		}
+//		
+//		try {
+//			editor.putString("randomAudioUrisFromPreferences", myApplication.serialize(randomAudioUris));
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		editor.commit();
+//		
+//	
+//		mediaPlayer.setOnCompletionListener(this);
+//		audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,  audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
+//		mediaPlayer.setVolume(volume, volume); 
+//		mediaPlayer.start();
+//		
+//      }
 	
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		if(mediaPlayer != null)
-			mediaPlayer.release();
+		mediaPlayer.release();
 		wakeLock.release();
-		volumeRaiserTimer.cancel();
+		//volumeRaiserTimer.cancel();
 	}
 	
 	public ArrayList<Uri> randomizeUriArrayList(ArrayList<Uri> uriArrayList) {

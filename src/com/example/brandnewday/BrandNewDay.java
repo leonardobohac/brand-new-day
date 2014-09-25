@@ -4,35 +4,26 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 
-import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.Display;
 import android.view.Menu;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 public class BrandNewDay extends Activity {
 	public MyApplication myApplication;	
@@ -391,6 +382,10 @@ public class BrandNewDay extends Activity {
 	
 	View.OnClickListener settings_alarm_1_listener = new View.OnClickListener() {
 	    public void onClick(View v) {
+	    	if(playlist_is_empty()){
+	    		Toast.makeText(getApplicationContext(), "Adicione músicas na Playlist primeiro", Toast.LENGTH_LONG).show();
+	    		return;
+	    	}
 	    	Intent intent = new Intent(getApplicationContext(), Settings.class);
 	    	intent.putExtra("index", ALARM_1_INDEX);
 	    	startActivity(intent);
@@ -398,7 +393,11 @@ public class BrandNewDay extends Activity {
 	};
 	
 	View.OnClickListener settings_alarm_2_listener = new View.OnClickListener() {
-	    public void onClick(View v) {	    	
+	    public void onClick(View v) {
+	    	if(playlist_is_empty()){
+	    		Toast.makeText(getApplicationContext(), "Adicione músicas na Playlist primeiro", Toast.LENGTH_LONG).show();
+	    		return;
+	    	}
 	    	Intent intent = new Intent(getApplicationContext(), Settings.class);
 	    	intent.putExtra("index", ALARM_2_INDEX);
 	    	startActivity(intent);
@@ -407,6 +406,10 @@ public class BrandNewDay extends Activity {
 	
 	View.OnClickListener settings_alarm_3_listener = new View.OnClickListener() {
 	    public void onClick(View v) {
+	    	if(playlist_is_empty()){
+	    		Toast.makeText(getApplicationContext(), "Adicione músicas na Playlist primeiro", Toast.LENGTH_LONG).show();
+	    		return;
+	    	}
 	    	Intent intent = new Intent(getApplicationContext(), Settings.class);
 	    	intent.putExtra("index", ALARM_3_INDEX);
 	    	startActivity(intent);
@@ -416,12 +419,20 @@ public class BrandNewDay extends Activity {
 	View.OnClickListener alarm_1_listener = new View.OnClickListener() {
 	    	@Override
 	        public void onClick(View arg0) {
+	    		if(playlist_is_empty()){
+		    		Toast.makeText(getApplicationContext(), "Adicione músicas na Playlist primeiro", Toast.LENGTH_LONG).show();
+		    		return;
+		    	}
 	    		if(alarmActivated[ALARM_1_INDEX] == false){
 	            	alarmActivated[ALARM_1_INDEX] = true;
 	            	myApplication.activateAlarm(ALARM_1_INDEX, alarm_days, alarmHours, alarmMinutes, alarmSnoozes);
 	            	alarm_1_textView.setTextColor(getResources().getColor(R.color.blueback));
 	            	setBackground(alarm_1, getResources().getDrawable(R.drawable.btn_alarm_checked));
-	            	Toast.makeText(getApplicationContext(), "Alarme Ativado! Sonhe com os anjos", Toast.LENGTH_SHORT).show();
+	            	
+	            	String hour_string = formatter.format(alarmHours[ALARM_1_INDEX]);
+					String minute_string = formatter.format(alarmMinutes[ALARM_1_INDEX]);
+					String text = (hour_string + ":" + minute_string);
+	            	Toast.makeText(getApplicationContext(), "Alarme ativado para " + text, Toast.LENGTH_SHORT).show();
 	            }
 	            else {
 	            	alarmActivated[ALARM_1_INDEX] = false;
@@ -437,12 +448,20 @@ public class BrandNewDay extends Activity {
 	  	View.OnClickListener alarm_2_listener = new View.OnClickListener() {
 	    	@Override
 	        public void onClick(View arg0) {
+	    		if(playlist_is_empty()){
+		    		Toast.makeText(getApplicationContext(), "Adicione músicas na Playlist primeiro", Toast.LENGTH_LONG).show();
+		    		return;
+		    	}
 	    		if(alarmActivated[ALARM_2_INDEX] == false){
 	            	alarmActivated[ALARM_2_INDEX] = true;
 	            	myApplication.activateAlarm(ALARM_2_INDEX, alarm_days, alarmHours, alarmMinutes, alarmSnoozes);
 	            	alarm_2_textView.setTextColor(getResources().getColor(R.color.blueback));
 	            	setBackground(alarm_2, getResources().getDrawable(R.drawable.btn_alarm_checked));
-	            	Toast.makeText(getApplicationContext(), "Alarme Ativado! Sonhe com os anjos", Toast.LENGTH_SHORT).show();
+	            	
+	            	String hour_string = formatter.format(alarmHours[ALARM_2_INDEX]);
+					String minute_string = formatter.format(alarmMinutes[ALARM_2_INDEX]);
+					String text = (hour_string + ":" + minute_string);
+					Toast.makeText(getApplicationContext(), "Alarme ativado para " + text, Toast.LENGTH_SHORT).show();
 	            }
 	            else {
 	            	alarmActivated[ALARM_2_INDEX] = false;
@@ -457,12 +476,20 @@ public class BrandNewDay extends Activity {
 	  	View.OnClickListener alarm_3_listener = new View.OnClickListener() {
 	    	@Override
 	        public void onClick(View arg0) {
+	    		if(playlist_is_empty()){
+		    		Toast.makeText(getApplicationContext(), "Adicione músicas na Playlist primeiro", Toast.LENGTH_LONG).show();
+		    		return;
+		    	}
 	    		if(alarmActivated[ALARM_3_INDEX] == false){
 	            	alarmActivated[ALARM_3_INDEX] = true;
 	            	myApplication.activateAlarm(ALARM_3_INDEX, alarm_days, alarmHours, alarmMinutes, alarmSnoozes);
 	            	alarm_3_textView.setTextColor(getResources().getColor(R.color.blueback));
 	            	setBackground(alarm_3, getResources().getDrawable(R.drawable.btn_alarm_checked));
-	            	Toast.makeText(getApplicationContext(), "Alarme Ativado! Sonhe com os anjos", Toast.LENGTH_SHORT).show();
+	            	
+	            	String hour_string = formatter.format(alarmHours[ALARM_3_INDEX]);
+					String minute_string = formatter.format(alarmMinutes[ALARM_3_INDEX]);
+					String text = (hour_string + ":" + minute_string);
+					Toast.makeText(getApplicationContext(), "Alarme ativado para " + text, Toast.LENGTH_SHORT).show();
 	            }
 	            else {
 	            	alarmActivated[ALARM_3_INDEX] = false;
@@ -477,6 +504,10 @@ public class BrandNewDay extends Activity {
 	  	View.OnClickListener nap_listener = new View.OnClickListener() {
 	    	@Override
 	        public void onClick(View arg0) {
+	    		if(playlist_is_empty()){
+		    		Toast.makeText(getApplicationContext(), "Adicione músicas na Playlist primeiro", Toast.LENGTH_LONG).show();
+		    		return;
+		    	}
 	    		if(alarmActivated[ALARM_NAP_INDEX] == false){
 	            	alarmActivated[ALARM_NAP_INDEX] = true;
 	            	nap_textView.setTextColor((getResources().getColor(R.color.blueback)));
@@ -495,7 +526,7 @@ public class BrandNewDay extends Activity {
 	  	
 	  	View.OnClickListener playlist_listener = new View.OnClickListener() {
 		    public void onClick(View v) {
-		    	Intent i = new Intent(getApplicationContext(), SongList.class);
+		    	Intent i = new Intent(getApplicationContext(), SongList.class); //para adicionar rintones mudar para SongTab
                 startActivity(i);
             }
 	  	};
@@ -561,9 +592,15 @@ public class BrandNewDay extends Activity {
 	            	setBackground(alarm_3, getResources().getDrawable(R.drawable.btn_alarm));
 				}
 			}
-			else if(index == ALARM_NAP_INDEX)
-				nap_textView.setText(Integer.toString(nap_time));			
-		}
+			else if(index == ALARM_NAP_INDEX){
+				nap_textView.setText(Integer.toString(nap_time));
+				if(alarmActivated[ALARM_NAP_INDEX] = false)		
+					nap_textView.setTextColor(Color.WHITE);
+				else
+					nap_textView.setTextColor((getResources().getColor(R.color.blueback)));
+			}
+					
+	}
 	
 	public MyApplication getMyApplication() {
 		return (MyApplication)getApplication();
@@ -575,7 +612,22 @@ public class BrandNewDay extends Activity {
 	    super.onConfigurationChanged(newConfig);
 	}
 	
-	
+	public boolean playlist_is_empty(){
+		SharedPreferences defaultPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+		ArrayList<Uri> audioUris = new ArrayList<Uri>();
+		String audioUrisFromPreferences = defaultPreferences.getString("audioUrisFromPreferences", "");
+		try {
+			audioUris = myApplication.deserialize(audioUrisFromPreferences);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		if(audioUris.size() == 0){
+			return true;
+		}
+		return false;
+	}
 	
 //////////// Preferences Getters /////////////////	
 	public void getHoursPreferences() {
