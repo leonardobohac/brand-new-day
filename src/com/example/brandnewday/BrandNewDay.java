@@ -138,7 +138,6 @@ public class BrandNewDay extends Activity {
 		set_alarm_text(ALARM_1_INDEX);
 		set_alarm_text(ALARM_2_INDEX);
 		set_alarm_text(ALARM_3_INDEX);
-		Toast.makeText(getApplicationContext(), Boolean.toString(alarmActivated[ALARM_NAP_INDEX]), Toast.LENGTH_SHORT).show();
 		set_alarm_text(ALARM_NAP_INDEX);
 	
 	    alarm_1.setOnClickListener(alarm_1_listener);
